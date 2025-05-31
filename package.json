@@ -1,0 +1,11 @@
+{
+  "name": "gerenciador_biblioteca",
+  "version": "1.0.0",
+  "description": "Projeto de prog_web gerenciador de biblioteca academica",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pedro paulino pinto",
+  "license": "ISC"
+}
