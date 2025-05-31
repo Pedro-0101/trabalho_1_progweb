@@ -7,5 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pedro paulino pinto",
-  "license": "ISC"
+  "license": "ISC",
+  "dev-dependencies": {
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "express": "^5.1.0"
+  }
 }
