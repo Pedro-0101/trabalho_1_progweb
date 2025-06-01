@@ -21,4 +21,12 @@ export class EmprestimoRepository {
         this.listaEmprestimos.push(emprestimo);
     }
 
+    public getEmprestimoById(id: number): Emprestimo | undefined {
+        return this.listaEmprestimos.find(emprestimo => emprestimo.id === id);
+    }
+
+    public emprestimosEmAberto(usuarioId: number): number {
+        return this.listaEmprestimos.filter(emprestimo => emprestimo.usuarioId === usuarioId && !emprestimo.dataDevolucao).length;
+    }
+
 }

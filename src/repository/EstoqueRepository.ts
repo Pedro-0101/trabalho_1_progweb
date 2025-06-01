@@ -21,10 +21,10 @@ export class EstoqueRepository {
         this.listaEstoques.push(estoque);
     }
 
-    public addEstoqueExistente(livroId: number): void {
+    public addEstoqueExistente(livroId: number, quantidade: number): void {
         const estoque = this.listaEstoques.find(e => e.livroId === livroId);
         if (estoque) {
-            estoque.quantidade += 1;
+            estoque.quantidade += quantidade;
         }
     }
 
@@ -41,5 +41,9 @@ export class EstoqueRepository {
         else {
             throw new Error(`Estoque para livro com ID ${livroId} não encontrado.`);
         }
+    }
+
+    public getEstoqueByLivroId(livroId: number): Estoque | undefined {
+        return this.listaEstoques.find(e => e.livroId === livroId);
     }
 }

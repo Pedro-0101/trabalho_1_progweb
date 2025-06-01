@@ -20,4 +20,8 @@ export class CategoriaLivroRepository {
     public addCategoriaLivro(categoria: CategoriaLivro): void {
         this.listaCategoriasLivros.push(categoria);
     }
+
+    public getCategoriaLivroById(id: number): CategoriaLivro | undefined {
+        return this.listaCategoriasLivros.find(categoria => categoria.id === id);
+    }
 }

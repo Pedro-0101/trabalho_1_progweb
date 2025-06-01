@@ -20,4 +20,8 @@ export class UsuarioRepository {
     public addUsuario(usuario: Usuario): void {
         this.listaUsuarios.push(usuario);
     }
+
+    public getUsuarioById(id: number): Usuario | undefined {
+        return this.listaUsuarios.find(usuario => usuario.id === id);
+    }
 }

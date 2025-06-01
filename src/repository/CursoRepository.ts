@@ -20,4 +20,8 @@ export class CursoRepository {
     public addCurso(curso: Curso): void {
         this.listaCursos.push(curso);
     }
+
+    public getCursoById(id: number): Curso | undefined {
+        return this.listaCursos.find(curso => curso.id === id);
+    }
 }

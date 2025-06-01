@@ -20,4 +20,9 @@ export class CategoriaUsuarioRepository {
     public addCategoriaUsuario(categoria: CategoriaUsuario): void {
         this.listaCategoriasUsuarios.push(categoria);
     }
+
+    public getCategoriaUsuarioById(id: number): CategoriaUsuario | undefined {
+        return this.listaCategoriasUsuarios.find(categoria => categoria.id === id);
+    }
+    
 }
