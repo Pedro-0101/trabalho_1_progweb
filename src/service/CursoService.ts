@@ -39,4 +39,10 @@ export class CursoService {
         // Retorna o curso criado
         return curso;
     }
+
+    public async listarCursos(): Promise<Curso[]> {
+        // Retorna a lista de cursos
+        return this.cursoRepository.getListaCursos();
+    }
+
 }

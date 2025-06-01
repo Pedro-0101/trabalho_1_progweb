@@ -39,4 +39,10 @@ export class CategoriaUsuarioService {
         // Retorna a categoria criada
         return categoriaUsuario;
     }
+
+    public listarCategoriasUsuarios(): CategoriaUsuario[] {
+        // Retorna a lista de categorias de usuário
+        return this.categoriaUsuarioRepository.getListaCategoriasUsuarios();
+    }
+
 }

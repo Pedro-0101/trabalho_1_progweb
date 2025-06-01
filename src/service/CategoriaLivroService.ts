@@ -26,7 +26,6 @@ export class CategoriaLivroService {
         }
 
         // Cria uma nova categoria com um ID único
-        // Atribui um ID único baseado no tamanho atual da lista de categorias
         let id = this.CategoriaLivroRepository.getListaCategoriasLivros().length + 1;
         let categoriaLivro = new CategoriaLivro(id, nome);
 
@@ -42,4 +41,10 @@ export class CategoriaLivroService {
         return categoriaLivro;
 
     }
+
+    public listarCategorias(): CategoriaLivro[] {
+        // Retorna todas as categorias
+        return this.CategoriaLivroRepository.getListaCategoriasLivros();
+    }
+
 }
