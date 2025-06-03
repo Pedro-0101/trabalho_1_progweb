@@ -7,9 +7,9 @@ import { CursoController } from '../controller/CursoController';
 
 /*
 
-• GET /categorias-usuario - Lista tipos de usuário.
-• GET /categorias-livro - Lista categorias de livros.
-• GET /cursos - Lista cursos disponíveis.
+* GET /categorias-usuario - Lista tipos de usuário.
+* GET /categorias-livro - Lista categorias de livros.
+* GET /cursos - Lista cursos disponíveis.
 
 */
 

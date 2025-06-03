@@ -46,4 +46,18 @@ export class EstoqueRepository {
     public getEstoqueByLivroId(livroId: number): Estoque | undefined {
         return this.listaEstoques.find(e => e.livroId === livroId);
     }
+
+    public getEstoqueById(id: number): Estoque | undefined {
+        return this.listaEstoques.find(e => e.id === id);
+    }
+
+    public atualizarQuantidadeEmprestada(livroId: number, quantidade: number): void {
+        const estoque = this.listaEstoques.find(e => e.livroId === livroId);
+        if (estoque) {
+            estoque.quantidadeEmprestada += quantidade;
+            this.atualizarDisponibilidade(livroId);
+        } else {
+            throw new Error(`Estoque para livro com ID ${livroId} não encontrado.`);
+        }
+    }
 }

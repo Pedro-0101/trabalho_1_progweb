@@ -20,16 +20,21 @@ export class EmprestimoService {
         this.CategoriaLivroRepository = CategoriaLivroRepository.getInstance();
     }
 
-    public criarEmprestimo(usuarioId: number, estoqueId: number, dataEmprestimo: Date): Emprestimo {
+    public registrarEmprestimo(cpf: string, codigoExemplar: number, dataEmprestimo: Date): Emprestimo {
 
         // Verifica se o usuário existe
-        const usuario = this.usuarioRepository.getListaUsuarios().find(u => u.id === usuarioId);
+        const usuario = this.usuarioRepository.getListaUsuarios().find(u => u.cpf === cpf);
         if (!usuario) {
             throw new Error("Usuário não encontrado.");
         }
 
+        // Verifica se o usuário está ativo
+        if (!usuario.ativo) {
+            throw new Error("Usuário inativo.");
+        }
+
         // Verifica se o estoque existe
-        const estoque = this.estoqueRepository.getListaEstoques().find(e => e.id === estoqueId);
+        const estoque = this.estoqueRepository.getListaEstoques().find(e => e.id === codigoExemplar);
         if (!estoque) {
             throw new Error("Estoque não encontrado.");
         }
@@ -39,16 +44,17 @@ export class EmprestimoService {
             throw new Error("Estoque indisponível.");
         }
         
-                // Valida a data de empréstimo
-                if (!(dataEmprestimo instanceof Date)) {
-                    throw new Error("Data de empréstimo inválida.");
-                }
+        // Valida a data de empréstimo
+        if (!(dataEmprestimo instanceof Date)) {
+            throw new Error("Data de empréstimo inválida.");
+        }
+        
         
         // Define variáveis para data de devolução, curso do usuário, categoria do usuário e categoria do livro
         let dataDevolucao = new Date(dataEmprestimo);
-        let cursoUsuario = this.usuarioRepository.getUsuarioById(usuarioId)?.nome;
-        let categoriaUsuario = this.usuarioRepository.getUsuarioById(usuarioId)?.categoriaId;
-        let livroId = this.estoqueRepository.getEstoqueByLivroId(estoqueId)?.livroId;
+        let cursoUsuario = this.usuarioRepository.getUsuarioById(usuario.id)?.nome;
+        let categoriaUsuario = this.usuarioRepository.getUsuarioById(usuario.id)?.categoriaId;
+        let livroId = this.estoqueRepository.getEstoqueByLivroId(usuario.id)?.livroId;
         let categoriaLivro: string | undefined = undefined;
         if (livroId !== undefined) {
             categoriaLivro = this.CategoriaLivroRepository.getCategoriaLivroById(livroId)?.nome;
@@ -66,7 +72,7 @@ export class EmprestimoService {
         }
 
         // Verfica numero de empréstimos do usuário em andamento
-        let emprestimosEmAberto = this.emprestimoRepository.emprestimosEmAberto(usuarioId);
+        let emprestimosEmAberto = this.emprestimoRepository.emprestimosEmAberto(usuario.id);
         if ( categoriaUsuario === 1 && emprestimosEmAberto >= 5) { // Categoria professor, máximo de 5 empréstimos em aberto
             throw new Error("Limite de empréstimos em aberto atingido para usuários da categoria professor.");
         }
@@ -79,10 +85,42 @@ export class EmprestimoService {
 
         // Cria o empréstimo
         let id = this.emprestimoRepository.getListaEmprestimos().length + 1;
-        let emprestimo = new Emprestimo(id, usuarioId, estoqueId, dataEmprestimo, dataDevolucao, null, 0, null);
+        let emprestimo = new Emprestimo(id, usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, 0, null);
 
         // Adiciona o empréstimo ao repositório
-        this.emprestimoRepository.addEmprestimo(emprestimo);
+        this.emprestimoRepository.addEmprestimo(emprestimo); // Rever codigo no repositorio
+        // Atualiza a quantidade emprestada no estoque
+        this.estoqueRepository.atualizarQuantidadeEmprestada(estoque.livroId, 1);
+
+        return emprestimo;
+    }
+
+    public listarEmprestimos(): Emprestimo[] {
+        return this.emprestimoRepository.getListaEmprestimos();
+    }
+
+    public registrarDevolucao(id: number): Emprestimo {
+        // Busca o empréstimo pelo ID
+        const emprestimo = this.emprestimoRepository.getEmprestimoById(id);
+        if (!emprestimo) {
+            throw new Error("Empréstimo não encontrado.");
+        }
+
+        // Verifica se o empréstimo já foi devolvido
+        if (emprestimo.dataDevolucao) {
+            throw new Error("Empréstimo já foi devolvido.");
+        }
+
+        // Registra a devolução
+        emprestimo.dataDevolucao = new Date();
+        
+        // Atualiza o status do estoque para disponível
+        const estoque = this.estoqueRepository.getEstoqueById(emprestimo.estoqueId);
+        if (!estoque) {
+            throw new Error("Estoque não encontrado.");
+        }
+
+        this.estoqueRepository.atualizarQuantidadeEmprestada(estoque.livroId, -1);
 
         return emprestimo;
     }
