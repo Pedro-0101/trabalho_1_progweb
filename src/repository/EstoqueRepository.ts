@@ -33,10 +33,11 @@ export class EstoqueRepository {
         return estoque ? estoque.quantidade : 0;
     }
 
-    public atualizarDisponibilidade(livroId: number): void {
+    public atualizarDisponibilidade(livroId: number): Estoque | null {
         const estoque = this.listaEstoques.find(e => e.livroId === livroId);
         if (estoque) {
             estoque.disponivel = estoque.quantidade > estoque.quantidadeEmprestada;
+            return estoque;
         }
         else {
             throw new Error(`Estoque para livro com ID ${livroId} não encontrado.`);
@@ -59,5 +60,22 @@ export class EstoqueRepository {
         } else {
             throw new Error(`Estoque para livro com ID ${livroId} não encontrado.`);
         }
+    }
+
+    public getEstoqueByCodigo(codigo: number): Estoque | null {
+        const estoque = this.listaEstoques.find(e => e.id === codigo);
+        return estoque || null;
+    }
+
+    public deletarEstoque(codigo: number): void {
+        const estoque = this.getEstoqueById(codigo);
+        if (!estoque) {
+            throw new Error(`Estoque com código ${codigo} não encontrado.`);
+        }
+        if(estoque.quantidadeEmprestada > 0) {
+            throw new Error(`Não é possível remover o estoque com código ${codigo} porque ele está emprestado.`);
+        }
+        // Remove o estoque da lista
+        this.listaEstoques = this.listaEstoques.filter(e => e.id !== codigo);
     }
 }

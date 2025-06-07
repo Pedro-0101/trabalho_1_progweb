@@ -1,8 +1,8 @@
-import express, { Request, Response } from 'express';
-let router = express.Router();
 import { CategoriaLivroController } from '../controller/CategoriaLivroController';
 import { CategoriaUsuarioController } from '../controller/CategoriaUsuarioController';
 import { CursoController } from '../controller/CursoController';
+import express, { Request, Response } from 'express';
+let router = express.Router();
 
 
 /*

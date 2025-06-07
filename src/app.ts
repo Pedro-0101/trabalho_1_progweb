@@ -17,6 +17,7 @@ function logInfo() {
 var indexRouter = require('./routes/IndexRoute');
 var catalogosRouter = require('./routes/CatalogoRoute');
 var emprestimosRouter = require('./routes/EmprestimoRoute');
+var estoquesRouter = require('./routes/EstoqueRoute');
 var livrosRouter = require('./routes/LivroRoute');
 var usuariosRouter = require('./routes/UsuarioRoute');
 
@@ -24,6 +25,7 @@ var usuariosRouter = require('./routes/UsuarioRoute');
 app.use('/libary', indexRouter);
 app.use('/libary/catalogos', catalogosRouter);
 app.use('/libary/emprestimos', emprestimosRouter);
+app.use('/libary/estoque', estoquesRouter);
 app.use('/libary/livros', livrosRouter);
 app.use('/libary/usuarios', usuariosRouter);
 

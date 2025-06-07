@@ -1,5 +1,5 @@
-import express, { Request, Response } from 'express';
 import { EmprestimoController } from '../controller/EmprestimoController';
+import express, { Request, Response } from 'express';
 let router = express.Router();
 
 /*

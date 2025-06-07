@@ -39,4 +39,13 @@ export class LivroRepository {
         return livro;
         
     }
+
+    public getLivroByIsbn(isbn: string): number {
+        const livro = this.listaLivros.find(l => l.isbn === isbn);
+        if (!livro) {
+            throw new Error(`Livro com ISBN ${isbn} não encontrado`);
+        }
+        return livro.id;
+    }
+
 }

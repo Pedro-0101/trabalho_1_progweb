@@ -11,10 +11,11 @@ export class EstoqueService {
         this.livroRepository = LivroRepository.getInstance();
     }
 
-    public criarEstoque(livroId: number, quantidade: number): Estoque {
+    public registrarEstoque(isbn: string, quantidade: number): Estoque {
         
         // Verifica se o livro existe
-        const livro = this.livroRepository.getListaLivros().find(l => l.id === livroId);
+        const livroId = this.livroRepository.getLivroByIsbn(isbn);
+        const livro = this.livroRepository.getLivroById(livroId);
         if (!livro) {
             throw new Error("Livro não existe.");
         }
@@ -25,7 +26,7 @@ export class EstoqueService {
         }
 
         // Verifica se já existe um estoque para o livro
-        const estoqueExistente = this.estoqueRepository.getListaEstoques().find(e => e.livroId === livroId);
+        const estoqueExistente = this.estoqueRepository.getEstoqueByLivroId(livroId);
         if (estoqueExistente) {
             this.estoqueRepository.addEstoqueExistente(estoqueExistente.id, quantidade);
         }
@@ -49,4 +50,30 @@ export class EstoqueService {
         return estoque;
 
     }
+
+    public getListaEstoques(): Estoque[] {
+        return this.estoqueRepository.getListaEstoques();
+    }
+
+    public getByCodigo(codigo: number): Estoque | null {
+        return this.estoqueRepository.getEstoqueByCodigo(codigo);
+    }
+
+    public atualizaDisponibilidade(codigo: number): Estoque | null {
+        const estoque = this.estoqueRepository.getEstoqueByCodigo(codigo);
+        if (!estoque) {
+            throw new Error("Exemplar não encontrado.");
+        }
+        this.estoqueRepository.atualizarDisponibilidade(estoque.livroId);
+        return estoque;
+    }
+
+    public deletarEstoque(codigo: number): void {
+        const estoque = this.estoqueRepository.getEstoqueByCodigo(codigo);
+        if (!estoque) {
+            throw new Error("Exemplar não encontrado.");
+        }
+        this.estoqueRepository.deletarEstoque(codigo);
+    }
+
 }
