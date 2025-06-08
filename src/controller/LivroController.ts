@@ -1,7 +1,6 @@
 import { LivroService } from "../service/LivroService";
 import { Livro } from "../model/Livro";
 import { Request, Response } from "express";
-import { promises } from "dns";
 
 export class LivroController{
     private LivroService : LivroService;
