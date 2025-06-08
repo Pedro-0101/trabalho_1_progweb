@@ -4,6 +4,8 @@ import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { LivroRepository } from "../repository/LivroRepository";
 import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
+import { UsuarioService } from "./UsuarioService";
+import { DateUtils } from "../utils/dateUtils";
 
 export class EmprestimoService {
     private emprestimoRepository: EmprestimoRepository;
@@ -113,6 +115,12 @@ export class EmprestimoService {
 
         // Registra a devolução
         emprestimo.dataDevolucao = new Date();
+        emprestimo.diasAtraso = DateUtils.diferencaDias(new Date(), emprestimo.dataEntrega);
+
+        // Calcula suspensao se atrasado
+        if(emprestimo.diasAtraso > 0){
+            emprestimo.suspensaoAte = DateUtils.somaData(new Date(), emprestimo.diasAtraso);
+        }
         
         // Atualiza o status do estoque para disponível
         const estoque = this.estoqueRepository.getEstoqueById(emprestimo.estoqueId);
@@ -121,6 +129,7 @@ export class EmprestimoService {
         }
 
         this.estoqueRepository.atualizarQuantidadeEmprestada(estoque.livroId, -1);
+        this.verificarEmprestimos();
 
         return emprestimo;
     }
@@ -139,7 +148,19 @@ export class EmprestimoService {
 
     }
 
+    public async verificarEmprestimos(): Promise<void>{
+
+        const emprestimosEmAberto = this.listarEmprestimos();
+        emprestimosEmAberto.filter( e => !e.dataEntrega);
+        emprestimosEmAberto.filter( e => e.dataDevolucao > new Date());
+
+        emprestimosEmAberto.forEach( e => {
+            console.log(`Emprestimo em atraso ${e.id}, usuario ${e.usuarioId}`);
+            let us = new UsuarioService();
+            us.alteraStatusUsuario(e.usuarioId, false);
+        })
+
+    }
 
 
-    
 }

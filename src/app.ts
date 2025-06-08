@@ -59,7 +59,7 @@ setInterval(() => {
   console.log('Executando verificao de emprestimos');
   let es = new EmprestimoService();
 
-  es.
+  es.verificarEmprestimos();
   
 }, 5 * 60 * 1000);
 

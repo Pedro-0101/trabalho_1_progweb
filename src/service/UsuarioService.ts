@@ -191,6 +191,17 @@ export class UsuarioService {
 
     }
 
+    public alteraStatusUsuario(id: number, status: boolean): void{
+
+        const usuario = this.usuarioRepository.getUsuarioById(id);
+
+        if(!usuario){
+            throw new Error("Usuario nao encontrado")
+        }
+
+        usuario.ativo = status;
+
+    }
 
 
 }
