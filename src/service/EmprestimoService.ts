@@ -130,4 +130,12 @@ export class EmprestimoService {
         return this.emprestimoRepository.qtdeEmprestada(estoqueId);
 
     }
+
+    public emprestimosEmAbertoUsuario(usuarioId: number): number{
+
+        const empAbertos = this.emprestimoRepository.emprestimosEmAberto(usuarioId);
+
+        return empAbertos;
+
+    }
 }
