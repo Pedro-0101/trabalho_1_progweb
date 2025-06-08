@@ -124,4 +124,10 @@ export class EmprestimoService {
 
         return emprestimo;
     }
+
+    public qtdeEmprestada(estoqueId: number): number{
+
+        return this.emprestimoRepository.qtdeEmprestada(estoqueId);
+
+    }
 }

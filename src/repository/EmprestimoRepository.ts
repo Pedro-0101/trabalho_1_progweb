@@ -29,4 +29,10 @@ export class EmprestimoRepository {
         return this.listaEmprestimos.filter(emprestimo => emprestimo.usuarioId === usuarioId && !emprestimo.dataDevolucao).length;
     }
 
+    public qtdeEmprestada(estoqueId: number): number{
+
+        return this.getListaEmprestimos().filter( e => !e.dataDevolucao && e.estoqueId === estoqueId).length;
+
+    }
+
 }

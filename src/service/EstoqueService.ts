@@ -14,8 +14,8 @@ export class EstoqueService {
     public registrarEstoque(isbn: string, quantidade: number): Estoque {
         
         // Verifica se o livro existe
-        const livroId = this.livroRepository.getLivroByIsbn(isbn);
-        const livro = this.livroRepository.getLivroById(livroId);
+        const livro = this.livroRepository.getLivroByIsbn(isbn);
+        const livroId = livro.id;
         if (!livro) {
             throw new Error("Livro não existe.");
         }
@@ -74,6 +74,32 @@ export class EstoqueService {
             throw new Error("Exemplar não encontrado.");
         }
         this.estoqueRepository.deletarEstoque(codigo);
+    }
+
+    public getEstoqueId(livroId: number | null, isbn: string | null): number{
+
+        if(livroId){
+            let estoque = this.estoqueRepository.getEstoqueByLivroId(livroId);
+            if (estoque) {
+                return estoque.id;
+            } else {
+                throw new Error("Estoque nao encontrado");
+            }
+        }
+
+        if(isbn){
+            let livro = this.livroRepository.getLivroByIsbn(isbn);
+            let estoque = this.estoqueRepository.getEstoqueByLivroId(livro.id);
+
+            if(estoque){
+                return estoque.id;
+            }else{
+                throw new Error("Estoque nao encontrado")
+            }
+        }
+
+        throw new Error("Estoque nao encontrado")
+
     }
 
 }

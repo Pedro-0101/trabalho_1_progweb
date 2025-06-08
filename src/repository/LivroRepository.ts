@@ -40,12 +40,36 @@ export class LivroRepository {
         
     }
 
-    public getLivroByIsbn(isbn: string): number {
+    public getLivroByIsbn(isbn: string): Livro {
         const livro = this.listaLivros.find(l => l.isbn === isbn);
         if (!livro) {
             throw new Error(`Livro com ISBN ${isbn} não encontrado`);
         }
-        return livro.id;
+        return livro;
+    }
+
+    public atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Livro {
+        const livro = this.getLivroByIsbn(isbn);
+        if (!livro) {
+            throw new Error("Livro nao encontrado");
+        }
+
+        livro.titulo = titulo;
+        livro.autor = autor;
+        livro.editora = editora;
+        livro.edicao = edicao;
+        livro.categoriaId = categoriaId;
+
+        return livro;
+    }
+
+    public deletarLivro(isbn: string): boolean {
+        const index = this.listaLivros.findIndex(l => l.isbn === isbn);
+        if (index === -1) {
+            return false;
+        }
+        this.listaLivros.splice(index, 1);
+        return true;
     }
 
 }
