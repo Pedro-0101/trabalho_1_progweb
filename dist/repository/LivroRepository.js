@@ -33,5 +33,32 @@ class LivroRepository {
         }
         return livro;
     }
+    getLivroByIsbn(isbn) {
+        const livro = this.listaLivros.find(l => l.isbn === isbn);
+        if (!livro) {
+            throw new Error(`Livro com ISBN ${isbn} não encontrado`);
+        }
+        return livro;
+    }
+    atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
+        const livro = this.getLivroByIsbn(isbn);
+        if (!livro) {
+            throw new Error("Livro nao encontrado");
+        }
+        livro.titulo = titulo;
+        livro.autor = autor;
+        livro.editora = editora;
+        livro.edicao = edicao;
+        livro.categoriaId = categoriaId;
+        return livro;
+    }
+    deletarLivro(isbn) {
+        const index = this.listaLivros.findIndex(l => l.isbn === isbn);
+        if (index === -1) {
+            return false;
+        }
+        this.listaLivros.splice(index, 1);
+        return true;
+    }
 }
 exports.LivroRepository = LivroRepository;

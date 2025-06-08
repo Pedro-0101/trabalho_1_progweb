@@ -23,5 +23,8 @@ class EmprestimoRepository {
     emprestimosEmAberto(usuarioId) {
         return this.listaEmprestimos.filter(emprestimo => emprestimo.usuarioId === usuarioId && !emprestimo.dataDevolucao).length;
     }
+    qtdeEmprestada(estoqueId) {
+        return this.getListaEmprestimos().filter(e => !e.dataDevolucao && e.estoqueId === estoqueId).length;
+    }
 }
 exports.EmprestimoRepository = EmprestimoRepository;

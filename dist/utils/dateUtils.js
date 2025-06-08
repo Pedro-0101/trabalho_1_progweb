@@ -41,5 +41,21 @@ class DateUtils {
         retorno = retorno.replace(/s/g, sec);
         return retorno;
     }
+    static diferencaDias(date1, date2) {
+        if (!date2) {
+            return 0;
+        }
+        const msPorDia = 1000 * 60 * 60 * 24;
+        // Zera as horas para considerar apenas a data
+        const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+        const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+        const diffMs = Math.abs(d1.getTime() - d2.getTime());
+        return Math.floor(diffMs / msPorDia);
+    }
+    static somaData(date, num) {
+        const novaData = new Date(date);
+        novaData.setDate(novaData.getDate() + num);
+        return novaData;
+    }
 }
 exports.DateUtils = DateUtils;

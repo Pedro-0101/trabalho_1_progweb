@@ -13,22 +13,6 @@ exports.CategoriaLivroController = void 0;
 const CategoriaLivroService_1 = require("../service/CategoriaLivroService");
 const categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
 class CategoriaLivroController {
-    criarCategoriaLivro(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { nome } = req.body; // Obtém o nome da categoria do corpo da requisição
-                // Cria a categoria
-                const categoriaLivro = yield categoriaLivroService.criarCategoriaLivro(nome);
-                // Retorna a categoria criada com status 201 (Created)
-                res.status(201).json(categoriaLivro);
-            }
-            catch (error) {
-                res.status(400).json({
-                    error: error instanceof Error ? error.message : "Erro ao criar a categoria."
-                });
-            }
-        });
-    }
     listarCategorias(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

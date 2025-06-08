@@ -9,9 +9,10 @@ class EstoqueService {
         this.estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
         this.livroRepository = LivroRepository_1.LivroRepository.getInstance();
     }
-    criarEstoque(livroId, quantidade) {
+    registrarEstoque(isbn, quantidade) {
         // Verifica se o livro existe
-        const livro = this.livroRepository.getListaLivros().find(l => l.id === livroId);
+        const livro = this.livroRepository.getLivroByIsbn(isbn);
+        const livroId = livro.id;
         if (!livro) {
             throw new Error("Livro não existe.");
         }
@@ -20,7 +21,7 @@ class EstoqueService {
             throw new Error("Quantidade inválida. Deve ser maior ou igual a 0.");
         }
         // Verifica se já existe um estoque para o livro
-        const estoqueExistente = this.estoqueRepository.getListaEstoques().find(e => e.livroId === livroId);
+        const estoqueExistente = this.estoqueRepository.getEstoqueByLivroId(livroId);
         if (estoqueExistente) {
             this.estoqueRepository.addEstoqueExistente(estoqueExistente.id, quantidade);
         }
@@ -37,6 +38,49 @@ class EstoqueService {
         this.estoqueRepository.atualizarDisponibilidade(livroId);
         // Retorna o estoque criado
         return estoque;
+    }
+    getListaEstoques() {
+        return this.estoqueRepository.getListaEstoques();
+    }
+    getByCodigo(codigo) {
+        return this.estoqueRepository.getEstoqueByCodigo(codigo);
+    }
+    atualizaDisponibilidade(codigo) {
+        const estoque = this.estoqueRepository.getEstoqueByCodigo(codigo);
+        if (!estoque) {
+            throw new Error("Exemplar não encontrado.");
+        }
+        this.estoqueRepository.atualizarDisponibilidade(estoque.livroId);
+        return estoque;
+    }
+    deletarEstoque(codigo) {
+        const estoque = this.estoqueRepository.getEstoqueByCodigo(codigo);
+        if (!estoque) {
+            throw new Error("Exemplar não encontrado.");
+        }
+        this.estoqueRepository.deletarEstoque(codigo);
+    }
+    getEstoqueId(livroId, isbn) {
+        if (livroId) {
+            let estoque = this.estoqueRepository.getEstoqueByLivroId(livroId);
+            if (estoque) {
+                return estoque.id;
+            }
+            else {
+                throw new Error("Estoque nao encontrado");
+            }
+        }
+        if (isbn) {
+            let livro = this.livroRepository.getLivroByIsbn(isbn);
+            let estoque = this.estoqueRepository.getEstoqueByLivroId(livro.id);
+            if (estoque) {
+                return estoque.id;
+            }
+            else {
+                throw new Error("Estoque nao encontrado");
+            }
+        }
+        throw new Error("Estoque nao encontrado");
     }
 }
 exports.EstoqueService = EstoqueService;

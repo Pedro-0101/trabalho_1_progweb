@@ -13,22 +13,6 @@ exports.CategoriaUsuarioController = void 0;
 const CategoriaUsuarioService_1 = require("../service/CategoriaUsuarioService");
 const categoriaUsuarioService = new CategoriaUsuarioService_1.CategoriaUsuarioService();
 class CategoriaUsuarioController {
-    criarCategoriaUsuario(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { nome } = req.body; // Obtém o nome da categoria do corpo da requisição
-                // Cria a categoria
-                const categoriaUsuario = yield categoriaUsuarioService.criarCategoriaUsuario(nome);
-                // Retorna a categoria criada com status 201 (Created)
-                res.status(201).json(categoriaUsuario);
-            }
-            catch (error) {
-                res.status(400).json({
-                    error: error instanceof Error ? error.message : "Erro ao criar a categoria."
-                });
-            }
-        });
-    }
     listarCategoriasUsuarios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
