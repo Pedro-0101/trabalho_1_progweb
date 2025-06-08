@@ -88,7 +88,7 @@ export class EmprestimoService {
         let emprestimo = new Emprestimo(id, usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, 0, null);
 
         // Adiciona o empréstimo ao repositório
-        this.emprestimoRepository.addEmprestimo(emprestimo); // Rever codigo no repositorio
+        this.emprestimoRepository.addEmprestimo(emprestimo);
         // Atualiza a quantidade emprestada no estoque
         this.estoqueRepository.atualizarQuantidadeEmprestada(estoque.livroId, 1);
 
@@ -138,4 +138,8 @@ export class EmprestimoService {
         return empAbertos;
 
     }
+
+
+
+    
 }

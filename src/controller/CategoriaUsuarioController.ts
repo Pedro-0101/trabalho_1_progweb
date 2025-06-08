@@ -6,23 +6,6 @@ const categoriaUsuarioService = new CategoriaUsuarioService();
 
 export class CategoriaUsuarioController {
 
-    public async criarCategoriaUsuario(req: Request, res: Response): Promise<CategoriaUsuario | void> {
-        try {
-            const { nome } = req.body; // Obtém o nome da categoria do corpo da requisição
-
-            // Cria a categoria
-            const categoriaUsuario: CategoriaUsuario = await categoriaUsuarioService.criarCategoriaUsuario(nome);
-
-            // Retorna a categoria criada com status 201 (Created)
-            res.status(201).json(categoriaUsuario);
-
-        } catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : "Erro ao criar a categoria."
-            });
-        }
-    }
-
     public async listarCategoriasUsuarios(req: Request, res: Response): Promise<CategoriaUsuario[] | void> {
         try {
             // Lista todas as categorias
