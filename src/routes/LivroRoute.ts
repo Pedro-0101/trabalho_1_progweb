@@ -26,6 +26,21 @@ router.post('/', async (req: Request, res: Response) => {
 // Rota para retornar lista de livros, com filtro
 router.get('/', async (req: Request, res: Response) => {
 
+});
+
+// Rota para retornar detalhes de um livro
+router.get('/:isbn', async (req: Request, res: Response) => {
+
+});
+
+// Rota para atualizar informacoes de um livro
+router.put('/:isbn', async (req: Request, res: Response) => {
+
+});
+
+// Rota para excluir um livro se nao estiver emprestado
+router.delete('/:isbn', async (req: Request, res: Response) => {
+    
 })
 
 
