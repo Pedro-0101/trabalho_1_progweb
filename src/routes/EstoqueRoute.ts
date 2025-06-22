@@ -16,7 +16,7 @@ let router = express.Router();
 router.post('/', async (req: Request, res: Response) => {
     const estoqueController = new EstoqueController();
     try {
-        const novoExemplar = await estoqueController.registrarEstoque(req, res);
+        const novoExemplar = estoqueController.registrarEstoque(req, res);
         res.status(201).json(novoExemplar);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao cadastrar exemplar', error });
@@ -27,7 +27,7 @@ router.post('/', async (req: Request, res: Response) => {
 router.get('/', async (req: Request, res: Response) => {
     const estoqueController = new EstoqueController();
     try {
-        const estoques = await estoqueController.listarEstoque(req, res);
+        const estoques = estoqueController.listarEstoque(req, res);
         res.status(200).json(estoques);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao buscar exemplares', error });
@@ -40,7 +40,7 @@ router.get('/:codigo', async (req: Request, res: Response) => {
     const codigo = Number(req.params.codigo);
 
     try {
-        const estoque = await estoqueController.getByCodigo(codigo);
+        const estoque = estoqueController.getByCodigo(codigo);
         if (estoque) {
             res.status(200).json(estoque);
         } else {
@@ -56,7 +56,7 @@ router.put('/:codigo', async (req: Request, res: Response) => {
     const estoqueController = new EstoqueController();
     const codigo = Number(req.params.codigo);
     try {
-        const estoqueAtualizado = await estoqueController.atualizaDisponibilidade(codigo);
+        const estoqueAtualizado = estoqueController.atualizaDisponibilidade(codigo);
         res.status(200).json(estoqueAtualizado);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao atualizar exemplar', error });
@@ -68,7 +68,7 @@ router.delete('/:codigo', async (req: Request, res: Response) => {
     const estoqueController = new EstoqueController();
     const codigo = Number(req.params.codigo);
     try {
-        await estoqueController.deletarEstoque(codigo, res);
+        estoqueController.deletarEstoque(codigo, res);
         // Se a remoção for bem-sucedida returna 204 No Content
         res.status(204).send();
     } catch (error) {

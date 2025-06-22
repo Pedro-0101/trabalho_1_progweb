@@ -2,7 +2,6 @@ import { Emprestimo } from "../model/Emprestimo";
 import { EmprestimoRepository } from "../repository/EmprestimoRepository";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
-import { LivroRepository } from "../repository/LivroRepository";
 import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
 import { UsuarioService } from "./UsuarioService";
 import { DateUtils } from "../utils/dateUtils";
@@ -11,14 +10,12 @@ export class EmprestimoService {
     private emprestimoRepository: EmprestimoRepository;
     private estoqueRepository: EstoqueRepository;
     private usuarioRepository: UsuarioRepository;
-    private livroRepository: LivroRepository;
     private CategoriaLivroRepository: CategoriaLivroRepository;
 
     constructor() {
         this.emprestimoRepository = EmprestimoRepository.getInstance();
         this.estoqueRepository = EstoqueRepository.getInstance();
         this.usuarioRepository = UsuarioRepository.getInstance();
-        this.livroRepository = LivroRepository.getInstance();
         this.CategoriaLivroRepository = CategoriaLivroRepository.getInstance();
     }
 
@@ -148,7 +145,7 @@ export class EmprestimoService {
 
     }
 
-    public async verificarEmprestimos(): Promise<void>{
+    public verificarEmprestimos(): void{
 
         const emprestimosEmAberto = this.listarEmprestimos();
         emprestimosEmAberto.filter( e => !e.dataEntrega);

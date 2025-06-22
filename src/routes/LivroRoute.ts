@@ -1,6 +1,5 @@
 import { LivroController } from "../controller/LivroController";
 import express, { Request, Response } from 'express';
-import { Livro } from "../model/Livro";
 let router = express.Router();
 
 /**
@@ -16,7 +15,7 @@ let router = express.Router();
 router.post('/', async (req: Request, res: Response) => {
     const livroController = new LivroController();
     try {
-        const novoLivro = await livroController.adicionarLivro(req);
+        const novoLivro = livroController.adicionarLivro(req);
         res.status(201).json(novoLivro);
     } catch (error) {
         console.error('Erro ao adicionar livro:', error);
@@ -29,7 +28,7 @@ router.get('/', async (req: Request, res: Response) => {
     try{
         const livroController = new LivroController();
         const filtros = req.query;
-        const livros = await livroController.listarLivrosFiltro(req);
+        const livros = livroController.listarLivrosFiltro(req);
         res.status(200).json(livros);
     }catch(error){
         throw new Error("Erro ao listar livros com filtro")
@@ -41,7 +40,7 @@ router.get('/:isbn', async (req: Request, res: Response) => {
     try{
         const livroController = new LivroController();
         const isbn = req.body.isbn;
-        const livro = await livroController.detalhesLivro(isbn);
+        const livro = livroController.detalhesLivro(isbn);
         res.status(200).json(livro);
     }catch(error){
         throw new Error("Erro ao requisitar detalhes do livro")
@@ -54,7 +53,7 @@ router.put('/:isbn', async (req: Request, res: Response) => {
     try{
 
         const livroController = new LivroController();
-        const livroAtualizado = await livroController.atualizarLivro(req);
+        const livroAtualizado = livroController.atualizarLivro(req);
         res.status(200).json(livroAtualizado);
 
     }catch(error){
@@ -69,7 +68,7 @@ router.delete('/:isbn', async (req: Request, res: Response) => {
     try{
 
         const livroController = new LivroController();
-        await livroController.deletarLivro(req.body.isbn);
+        livroController.deletarLivro(req.body.isbn);
         res.status(200);
 
     }catch(error){

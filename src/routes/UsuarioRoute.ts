@@ -17,7 +17,7 @@ router.post('/', async (req: Request, res: Response) => {
     try{
 
         const usuarioController = new UsuarioController();
-        const novoUsuario = await usuarioController.cadastrarUsuario(req);
+        const novoUsuario = usuarioController.cadastrarUsuario(req);
         res.status(200).json(novoUsuario);
 
     }catch(error){
@@ -31,7 +31,7 @@ router.get('/', async (req: Request, res: Response) => {
     try{
 
         const usuarioController = new UsuarioController();
-        const listaUsuarios = await usuarioController.listaUsuariosFiltro(req);
+        const listaUsuarios = usuarioController.listaUsuariosFiltro(req);
         res.status(200).json(listaUsuarios);
 
     }catch(error){
@@ -45,7 +45,7 @@ router.get('/:cpf', async (req: Request, res: Response) => {
     try{
 
         const usuarioController = new UsuarioController();
-        const usuario = await usuarioController.getUsuario(req.body.cpf);
+        const usuario = usuarioController.getUsuario(req.body.cpf);
         res.status(200).json(usuario);
 
     }catch(error){
@@ -60,7 +60,7 @@ router.put('/:cpf', async (req: Request, res: Response) => {
     try{
 
         const usuarioController = new UsuarioController();
-        const usuarioAtualizado = await usuarioController.atualizaUsuario(req);
+        const usuarioAtualizado = usuarioController.atualizaUsuario(req);
         res.status(200).json(usuarioAtualizado);
 
     }catch(error){
@@ -75,7 +75,7 @@ router.delete('/:cpf', async (req: Request, res: Response) => {
     try{
 
         const usuarioController = new UsuarioController();
-        await usuarioController.removeFuncionario(req.body.cpf);
+        usuarioController.removeFuncionario(req.body.cpf);
         res.status(200)
 
     }catch(error){
