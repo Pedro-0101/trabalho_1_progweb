@@ -59,43 +59,7 @@ export class UsuarioService {
 
     public criarUsuario(nome: string, cpf: string, categoriaId: number, cursoId: number): Usuario {
 
-        nome = textUtils.capitalizarTexto(nome);
-
-        // Valida o nome do usuário
-        if (!nome || nome.trim() === "" || nome.length < 3) {
-            throw new Error("O nome do usuário deve ter mais de 3 caracteres válidos.");
-        }
-
-        // Remove espaços em branco extras e capitaliza a primeira letra
-        nome = nome.trim();
-        nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-
-        cpf = cpf.trim();
-        cpf = cpf.replace(/[^0-9]/g, ""); // Remove caracteres não numéricos
-
-        // valida o CPF
-        if(!this.validarCpf(cpf)) {
-            throw new Error("CPF inválido.");
-        }
-
-        // Verifica se cpf já existe
-        if (this.usuarioRepository.getListaUsuarios().some(usuario => usuario.cpf === cpf)) {
-            throw new Error("CPF já cadastrado.");
-        }
-
-        // Verifica se a categoria existe
-        if (!this.categoriaUsuario.getListaCategoriasUsuarios().some(categoria => categoria.id === categoriaId)) {
-            throw new Error("Categoria inválida.");
-        }
-
-        // Verifica se o curso existe
-        if (!this.cursoRepository.getListaCursos().some(curso => curso.id === cursoId)) {
-            throw new Error("Curso inválido.");
-        }
-
-        // Cria um novo usuário com um ID único
-        let id = this.usuarioRepository.getListaUsuarios().length + 1;
-        let usuario = new Usuario(id, nome, cpf, categoriaId, cursoId);
+        let usuario = new Usuario(nome, cpf, categoriaId, cursoId);
 
         // Verifica se o usuário foi criado corretamente
         if (!usuario) {
