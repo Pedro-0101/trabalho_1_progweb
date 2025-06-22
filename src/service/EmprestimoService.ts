@@ -43,11 +43,6 @@ export class EmprestimoService {
             throw new Error("Estoque indisponível.");
         }
         
-        // Valida a data de empréstimo
-        if (!(dataEmprestimo instanceof Date)) {
-            throw new Error("Data de empréstimo inválida.");
-        }
-        
         
         // Define variáveis para data de devolução, curso do usuário, categoria do usuário e categoria do livro
         let dataDevolucao = new Date(dataEmprestimo);
@@ -83,8 +78,7 @@ export class EmprestimoService {
         /*      Passou em todas validacoes      */
 
         // Cria o empréstimo
-        let id = this.emprestimoRepository.getListaEmprestimos().length + 1;
-        let emprestimo = new Emprestimo(id, usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, 0, null);
+        let emprestimo = new Emprestimo(usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, 0, null);
 
         // Adiciona o empréstimo ao repositório
         this.emprestimoRepository.addEmprestimo(emprestimo);
