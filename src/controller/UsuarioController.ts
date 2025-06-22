@@ -9,7 +9,7 @@ export class UsuarioController{
         this.UsuarioController = new UsuarioController();
     }
 
-    public async cadastrarUsuario(req: Request): Promise<Usuario | null>{
+    public cadastrarUsuario(req: Request): Usuario | null{
 
         try{
             
@@ -32,7 +32,7 @@ export class UsuarioController{
 
     }
 
-    public async listaUsuariosFiltro(req: Request): Promise<Usuario[] | null>{
+    public listaUsuariosFiltro(req: Request): Usuario[] | null{
 
         try{
             
@@ -53,7 +53,7 @@ export class UsuarioController{
 
     }
 
-    public async getUsuario(cpf: string): Promise<Usuario | null>{
+    public getUsuario(cpf: string): Usuario | null{
         
         try{
             
@@ -70,7 +70,7 @@ export class UsuarioController{
         
     }
 
-    public async atualizaUsuario(req: Request): Promise<Usuario | null>{
+    public atualizaUsuario(req: Request): Usuario | null{
         try{
             
             const usuarioService = new UsuarioService();
@@ -88,7 +88,7 @@ export class UsuarioController{
     }
     
     
-    public async removeFuncionario(cpf: string): Promise<void>{
+    public removeFuncionario(cpf: string): void{
         try{
             
             const usuarioService = new UsuarioService();

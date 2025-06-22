@@ -6,10 +6,10 @@ const categoriaUsuarioService = new CategoriaUsuarioService();
 
 export class CategoriaUsuarioController {
 
-    public async listarCategoriasUsuarios(req: Request, res: Response): Promise<CategoriaUsuario[] | void> {
+    public listarCategoriasUsuarios(req: Request, res: Response): CategoriaUsuario[] | void{
         try {
             // Lista todas as categorias
-            const categorias: CategoriaUsuario[] = await categoriaUsuarioService.listarCategoriasUsuarios();
+            const categorias: CategoriaUsuario[] = categoriaUsuarioService.listarCategoriasUsuarios();
             res.status(200).json(categorias);
         } catch (error) {
             res.status(400).json({

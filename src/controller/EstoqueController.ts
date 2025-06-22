@@ -9,16 +9,16 @@ export class EstoqueController {
     this.estoqueService = new EstoqueService();
   }
 
-  public async registrarEstoque(req: Request, res: Response): Promise<void> {
+  public registrarEstoque(req: Request, res: Response): void {
     try {
-      const novoExemplar = await this.estoqueService.registrarEstoque(req.body.isbn, 1);
+      const novoExemplar = this.estoqueService.registrarEstoque(req.body.isbn, 1);
       res.status(201).json(novoExemplar);
     } catch (error) {
       res.status(500).json({ message: 'Erro ao cadastrar exemplar', error });
     }
   }
 
-  public async listarEstoque(req: Request, res: Response): Promise<void> {
+  public listarEstoque(req: Request, res: Response): void {
     try {
       const estoques = this.estoqueService.getListaEstoques();
       res.status(200).json(estoques);
@@ -27,16 +27,21 @@ export class EstoqueController {
     }
   }
 
-  public async getByCodigo(codigo: number): Promise<any> {
+  public getByCodigo(codigo: number): Estoque | null {
     try {
       const estoque = this.estoqueService.getByCodigo(codigo);
-      return estoque;
+      if (estoque) {
+        return estoque;
+      } else {
+        throw new Error('Erro ao buscar exemplar');
+      }
+
     } catch (error) {
       throw new Error('Erro ao buscar exemplar');
     }
   }
 
-  public async atualizaDisponibilidade(codigo: number): Promise<Estoque | null> {
+  public atualizaDisponibilidade(codigo: number): Estoque | null {
     try {
       const estoqueAtualizado = this.estoqueService.atualizaDisponibilidade(codigo);
       return estoqueAtualizado;
@@ -46,7 +51,7 @@ export class EstoqueController {
     }
   }
 
-  public async deletarEstoque(codigo: number, res: Response): Promise<void> {
+  public deletarEstoque(codigo: number, res: Response): void {
     try {
       const estoque = this.estoqueService.getByCodigo(codigo);
       if (!estoque) {

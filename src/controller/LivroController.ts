@@ -9,7 +9,7 @@ export class LivroController{
         this.LivroService = new LivroService();
     }
 
-    public async adicionarLivro(req: Request): Promise<Livro | null> {
+    public adicionarLivro(req: Request): Livro | null {
 
         try{
 
@@ -27,7 +27,7 @@ export class LivroController{
         }
     }
 
-public async listarLivrosFiltro(req: Request): Promise<Livro[] | null> {
+public listarLivrosFiltro(req: Request): Livro[] | null {
 
         try{
 
@@ -43,7 +43,7 @@ public async listarLivrosFiltro(req: Request): Promise<Livro[] | null> {
 
     }
 
-    public async detalhesLivro(isbn: string): Promise<Livro | null>{
+    public detalhesLivro(isbn: string): Livro | null{
         
         try{
 
@@ -56,7 +56,7 @@ public async listarLivrosFiltro(req: Request): Promise<Livro[] | null> {
 
     }
 
-    public async atualizarLivro(req: Request): Promise<Livro | null>{
+    public atualizarLivro(req: Request): Livro | null{
 
         try{
 
@@ -76,7 +76,7 @@ public async listarLivrosFiltro(req: Request): Promise<Livro[] | null> {
         }
     }
 
-    public async deletarLivro(isbn: string): Promise<void>{
+    public deletarLivro(isbn: string): void{
 
         try{
 
