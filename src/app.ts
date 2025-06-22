@@ -32,9 +32,9 @@ cus.criarCategoriaUsuario("Bibliotecario");
 
 // Cursos
 const cs = new CursoService();
-cs.criarCurso("ADS", "Analise e desenvolvimento de sistemas");
-cs.criarCurso("Pedag", "Pedagogia");
-cs.criarCurso("ADM", "Administracao");
+cs.criarCurso("ADS");
+cs.criarCurso("ENG");
+cs.criarCurso("ADM");
 
 /* Rotas */ 
 

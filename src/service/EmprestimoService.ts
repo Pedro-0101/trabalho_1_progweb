@@ -95,6 +95,7 @@ export class EmprestimoService {
     public registrarDevolucao(id: number): Emprestimo {
         // Busca o empréstimo pelo ID
         const emprestimo = this.emprestimoRepository.getEmprestimoById(id);
+
         if (!emprestimo) {
             throw new Error("Empréstimo não encontrado.");
         }
@@ -141,9 +142,10 @@ export class EmprestimoService {
 
     public verificarEmprestimos(): void{
 
+        // Listar emprestimos em atraso
         const emprestimosEmAberto = this.listarEmprestimos();
         emprestimosEmAberto.filter( e => !e.dataEntrega);
-        emprestimosEmAberto.filter( e => e.dataDevolucao > new Date());
+        emprestimosEmAberto.filter( e => e.dataDevolucao < new Date());
 
         emprestimosEmAberto.forEach( e => {
             console.log(`Emprestimo em atraso ${e.id}, usuario ${e.usuarioId}`);
@@ -151,7 +153,17 @@ export class EmprestimoService {
             us.alteraStatusUsuario(e.usuarioId, false);
         })
 
+        // Verificar se usuarios que ja devolveram nao estao mais suspensos
+        const emprestimosFechados = this.listarEmprestimos();
+        emprestimosFechados.filter(e => e.dataEntrega !== null && e.dataEntrega > e.dataDevolucao);
+
+        emprestimosFechados.forEach(e => {
+            if(e.suspensaoAte !== null && e.suspensaoAte > new Date()){
+                
+                let us = new UsuarioService()
+                us.alteraStatusUsuario(e.usuarioId, true)
+                
+            }
+        })
     }
-
-
 }
