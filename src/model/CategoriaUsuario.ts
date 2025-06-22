@@ -11,7 +11,7 @@ export class CategoriaUsuario {
         this.categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
 
         // Valida o nome da categoria
-        if (!nome || nome.trim() === "" || nome.length <= 3) {
+        if (!nome || nome.trim() === "" || nome.length < 3) {
             throw new Error("O nome da categoria deve ter mais de 3 caracteres válidos.");
         }
 
