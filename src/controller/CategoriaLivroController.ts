@@ -6,10 +6,10 @@ const categoriaLivroService = new CategoriaLivroService();
 
 export class CategoriaLivroController {
 
-    public async listarCategorias(req: Request, res: Response): Promise<CategoriaLivro[] | void> {
+    public listarCategorias(req: Request, res: Response): CategoriaLivro | void {
         try {
             // Lista todas as categorias
-            const categorias: CategoriaLivro[] = await categoriaLivroService.listarCategorias();
+            const categorias: CategoriaLivro[] = categoriaLivroService.listarCategorias();
             res.status(200).json(categorias);
         } catch (error) {
             res.status(400).json({
