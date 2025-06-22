@@ -13,27 +13,7 @@ export class EstoqueService {
 
     public registrarEstoque(isbn: string, quantidade: number): Estoque {
         
-        // Verifica se o livro existe
-        const livro = this.livroRepository.getLivroByIsbn(isbn);
-        const livroId = livro.id;
-        if (!livro) {
-            throw new Error("Livro não existe.");
-        }
-
-        // Verifica se a quantidade é válida
-        if (quantidade < 0) {
-            throw new Error("Quantidade inválida. Deve ser maior ou igual a 0.");
-        }
-
-        // Verifica se já existe um estoque para o livro
-        const estoqueExistente = this.estoqueRepository.getEstoqueByLivroId(livroId);
-        if (estoqueExistente) {
-            this.estoqueRepository.addEstoqueExistente(estoqueExistente.id, quantidade);
-        }
-
-        // Cria um novo estoque
-        let id = this.estoqueRepository.getListaEstoques().length + 1;
-        let estoque = new Estoque(id, livroId, quantidade, 0, true);
+        let estoque = new Estoque(isbn, 1, true);
 
         // Verifica se o estoque foi criado corretamente
         if (!estoque) {
@@ -42,9 +22,6 @@ export class EstoqueService {
 
         // Adiciona o estoque ao repositório
         this.estoqueRepository.addEstoqueNovo(estoque);
-        
-        // Atualiza a disponibilidade do estoque
-        this.estoqueRepository.atualizarDisponibilidade(livroId);
 
         // Retorna o estoque criado
         return estoque;
