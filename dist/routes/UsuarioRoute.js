@@ -27,7 +27,7 @@ let router = express_1.default.Router();
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usuarioController = new UsuarioController_1.UsuarioController();
-        const novoUsuario = yield usuarioController.cadastrarUsuario(req);
+        const novoUsuario = usuarioController.cadastrarUsuario(req);
         res.status(200).json(novoUsuario);
     }
     catch (error) {
@@ -38,7 +38,7 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usuarioController = new UsuarioController_1.UsuarioController();
-        const listaUsuarios = yield usuarioController.listaUsuariosFiltro(req);
+        const listaUsuarios = usuarioController.listaUsuariosFiltro(req);
         res.status(200).json(listaUsuarios);
     }
     catch (error) {
@@ -49,7 +49,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get('/:cpf', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usuarioController = new UsuarioController_1.UsuarioController();
-        const usuario = yield usuarioController.getUsuario(req.body.cpf);
+        const usuario = usuarioController.getUsuario(req.body.cpf);
         res.status(200).json(usuario);
     }
     catch (error) {
@@ -60,7 +60,7 @@ router.get('/:cpf', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 router.put('/:cpf', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usuarioController = new UsuarioController_1.UsuarioController();
-        const usuarioAtualizado = yield usuarioController.atualizaUsuario(req);
+        const usuarioAtualizado = usuarioController.atualizaUsuario(req);
         res.status(200).json(usuarioAtualizado);
     }
     catch (error) {
@@ -71,7 +71,7 @@ router.put('/:cpf', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 router.delete('/:cpf', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usuarioController = new UsuarioController_1.UsuarioController();
-        yield usuarioController.removeFuncionario(req.body.cpf);
+        usuarioController.removeFuncionario(req.body.cpf);
         res.status(200);
     }
     catch (error) {

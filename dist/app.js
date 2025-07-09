@@ -31,9 +31,9 @@ cus.criarCategoriaUsuario("Aluno");
 cus.criarCategoriaUsuario("Bibliotecario");
 // Cursos
 const cs = new CursoService_1.CursoService();
-cs.criarCurso("ADS", "Analise e desenvolvimento de sistemas");
-cs.criarCurso("Pedag", "Pedagogia");
-cs.criarCurso("ADM", "Administracao");
+cs.criarCurso("ADS");
+cs.criarCurso("ENG");
+cs.criarCurso("ADM");
 /* Rotas */
 // Define os gerenciadores de rotas
 var indexRouter = require('./routes/IndexRoute');

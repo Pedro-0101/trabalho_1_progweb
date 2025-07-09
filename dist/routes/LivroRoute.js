@@ -27,7 +27,7 @@ let router = express_1.default.Router();
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const livroController = new LivroController_1.LivroController();
     try {
-        const novoLivro = yield livroController.adicionarLivro(req);
+        const novoLivro = livroController.adicionarLivro(req);
         res.status(201).json(novoLivro);
     }
     catch (error) {
@@ -40,7 +40,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const livroController = new LivroController_1.LivroController();
         const filtros = req.query;
-        const livros = yield livroController.listarLivrosFiltro(req);
+        const livros = livroController.listarLivrosFiltro(req);
         res.status(200).json(livros);
     }
     catch (error) {
@@ -52,7 +52,7 @@ router.get('/:isbn', (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const livroController = new LivroController_1.LivroController();
         const isbn = req.body.isbn;
-        const livro = yield livroController.detalhesLivro(isbn);
+        const livro = livroController.detalhesLivro(isbn);
         res.status(200).json(livro);
     }
     catch (error) {
@@ -63,7 +63,7 @@ router.get('/:isbn', (req, res) => __awaiter(void 0, void 0, void 0, function* (
 router.put('/:isbn', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const livroController = new LivroController_1.LivroController();
-        const livroAtualizado = yield livroController.atualizarLivro(req);
+        const livroAtualizado = livroController.atualizarLivro(req);
         res.status(200).json(livroAtualizado);
     }
     catch (error) {
@@ -74,7 +74,7 @@ router.put('/:isbn', (req, res) => __awaiter(void 0, void 0, void 0, function* (
 router.delete('/:isbn', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const livroController = new LivroController_1.LivroController();
-        yield livroController.deletarLivro(req.body.isbn);
+        livroController.deletarLivro(req.body.isbn);
         res.status(200);
     }
     catch (error) {

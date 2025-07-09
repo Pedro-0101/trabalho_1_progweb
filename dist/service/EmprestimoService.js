@@ -1,20 +1,10 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmprestimoService = void 0;
 const Emprestimo_1 = require("../model/Emprestimo");
 const EmprestimoRepository_1 = require("../repository/EmprestimoRepository");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
-const LivroRepository_1 = require("../repository/LivroRepository");
 const CategoriaLivroRepository_1 = require("../repository/CategoriaLivroRepository");
 const UsuarioService_1 = require("./UsuarioService");
 const dateUtils_1 = require("../utils/dateUtils");
@@ -23,7 +13,6 @@ class EmprestimoService {
         this.emprestimoRepository = EmprestimoRepository_1.EmprestimoRepository.getInstance();
         this.estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
         this.usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
-        this.livroRepository = LivroRepository_1.LivroRepository.getInstance();
         this.CategoriaLivroRepository = CategoriaLivroRepository_1.CategoriaLivroRepository.getInstance();
     }
     registrarEmprestimo(cpf, codigoExemplar, dataEmprestimo) {
@@ -45,10 +34,6 @@ class EmprestimoService {
         // Verifica se o estoque está disponível
         if (!estoque.disponivel) {
             throw new Error("Estoque indisponível.");
-        }
-        // Valida a data de empréstimo
-        if (!(dataEmprestimo instanceof Date)) {
-            throw new Error("Data de empréstimo inválida.");
         }
         // Define variáveis para data de devolução, curso do usuário, categoria do usuário e categoria do livro
         let dataDevolucao = new Date(dataEmprestimo);
@@ -79,8 +64,7 @@ class EmprestimoService {
         }
         /*      Passou em todas validacoes      */
         // Cria o empréstimo
-        let id = this.emprestimoRepository.getListaEmprestimos().length + 1;
-        let emprestimo = new Emprestimo_1.Emprestimo(id, usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, 0, null);
+        let emprestimo = new Emprestimo_1.Emprestimo(usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, 0, null);
         // Adiciona o empréstimo ao repositório
         this.emprestimoRepository.addEmprestimo(emprestimo);
         // Atualiza a quantidade emprestada no estoque
@@ -124,15 +108,23 @@ class EmprestimoService {
         return empAbertos;
     }
     verificarEmprestimos() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const emprestimosEmAberto = this.listarEmprestimos();
-            emprestimosEmAberto.filter(e => !e.dataEntrega);
-            emprestimosEmAberto.filter(e => e.dataDevolucao > new Date());
-            emprestimosEmAberto.forEach(e => {
-                console.log(`Emprestimo em atraso ${e.id}, usuario ${e.usuarioId}`);
+        // Listar emprestimos em atraso
+        const emprestimosEmAberto = this.listarEmprestimos();
+        emprestimosEmAberto.filter(e => !e.dataEntrega);
+        emprestimosEmAberto.filter(e => e.dataDevolucao < new Date());
+        emprestimosEmAberto.forEach(e => {
+            console.log(`Emprestimo em atraso ${e.id}, usuario ${e.usuarioId}`);
+            let us = new UsuarioService_1.UsuarioService();
+            us.alteraStatusUsuario(e.usuarioId, false);
+        });
+        // Verificar se usuarios que ja devolveram nao estao mais suspensos
+        const emprestimosFechados = this.listarEmprestimos();
+        emprestimosFechados.filter(e => e.dataEntrega !== null && e.dataEntrega > e.dataDevolucao);
+        emprestimosFechados.forEach(e => {
+            if (e.suspensaoAte !== null && e.suspensaoAte > new Date()) {
                 let us = new UsuarioService_1.UsuarioService();
-                us.alteraStatusUsuario(e.usuarioId, false);
-            });
+                us.alteraStatusUsuario(e.usuarioId, true);
+            }
         });
     }
 }

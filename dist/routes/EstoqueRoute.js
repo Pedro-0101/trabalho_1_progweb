@@ -27,7 +27,7 @@ let router = express_1.default.Router();
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const estoqueController = new EstoqueController_1.EstoqueController();
     try {
-        const novoExemplar = yield estoqueController.registrarEstoque(req, res);
+        const novoExemplar = estoqueController.registrarEstoque(req, res);
         res.status(201).json(novoExemplar);
     }
     catch (error) {
@@ -38,7 +38,7 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const estoqueController = new EstoqueController_1.EstoqueController();
     try {
-        const estoques = yield estoqueController.listarEstoque(req, res);
+        const estoques = estoqueController.listarEstoque(req, res);
         res.status(200).json(estoques);
     }
     catch (error) {
@@ -50,7 +50,7 @@ router.get('/:codigo', (req, res) => __awaiter(void 0, void 0, void 0, function*
     const estoqueController = new EstoqueController_1.EstoqueController();
     const codigo = Number(req.params.codigo);
     try {
-        const estoque = yield estoqueController.getByCodigo(codigo);
+        const estoque = estoqueController.getByCodigo(codigo);
         if (estoque) {
             res.status(200).json(estoque);
         }
@@ -67,7 +67,7 @@ router.put('/:codigo', (req, res) => __awaiter(void 0, void 0, void 0, function*
     const estoqueController = new EstoqueController_1.EstoqueController();
     const codigo = Number(req.params.codigo);
     try {
-        const estoqueAtualizado = yield estoqueController.atualizaDisponibilidade(codigo);
+        const estoqueAtualizado = estoqueController.atualizaDisponibilidade(codigo);
         res.status(200).json(estoqueAtualizado);
     }
     catch (error) {
@@ -79,7 +79,7 @@ router.delete('/:codigo', (req, res) => __awaiter(void 0, void 0, void 0, functi
     const estoqueController = new EstoqueController_1.EstoqueController();
     const codigo = Number(req.params.codigo);
     try {
-        yield estoqueController.deletarEstoque(codigo, res);
+        estoqueController.deletarEstoque(codigo, res);
         // Se a remoção for bem-sucedida returna 204 No Content
         res.status(204).send();
     }
