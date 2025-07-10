@@ -3,7 +3,6 @@ import { executeQuery } from "../database/mysql";
 
 export class CategoriaLivroRepository {
     private static instance: CategoriaLivroRepository;
-    private listaCategoriasLivros: CategoriaLivro[] = [];
 
     private constructor() {
         this.createTable();
@@ -34,7 +33,7 @@ export class CategoriaLivroRepository {
             'INSERT INTO categoriaLivro(nome) VALUES (?)', 
             [nome]
         );
-        console.log('Produto inserido com sucesso!', resultado);
+        console.log('Categoria de livro inserida com sucesso!', resultado);
         return new CategoriaLivro(resultado.insertId, nome);
     }
 
