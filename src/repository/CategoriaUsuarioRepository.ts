@@ -4,7 +4,6 @@ import { executeQuery } from "../database/mysql";
 export class CategoriaUsuarioRepository {
     private static instance: CategoriaUsuarioRepository;
 
-
     private constructor() {
         this.createTable();
     }
@@ -29,7 +28,7 @@ export class CategoriaUsuarioRepository {
         }
     }
 
-    async insertCategoriaLivro(nome: string): Promise<CategoriaUsuario>{
+    async insertCategoriaUsuario(nome: string): Promise<CategoriaUsuario>{
         const resultado = await executeQuery(
             'INSERT INTO categoriaUsuario(nome) VALUES (?)', 
             [nome]
