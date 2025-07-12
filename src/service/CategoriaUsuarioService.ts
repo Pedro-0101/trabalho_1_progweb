@@ -8,15 +8,15 @@ export class CategoriaUsuarioService {
         this.categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
     }
 
-    async criarCategoriaUsuario(nome: string): Promise<CategoriaUsuario>{
-        
-        // Instancia nova categoria de usuario
-        let categoriaUsuario = new CategoriaUsuario(nome);
+    async criarCategoriaUsuario(nome: string): Promise<CategoriaUsuario> {
+        // Instância temporária só para validar e preparar o nome
+        const categoriaTemp = new CategoriaUsuario(nome);
 
-        // Adiciona a categoria ao repositório e retorna
-        categoriaUsuario = await this.categoriaUsuarioRepository.insertCategoriaUsuario(categoriaUsuario);
-        return categoriaUsuario;
+        // Persiste e obtém o ID gerado
+        const id = await this.categoriaUsuarioRepository.insertCategoriaUsuario(categoriaTemp);
 
+        // Retorna uma nova instância com o ID preenchido
+        return new CategoriaUsuario(nome, id);
     }
 
     /*public listarCategoriasUsuarios(): CategoriaUsuario[] {

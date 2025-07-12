@@ -1,93 +1,89 @@
 import { Emprestimo } from "../model/Emprestimo";
 import { EmprestimoRepository } from "../repository/EmprestimoRepository";
-import { EstoqueRepository } from "../repository/EstoqueRepository";
-import { UsuarioRepository } from "../repository/UsuarioRepository";
-import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
+import { EstoqueService } from "./EstoqueService";
+import { LivroService } from "./LivroService";
 import { UsuarioService } from "./UsuarioService";
-import { DateUtils } from "../utils/dateUtils";
 
 export class EmprestimoService {
     private emprestimoRepository: EmprestimoRepository;
-    private estoqueRepository: EstoqueRepository;
-    private usuarioRepository: UsuarioRepository;
-    private CategoriaLivroRepository: CategoriaLivroRepository;
+    private estoqueService: EstoqueService;
+    private usuarioService: UsuarioService;
+    private livroService: LivroService;
 
     constructor() {
         this.emprestimoRepository = EmprestimoRepository.getInstance();
-        this.estoqueRepository = EstoqueRepository.getInstance();
-        this.usuarioRepository = UsuarioRepository.getInstance();
-        this.CategoriaLivroRepository = CategoriaLivroRepository.getInstance();
+        this.estoqueService = new EstoqueService();
+        this.usuarioService = new UsuarioService();
+        this.livroService = new LivroService();
     }
 
-    public registrarEmprestimo(cpf: string, codigoExemplar: number, dataEmprestimo: Date): Emprestimo {
+    public async registrarEmprestimo(cpf: string, codigoExemplar: number, dataEmprestimo: Date): Promise<Emprestimo> {
+        // Busca usuário e valida
+        const usuario = await this.usuarioService.getUsuarioByCpf(cpf);
+        if (!usuario) throw new Error("Usuário não encontrado.");
+        if (usuario.ativo !== "Ativo") throw new Error("Usuário inativo.");
 
-        // Verifica se o usuário existe
-        const usuario = this.usuarioRepository.getListaUsuarios().find(u => u.cpf === cpf);
-        if (!usuario) {
-            throw new Error("Usuário não encontrado.");
-        }
+        // Busca estoque e valida
+        const estoque = await this.estoqueService.getEstoqueByLivroId(codigoExemplar);
+        if (!estoque) throw new Error("Estoque não encontrado.");
+        if (!estoque.disponivel) throw new Error("Estoque indisponível.");
 
-        // Verifica se o usuário está ativo
-        if (!usuario.ativo) {
-            throw new Error("Usuário inativo.");
-        }
+        // Busca categoria usuário e categoria livro
+        const categoriaUsuario = usuario.categoriaId;
+        const livro = await this.livroService.getLivroById(estoque.livroId);
+        if (!livro) throw new Error("Livro não encontrado para este estoque.");
+        const categoriaLivro = livro.categoriaId;
 
-        // Verifica se o estoque existe
-        const estoque = this.estoqueRepository.getListaEstoques().find(e => e.id === codigoExemplar);
-        if (!estoque) {
-            throw new Error("Estoque não encontrado.");
-        }
-
-        // Verifica se o estoque está disponível
-        if (!estoque.disponivel) {
-            throw new Error("Estoque indisponível.");
-        }
-        
-        
-        // Define variáveis para data de devolução, curso do usuário, categoria do usuário e categoria do livro
+        // Calcula data devolução
         let dataDevolucao = new Date(dataEmprestimo);
-        let cursoUsuario = this.usuarioRepository.getUsuarioById(usuario.id)?.nome;
-        let categoriaUsuario = this.usuarioRepository.getUsuarioById(usuario.id)?.categoriaId;
-        let livroId = this.estoqueRepository.getEstoqueByLivroId(usuario.id)?.livroId;
-        let categoriaLivro: string | undefined = undefined;
-        if (livroId !== undefined) {
-            categoriaLivro = this.CategoriaLivroRepository.getCategoriaLivroById(livroId)?.nome;
-        }
-
-        // Calcula data de devolucao
-        if ( categoriaUsuario === 1) {                                  // Categoria professor, emprestimo de 40 dias
+        if (categoriaUsuario === 1) { // professor
             dataDevolucao.setDate(dataEmprestimo.getDate() + 40);
-        }
-        if ( cursoUsuario === categoriaLivro ){
-            dataDevolucao.setDate(dataEmprestimo.getDate() + 30);       // Se o curso do usuário for o mesmo do livro, emprestimo de 30 dias
-        }
-        else{                                                           
-            dataDevolucao.setDate(dataEmprestimo.getDate() + 15);       // Categoria aluno, livro de outro curso, emprestimo de 15 dias
+        } else if (usuario.cursoId === categoriaLivro) {
+            dataDevolucao.setDate(dataEmprestimo.getDate() + 30);
+        } else {
+            dataDevolucao.setDate(dataEmprestimo.getDate() + 15);
         }
 
-        // Verfica numero de empréstimos do usuário em andamento
-        let emprestimosEmAberto = this.emprestimoRepository.emprestimosEmAberto(usuario.id);
-        if ( categoriaUsuario === 1 && emprestimosEmAberto >= 5) { // Categoria professor, máximo de 5 empréstimos em aberto
-            throw new Error("Limite de empréstimos em aberto atingido para usuários da categoria professor.");
+        // Verifica limite de empréstimos abertos
+        const emprestimosEmAberto = await this.emprestimoRepository.emprestimosEmAberto(usuario.id);
+        if (categoriaUsuario === 1 && emprestimosEmAberto >= 5) {
+            throw new Error("Limite de empréstimos em aberto atingido para professores.");
+        }
+        if (categoriaUsuario === 2 && emprestimosEmAberto >= 3) {
+            throw new Error("Limite de empréstimos em aberto atingido para alunos.");
         }
 
-        if ( categoriaUsuario === 2 && emprestimosEmAberto >= 3) { // Categoria aluno, máximo de 3 empréstimos em aberto
-            throw new Error("Limite de empréstimos em aberto atingido para usuários da categoria aluno.");
-        }
-        
-        /*      Passou em todas validacoes      */
+        // Cria empréstimo (id fica 0 antes de inserir)
+        const emprestimoTemp = new Emprestimo(
+            usuario.id,
+            estoque.id,
+            dataEmprestimo,
+            dataDevolucao,
+            null,
+            null,
+            null,
+            0
+        );
 
-        // Cria o empréstimo
-        let emprestimo = new Emprestimo(usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, 0, null);
+        // Persiste empréstimo e pega id gerado
+        const id = await this.emprestimoRepository.insertEmprestimo(emprestimoTemp);
 
-        // Adiciona o empréstimo ao repositório
-        this.emprestimoRepository.addEmprestimo(emprestimo);
-        // Atualiza a quantidade emprestada no estoque
-        this.estoqueRepository.atualizarQuantidadeEmprestada(estoque.livroId, 1);
+        // Atualiza quantidade emprestada no estoque
+        await this.estoqueService.atualizarQuantidadeEmprestada(estoque.livroId, 1);
 
-        return emprestimo;
+        // Retorna instância final com id preenchido
+        return new Emprestimo(
+            usuario.id,
+            estoque.id,
+            dataEmprestimo,
+            dataDevolucao,
+            null,
+            null,
+            null,
+            id
+        );
     }
-
+/*
     public listarEmprestimos(): Emprestimo[] {
         return this.emprestimoRepository.getListaEmprestimos();
     }
@@ -165,5 +161,5 @@ export class EmprestimoService {
                 
             }
         })
-    }
+    }*/
 }

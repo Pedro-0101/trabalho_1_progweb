@@ -9,14 +9,15 @@ export class CategoriaLivroService {
     }
 
     async criarCategoriaLivro(nome: string): Promise<CategoriaLivro> {
-        
-        // Instancia nova categoria de livro
-        let categoriaLivro = new CategoriaLivro(nome);
+    // Cria instância inicial para validação e consistência
+    const categoriaTemp = new CategoriaLivro(nome);
 
-        // Adiciona a categoria ao repositório e retorna
-        categoriaLivro = await this.CategoriaLivroRepository.insertCategoriaLivro(categoriaLivro);
-        return categoriaLivro;
-    }
+    // Persiste no banco e recebe o ID gerado
+    const id = await this.CategoriaLivroRepository.insertCategoriaLivro(categoriaTemp);
+
+    // Retorna categoria de livro
+    return new CategoriaLivro(nome, id);
+  }
 
    /* public listarCategorias(): CategoriaLivro[] {
         // Retorna todas as categorias

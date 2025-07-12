@@ -15,29 +15,30 @@ export class CursoRepository {
         return this.instance;
     }
 
-    private async createTable(){
+    private async createTable() {
         const query = `CREATE TABLE IF NOT EXISTS cursos (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL
         )`;
-        try{
+        try {
             const resultado = await executeQuery(query, []);
-            console.log('Tabela cursos criada com sucesso: ', resultado);
-        }catch(err){
+            console.log('Tabela cursos criada com sucesso:', resultado);
+        } catch (err) {
             console.error('Erro ao criar tabela cursos', err);
         }
     }
 
-    async insertCurso(curso: Curso): Promise<Curso>{
+    async insertCurso(curso: Curso): Promise<number> {
         const resultado = await executeQuery(
-            'INSERT INTO cursos(nome) VALUES (?)', 
+            'INSERT INTO cursos(nome) VALUES (?)',
             [curso.nome]
         );
-        
+
         console.log('Curso inserido com sucesso!', resultado);
-        curso.id = resultado.insertId;
-        return curso;
+        return resultado.insertId;
     }
+}
+
     /*
     public getListaCursos(): Curso[] {
         return this.listaCursos;
@@ -49,5 +50,4 @@ export class CursoRepository {
 
     public getCursoById(id: number): Curso | undefined {
         return this.listaCursos.find(curso => curso.id === id);
-    }*/
-}
+}*/

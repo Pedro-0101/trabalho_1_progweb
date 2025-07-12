@@ -15,7 +15,7 @@ export class UsuarioRepository {
         return this.instance;
     }
 
-    private async createTable(){
+    private async createTable() {
         const query = `CREATE TABLE IF NOT EXISTS usuarios (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL,
@@ -26,28 +26,46 @@ export class UsuarioRepository {
             FOREIGN KEY (categoria_id) REFERENCES categoriasUsuario(id),
             FOREIGN KEY (curso_id) REFERENCES cursos(id)
         )`;
-        try{
+        try {
             const resultado = await executeQuery(query, []);
-            console.log('Tabela usuarios criada com sucesso: ', resultado);
-        }catch(err){
-            console.error('Erro ao criar tabela usuario', err);
+            console.log('Tabela usuarios criada com sucesso:', resultado);
+        } catch (err) {
+            console.error('Erro ao criar tabela usuarios', err);
         }
     }
 
-    async insertUsuario(usuario: Usuario): Promise<Usuario> {
-
+    async insertUsuario(usuario: Usuario): Promise<number> {
         const resultado = await executeQuery(
-            'INSERT INTO categoriasUsuario(nome, cpf, ativo, categoria_id, curso_id) VALUES (?, ?, ?, ?, ?)', 
+            'INSERT INTO usuarios(nome, cpf, ativo, categoria_id, curso_id) VALUES (?, ?, ?, ?, ?)',
             [usuario.nome, usuario.cpf, usuario.ativo, usuario.categoriaId, usuario.cursoId]
         );
-        console.log('Usuario inserido com sucesso!', resultado);
-        usuario.id = resultado.insertId;
-        return usuario;
-        
+
+        console.log('Usuário inserido com sucesso!', resultado);
+        return resultado.insertId;
     }
 
-
-
+    async getUsuarioByCpf(cpf: string): Promise<Usuario | null> {
+            const rows = await executeQuery(
+                'SELECT * FROM usuarios WHERE cpf = ?',
+                [cpf]
+            );
+    
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+    
+            const row = rows[0];
+    
+            return new Usuario(
+                row.id,
+                row.nome,
+                row.cpf,
+                row.ativo,
+                row.categoria_id,
+                row.curso_id
+            );
+    }
+}
     /*
     public getListaUsuarios(): Usuario[] {
         return this.listaUsuarios;
@@ -104,5 +122,5 @@ export class UsuarioRepository {
         const index = this.listaUsuarios.findIndex( u => u.cpf === cpf);
         this.listaUsuarios.splice(index, 1);
 
-    }*/
-}
+    }
+}*/

@@ -15,29 +15,29 @@ export class CategoriaUsuarioRepository {
         return this.instance;
     }
 
-    private async createTable(){
+    private async createTable() {
         const query = `CREATE TABLE IF NOT EXISTS categoriasUsuario (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL
         )`;
-        try{
+        try {
             const resultado = await executeQuery(query, []);
             console.log('Tabela categoriasUsuario criada com sucesso: ', resultado);
-        }catch(err){
+        } catch (err) {
             console.error('Erro ao criar tabela categoriasUsuario', err);
         }
     }
 
-    async insertCategoriaUsuario(categoriaUsuario: CategoriaUsuario): Promise<CategoriaUsuario>{
+    async insertCategoriaUsuario(categoriaUsuario: CategoriaUsuario): Promise<number> {
         const resultado = await executeQuery(
-            'INSERT INTO categoriasUsuario(nome) VALUES (?)', 
+            'INSERT INTO categoriasUsuario(nome) VALUES (?)',
             [categoriaUsuario.nome]
         );
-        console.log('Categoria de usuario inserida com sucesso!', resultado);
-        categoriaUsuario.id = resultado.insertId;
-        return categoriaUsuario;
+        console.log('Categoria de usuário inserida com sucesso!', resultado);
+        return resultado.insertId;
     }
-    
+}
+ 
 
     /*
     public getListaCategoriasUsuarios(): CategoriaUsuario[] {
@@ -52,4 +52,3 @@ export class CategoriaUsuarioRepository {
         return this.listaCategoriasUsuarios.find(categoria => categoria.id === id);
     }
     */
-}

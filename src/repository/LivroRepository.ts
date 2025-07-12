@@ -1,5 +1,5 @@
 import { Livro } from '../model/Livro';
-import { executeQuery } from '../database/mysql'
+import { executeQuery } from '../database/mysql';
 
 export class LivroRepository {
     private static instance: LivroRepository;
@@ -15,7 +15,7 @@ export class LivroRepository {
         return this.instance;
     }
 
-    private async createTable(){
+    private async createTable() {
         const query = `CREATE TABLE IF NOT EXISTS livros (
             id INT AUTO_INCREMENT PRIMARY KEY,
             titulo VARCHAR(255) NOT NULL,
@@ -26,25 +26,71 @@ export class LivroRepository {
             categoria_id INT NOT NULL,
             FOREIGN KEY (categoria_id) REFERENCES categoriasLivro(id)
         )`;
-        try{
+        try {
             const resultado = await executeQuery(query, []);
-            console.log('Tabela usuarios criada com sucesso: ', resultado);
-        }catch(err){
-            console.error('Erro ao criar tabela usuario', err);
+            console.log('Tabela livros criada com sucesso:', resultado);
+        } catch (err) {
+            console.error('Erro ao criar tabela livros', err);
         }
     }
 
-    async insertLivro(livro: Livro): Promise<Livro> {
-
+    async insertLivro(livro: Livro): Promise<number> {
         const resultado = await executeQuery(
-            'INSERT INTO livros(titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)', 
-            []
+            'INSERT INTO livros(titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)',
+            [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId]
         );
-        console.log('Usuario inserido com sucesso!', resultado);
-        livro.id = resultado.insertId;
-        return livro;
-        
+
+        console.log('Livro inserido com sucesso!', resultado);
+        return resultado.insertId;
     }
+
+    async getLivroByIsbn(isbn: string): Promise<Livro | null> {
+        const rows = await executeQuery(
+            'SELECT * FROM livros WHERE isbn = ?',
+            [isbn.trim()]
+        );
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        const row = rows[0];
+
+        return new Livro(
+            row.titulo,
+            row.autor,
+            row.editora,
+            row.edicao,
+            row.isbn,
+            row.categoria_id,
+            row.id
+        );
+    }
+
+    async getLivroById(livroId: number): Promise<Livro | null> {
+        const rows = await executeQuery(
+            'SELECT * FROM livros WHERE id = ?',
+            [livroId]
+        );
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        const row = rows[0];
+
+        return new Livro(
+            row.titulo,
+            row.autor,
+            row.editora,
+            row.edicao,
+            row.isbn,
+            row.categoria_id,
+            row.id
+        );
+    }
+}
+
 /*
     public getListaLivros(): Livro[] {
         return this.listaLivros;
@@ -68,15 +114,6 @@ export class LivroRepository {
         return livro;
         
     }
-
-    public getLivroByIsbn(isbn: string): Livro {
-        const livro = this.listaLivros.find(l => l.isbn === isbn);
-        if (!livro) {
-            throw new Error(`Livro com ISBN ${isbn} não encontrado`);
-        }
-        return livro;
-    }
-
     public atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Livro {
         const livro = this.getLivroByIsbn(isbn);
         if (!livro) {
@@ -100,5 +137,5 @@ export class LivroRepository {
         this.listaLivros.splice(index, 1);
         return true;
     }
-*/
-}
+
+}*/

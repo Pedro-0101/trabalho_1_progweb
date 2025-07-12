@@ -10,14 +10,41 @@ export class LivroService {
         this.livroRepository = LivroRepository.getInstance();
     }
 
-    async criarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro> {
+    async criarLivro(
+        titulo: string,
+        autor: string,
+        editora: string,
+        edicao: string,
+        isbn: string,
+        categoriaId: number
+    ): Promise<Livro> {
+        // Instância temporária só para validação e formatação
+        const livroTemp = new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
 
-        // Instancia o novo livro
-        let livro = new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
+        // Persiste e obtém o ID gerado
+        const id = await this.livroRepository.insertLivro(livroTemp);
 
-        // Adiciona o livro ao repositório e retorna
-        livro = await this.livroRepository.insertLivro(livro);
+        // Retorna nova instância com ID preenchido
+        return new Livro(titulo, autor, editora, edicao, isbn, categoriaId, id);
+    }
+
+    async getLivroByIsbn(isbn: string): Promise<Livro> {
+        const livro = await this.livroRepository.getLivroByIsbn(isbn);
+
+        if (!livro) {
+            throw new Error(`Livro com ISBN ${isbn} não encontrado.`);
+        }
+
         return livro;
+    }
+
+    async getLivroById(livroId: number): Promise<Livro | null> {
+
+        if(!livroId){
+            throw new Error('Id do livro invalido!');
+        }
+
+        return this.livroRepository.getLivroById(livroId);
 
     }
 

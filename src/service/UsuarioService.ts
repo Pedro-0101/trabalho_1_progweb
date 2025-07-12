@@ -1,7 +1,5 @@
 import { Usuario } from "../model/Usuario";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
-import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
-import { CursoRepository } from "../repository/CursoRepository";
 
 export class UsuarioService {
     private usuarioRepository: UsuarioRepository;
@@ -10,14 +8,24 @@ export class UsuarioService {
         this.usuarioRepository = UsuarioRepository.getInstance();
     }
 
-    async criarUsuario(nome: string, cpf: string, categoriaId: number, cursoId: number): Promise<Usuario> {
+    async criarUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario> {
+        // Cria instância temporária apenas para validar e padronizar dados
+        const usuarioTemp = new Usuario(nome, cpf, ativo, categoriaId, cursoId);
 
-        // Instancia o novo usuario
-        let usuario = new Usuario(nome, cpf, categoriaId, cursoId);
+        // Persiste e obtém o ID gerado
+        const id = await this.usuarioRepository.insertUsuario(usuarioTemp);
 
-        // Adiciona o usuário ao repositório e retorna
-        usuario = await this.usuarioRepository.insertUsuario(usuario);
-        return usuario;
+        // Retorna nova instância imutável com o ID preenchido
+        return new Usuario(nome, cpf, ativo, categoriaId, cursoId, id);
+    }
+
+    async getUsuarioByCpf(cpf: string): Promise<Usuario | null> {
+
+        if(!cpf){
+            throw new Error('CPF invalido!');
+        }
+
+        return this.usuarioRepository.getUsuarioByCpf(cpf);
     }
 
     /*public listaUsuariosFiltro(categoriaId: number | null, cursoId: number | null): Usuario[]{

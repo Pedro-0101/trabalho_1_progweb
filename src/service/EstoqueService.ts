@@ -1,33 +1,56 @@
 import { Estoque } from "../model/Estoque";
+import { Livro } from "../model/Livro";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { LivroRepository } from "../repository/LivroRepository";
+import { LivroService } from "./LivroService";
 
 export class EstoqueService {
     private estoqueRepository: EstoqueRepository;
-    private livroRepository: LivroRepository;
+    private livroService: LivroService;
 
     constructor() {
         this.estoqueRepository = EstoqueRepository.getInstance();
-        this.livroRepository = LivroRepository.getInstance();
+        this.livroService = new LivroService();
     }
 
-    public registrarEstoque(isbn: string, quantidade: number): Estoque {
-        
-        let estoque = new Estoque(isbn, 1, true);
+    async registrarEstoque(isbn: string, quantidade: number): Promise<Estoque> {
+        // Busca o livro pelo ISBN
+        const livro = await this.livroService.getLivroByIsbn(isbn);
 
-        // Verifica se o estoque foi criado corretamente
-        if (!estoque) {
-            throw new Error("Erro ao criar o estoque.");
+        // Cria instância temporária apenas para validação
+        const estoqueTemp = new Estoque(livro.id, quantidade, true);
+
+        // Persiste e obtém o ID gerado
+        const id = await this.estoqueRepository.insertEstoque(estoqueTemp);
+
+        // Retorna nova instância com ID preenchido
+        return new Estoque(livro.id, quantidade, true, 0, id);
+    }
+
+    async getEstoqueByLivroId(livro_id: number): Promise<Estoque | null> {
+
+        if(!livro_id){
+            throw new Error('Id do livro invalido!');
         }
 
-        // Adiciona o estoque ao repositório
-        this.estoqueRepository.addEstoqueNovo(estoque);
-
-        // Retorna o estoque criado
-        return estoque;
+        return this.estoqueRepository.getEstoqueByLivroId(livro_id);
 
     }
 
+    async atualizarQuantidadeEmprestada(livro_id: number, quantidade: number): Promise<boolean> {
+
+        if(!livro_id){
+            throw new Error('Id do livro invalido!');
+        }
+
+        if(!quantidade){
+            throw new Error('Quantidade invalida!');
+        }
+
+        return await this.estoqueRepository.atualizarQuantidadeEmprestada(livro_id, quantidade);
+
+    }
+/*
     public getListaEstoques(): Estoque[] {
         return this.estoqueRepository.getListaEstoques();
     }
@@ -78,5 +101,5 @@ export class EstoqueService {
         throw new Error("Estoque nao encontrado")
 
     }
-
+*/
 }
