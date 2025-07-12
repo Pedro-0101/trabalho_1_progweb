@@ -10,24 +10,18 @@ export class LivroService {
         this.livroRepository = LivroRepository.getInstance();
     }
 
-    public criarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Livro {
+    async criarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro> {
 
+        // Instancia o novo livro
         let livro = new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
 
-        // Verifica se o livro foi criado corretamente
-        if (!livro) {
-            throw new Error("Erro ao criar o livro.");
-        }
-
-        // Adiciona o livro ao repositório
-        this.livroRepository.addLivro(livro);
-
-        // Retorna o livro criado
+        // Adiciona o livro ao repositório e retorna
+        livro = await this.livroRepository.insertLivro(livro);
         return livro;
 
     }
 
-    public ListarLivrosFiltro(filtroAutor: string, filtroEditora: string, filtroCategoria: number): Livro[] | null{
+    /*public ListarLivrosFiltro(filtroAutor: string, filtroEditora: string, filtroCategoria: number): Livro[] | null{
 
         try{
             
@@ -105,5 +99,5 @@ export class LivroService {
         }
 
     }
-
+*/
 }

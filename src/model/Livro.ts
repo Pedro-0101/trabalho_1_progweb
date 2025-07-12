@@ -1,9 +1,7 @@
-import { LivroRepository } from "../repository/LivroRepository";
-import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
 import { textUtils } from "../utils/textUtil";
 
 export class Livro {
-    id: number;
+    id: number | null;
     titulo: string;
     autor: string;
     editora: string;
@@ -11,11 +9,7 @@ export class Livro {
     isbn: string;
     categoriaId: number;
 
-    private livroRepository: LivroRepository;
-
     constructor(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number) {
-
-        this.livroRepository = LivroRepository.getInstance();
 
         titulo = textUtils.capitalizarTexto(titulo);
         autor = textUtils.capitalizarTexto(autor);
@@ -48,25 +42,7 @@ export class Livro {
             throw new Error("ISBN inválido. Deve ter pelo menos 13 caracteres.");
         }
 
-        // Verifica se a categoria existe
-        let categoriaLivro = CategoriaLivroRepository.getInstance().getListaCategoriasLivros().find(categoria => categoria.id === categoriaId);
-        if (!categoriaLivro) {
-            throw new Error("Categoria não encontrada.");
-        }
-
-        // Verifica se o livro já existe
-        if (this.livroRepository.getListaLivros().some( livro => livro.titulo === titulo 
-                                                        && livro.edicao === edicao 
-                                                        && livro.autor === autor 
-                                                        && livro.editora === editora 
-                                                        && livro.isbn === isbn)) { 
-            throw new Error("Livro já cadastrado.");
-        }
-
-        // Cria um novo livro com um ID único
-        let id = this.livroRepository.getListaLivros().length + 1;
-
-        this.id = id;                  
+        this.id = null;                  
         this.titulo = titulo;          
         this.autor = autor;            
         this.editora = editora;        

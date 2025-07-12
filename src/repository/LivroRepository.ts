@@ -1,24 +1,53 @@
 import { Livro } from '../model/Livro';
+import { executeQuery } from '../database/mysql'
 
 export class LivroRepository {
     private static instance: LivroRepository;
-    private listaLivros: Livro[] = [];
 
-    private constructor() {}
+    private constructor() {
+        this.createTable();
+    }
 
     public static getInstance(): LivroRepository {
-        if (!LivroRepository.instance) {
-            LivroRepository.instance = new LivroRepository();
+        if (!this.instance) {
+            this.instance = new LivroRepository();
         }
-        return LivroRepository.instance;
+        return this.instance;
     }
 
+    private async createTable(){
+        const query = `CREATE TABLE IF NOT EXISTS livros (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            titulo VARCHAR(255) NOT NULL,
+            autor VARCHAR(255) NOT NULL,
+            editora VARCHAR(255) NOT NULL,
+            edicao VARCHAR(255) NOT NULL,
+            isbn VARCHAR(255) NOT NULL,
+            categoria_id INT NOT NULL,
+            FOREIGN KEY (categoria_id) REFERENCES categoriasLivro(id)
+        )`;
+        try{
+            const resultado = await executeQuery(query, []);
+            console.log('Tabela usuarios criada com sucesso: ', resultado);
+        }catch(err){
+            console.error('Erro ao criar tabela usuario', err);
+        }
+    }
+
+    async insertLivro(livro: Livro): Promise<Livro> {
+
+        const resultado = await executeQuery(
+            'INSERT INTO livros(titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)', 
+            []
+        );
+        console.log('Usuario inserido com sucesso!', resultado);
+        livro.id = resultado.insertId;
+        return livro;
+        
+    }
+/*
     public getListaLivros(): Livro[] {
         return this.listaLivros;
-    }
-
-    public addLivro(livro: Livro): void {
-        this.listaLivros.push(livro);
     }
 
     public getLivroById(id: number): Livro {
@@ -71,5 +100,5 @@ export class LivroRepository {
         this.listaLivros.splice(index, 1);
         return true;
     }
-
+*/
 }

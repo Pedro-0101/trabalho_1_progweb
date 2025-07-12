@@ -37,7 +37,7 @@ export class UsuarioRepository {
     async insertUsuario(usuario: Usuario): Promise<Usuario> {
 
         const resultado = await executeQuery(
-            'INSERT INTO categoriasUsuario(nome, cpf, ativo, categoria_id, curso_id) VALUES (?)', 
+            'INSERT INTO categoriasUsuario(nome, cpf, ativo, categoria_id, curso_id) VALUES (?, ?, ?, ?, ?)', 
             [usuario.nome, usuario.cpf, usuario.ativo, usuario.categoriaId, usuario.cursoId]
         );
         console.log('Usuario inserido com sucesso!', resultado);
