@@ -19,6 +19,13 @@ export class CursoService {
         return new Curso(nome, id);
     }
 
+    async getCursoById(cursoId: number): Promise<Curso | null> {
+
+        if(!cursoId){throw new Error('Curso invalido!')};
+        return await this.cursoRepository.getCursoById(cursoId);
+
+    }
+
     /*public listarCursos(): Curso[] {
         // Retorna a lista de cursos
         return this.cursoRepository.getListaCursos();

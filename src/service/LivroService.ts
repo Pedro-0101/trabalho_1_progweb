@@ -21,6 +21,18 @@ export class LivroService {
         // Instância temporária só para validação e formatação
         const livroTemp = new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
 
+        // Verifica se existe livro com mesmo isbn
+        const livroReptidoIsbn = await this.getLivroByIsbn(livroTemp.isbn);
+        if(livroReptidoIsbn){
+            throw new Error(`O livro ${livroTemp.titulo} ja foi incluido`);
+        }
+
+        // Verifica se existe livro com mesma combinacao de autor, edicao e editora
+        const livroRepetidoAEE = await this.getLivroAEE(livroTemp.autor, livroTemp.editora, livroTemp.edicao);
+        if(livroRepetidoAEE){
+            throw new Error(`O livro ${livroTemp.titulo} ja foi incluido`);
+        }
+
         // Persiste e obtém o ID gerado
         const id = await this.livroRepository.insertLivro(livroTemp);
 
@@ -45,6 +57,16 @@ export class LivroService {
         }
 
         return this.livroRepository.getLivroById(livroId);
+
+    }
+
+    async getLivroAEE(autor: string, editora: string, edicao: string): Promise<Livro | null> {
+
+        if(!autor || !editora || !edicao){
+            throw new Error('Erro ao consultar repeticao de livro');
+        }
+
+        return await this.livroRepository.getLivroAEE(autor, editora, edicao);
 
     }
 

@@ -1,14 +1,29 @@
 import { Usuario } from "../model/Usuario";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
+import { CategoriaUsuarioService } from "./CategoriaUsuarioService";
+import { CursoService } from "./CursoService";
 
 export class UsuarioService {
     private usuarioRepository: UsuarioRepository;
+    private categiriaUsuarioService: CategoriaUsuarioService
+    private cursoService: CursoService;
     
     constructor() {
         this.usuarioRepository = UsuarioRepository.getInstance();
+        this.categiriaUsuarioService = new CategoriaUsuarioService();
+        this.cursoService = new CursoService();
     }
 
     async criarUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario> {
+        
+        // Verificar se existe a categoria
+        const categoriaUsuario = await this.categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
+        if(!categoriaUsuario){ throw new Error('Categoria de usuario invalida!')};
+
+        // Verifica se existe o curso
+        const curso = await this.cursoService.getCursoById(cursoId);
+        if(!curso){ throw new Error('Categoria de usuario invalida!')};
+
         // Cria instância temporária apenas para validar e padronizar dados
         const usuarioTemp = new Usuario(nome, cpf, ativo, categoriaId, cursoId);
 

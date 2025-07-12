@@ -23,6 +23,7 @@ export class UsuarioRepository {
             ativo VARCHAR(255) NOT NULL,
             categoria_id INT NOT NULL,
             curso_id INT NOT NULL,
+            UNIQUE (cpf),
             FOREIGN KEY (categoria_id) REFERENCES categoriasUsuario(id),
             FOREIGN KEY (curso_id) REFERENCES cursos(id)
         )`;
@@ -57,12 +58,12 @@ export class UsuarioRepository {
             const row = rows[0];
     
             return new Usuario(
-                row.id,
                 row.nome,
                 row.cpf,
                 row.ativo,
                 row.categoria_id,
-                row.curso_id
+                row.curso_id,
+                row.id
             );
     }
 }

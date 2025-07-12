@@ -19,6 +19,13 @@ export class CategoriaUsuarioService {
         return new CategoriaUsuario(nome, id);
     }
 
+    async getCategoriaUsuarioById(categoriaId: number): Promise<CategoriaUsuario | null>{
+
+        if(!categoriaId){throw new Error('Categoria invalida!')};
+        return await this.categoriaUsuarioRepository.getCategoriaUsuarioById(categoriaId);
+
+    }
+
     /*public listarCategoriasUsuarios(): CategoriaUsuario[] {
         // Retorna a lista de categorias de usuário
         return this.categoriaUsuarioRepository.getListaCategoriasUsuarios();

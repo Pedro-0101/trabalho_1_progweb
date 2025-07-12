@@ -36,6 +36,26 @@ export class CategoriaUsuarioRepository {
         console.log('Categoria de usuário inserida com sucesso!', resultado);
         return resultado.insertId;
     }
+
+    async getCategoriaUsuarioById(categoriaId: number): Promise<CategoriaUsuario | null> {
+
+        const rows = await executeQuery(
+            'SELECT * FROM categoriasUsuario WHERE id = ?',
+            [categoriaId]
+        );
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        const row = rows[0];
+
+        return new CategoriaUsuario(
+            row.nome,
+            row.id
+        );
+
+    }
 }
  
 

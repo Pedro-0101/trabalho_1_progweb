@@ -37,6 +37,25 @@ export class CursoRepository {
         console.log('Curso inserido com sucesso!', resultado);
         return resultado.insertId;
     }
+
+    async getCursoById(cursoId: number): Promise<Curso | null> {
+
+        const rows = await executeQuery(
+            'SELECT * FROM cursos WHERE id = ?',
+            [cursoId]
+        );
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        const row = rows[0];
+
+        return new Curso(
+            row.nome,
+            row.id
+        );
+    }
 }
 
     /*

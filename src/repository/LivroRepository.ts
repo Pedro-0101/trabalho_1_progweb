@@ -24,6 +24,8 @@ export class LivroRepository {
             edicao VARCHAR(255) NOT NULL,
             isbn VARCHAR(255) NOT NULL,
             categoria_id INT NOT NULL,
+            UNIQUE (isbn),
+            CONSTRAINT u_livro UNIQUE(autor, editora, edicao),
             FOREIGN KEY (categoria_id) REFERENCES categoriasLivro(id)
         )`;
         try {
@@ -89,6 +91,32 @@ export class LivroRepository {
             row.id
         );
     }
+
+    async getLivroAEE(autor: string, editora: string, edicao: string): Promise<Livro | null> {
+
+        const rows = await executeQuery(
+            'SELECT * FROM livros WHERE autor = ? AND editora = ? AND edicao = ?',
+            [autor.trim(), editora.trim(), edicao.trim()]
+        );
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        const row = rows[0];
+
+        return new Livro(
+            row.titulo,
+            row.autor,
+            row.editora,
+            row.edicao,
+            row.isbn,
+            row.categoria_id,
+            row.id
+        );
+
+    }
+
 }
 
 /*
