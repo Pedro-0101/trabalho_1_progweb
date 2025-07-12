@@ -1,12 +1,14 @@
+import { textUtils } from "../utils/textUtil";
+
 export class Usuario {
-    id: number;
+    id: number | null;
     nome: string;
     cpf: string;
     ativo: string;
     categoriaId: number;
     cursoId: number;
 
-/*
+
     private calcularDigitoVerificador(cpf: string, digito: string, peso: number): boolean {
 
         let soma = 0;
@@ -47,13 +49,35 @@ export class Usuario {
         return true;
 
     }
-*/
-    constructor(id: number, nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number) {
 
-        this.id = id;                  
+    constructor(nome: string, cpf: string, categoriaId: number, cursoId: number) {
+
+        if (!nome || nome.trim() === "") {
+            throw new Error("O nome do usuário não pode ser vazio.");
+        }
+
+        if (!cpf || cpf.trim() === "") {
+            throw new Error("O CPF não pode ser vazio.");
+        }
+
+        if (!this.validarCpf(cpf)) {
+            throw new Error("CPF inválido.");
+        }
+
+        if (typeof categoriaId !== "number" || isNaN(categoriaId) || categoriaId <= 0) {
+            throw new Error("CategoriaId inválido.");
+        }
+
+        if (typeof cursoId !== "number" || isNaN(cursoId) || cursoId <= 0) {
+            throw new Error("CursoId inválido.");
+        }
+
+        nome = textUtils.capitalizarTexto(nome);
+
+        this.id = null;                  
         this.nome = nome;              
         this.cpf = cpf;                
-        this.ativo = ativo;             
+        this.ativo = 'Ativo';             
         this.categoriaId = categoriaId;
         this.cursoId = cursoId;        
 

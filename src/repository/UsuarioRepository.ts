@@ -16,7 +16,7 @@ export class UsuarioRepository {
     }
 
     private async createTable(){
-        const query = `CREATE TABLE IF NOT EXISTS usuario (
+        const query = `CREATE TABLE IF NOT EXISTS usuarios (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL,
             cpf VARCHAR(255) NOT NULL,
@@ -32,6 +32,18 @@ export class UsuarioRepository {
         }catch(err){
             console.error('Erro ao criar tabela usuario', err);
         }
+    }
+
+    async insertUsuario(usuario: Usuario): Promise<Usuario> {
+
+        const resultado = await executeQuery(
+            'INSERT INTO categoriasUsuario(nome, cpf, ativo, categoria_id, curso_id) VALUES (?)', 
+            [usuario.nome, usuario.cpf, usuario.ativo, usuario.categoriaId, usuario.cursoId]
+        );
+        console.log('Usuario inserido com sucesso!', resultado);
+        usuario.id = resultado.insertId;
+        return usuario;
+        
     }
 
 
