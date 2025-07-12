@@ -1,10 +1,18 @@
+import { textUtils } from "../utils/textUtil";
+
 export class CategoriaUsuario {
-    id: number;
+    id: number | null;
     nome: string;
 
-    constructor(id: number, nome: string) {
+    constructor(nome: string) {
 
-        this.id = id;
+        if (!nome || nome.trim() === "") {
+            throw new Error("O nome da categoria não pode ser vazio.");
+        }
+
+        nome = textUtils.capitalizarTexto(nome);
+
+        this.id = null;
         this.nome = nome;
         
     }

@@ -8,11 +8,12 @@ export class CategoriaLivroService {
         this.CategoriaLivroRepository = CategoriaLivroRepository.getInstance();
     }
 
-    public async criarCategoriaLivro(nome: string): Promise<CategoriaLivro> {
+    async criarCategoriaLivro(nome: string): Promise<CategoriaLivro> {
         
+        // Instancia nova categoria de livro
         let categoriaLivro = new CategoriaLivro(nome);
 
-        // Adiciona a categoria ao repositório e retorna ao controller
+        // Adiciona a categoria ao repositório e retorna
         categoriaLivro = await this.CategoriaLivroRepository.insertCategoriaLivro(categoriaLivro);
         return categoriaLivro;
     }

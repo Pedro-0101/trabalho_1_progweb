@@ -28,7 +28,7 @@ export class CategoriaLivroRepository {
         }
     }
 
-    public async insertCategoriaLivro(categoriaLivro: CategoriaLivro): Promise<CategoriaLivro>{
+    async insertCategoriaLivro(categoriaLivro: CategoriaLivro): Promise<CategoriaLivro>{
         const resultado = await executeQuery(
             'INSERT INTO categoriasLivro(nome) VALUES (?)', 
             [categoriaLivro.nome]

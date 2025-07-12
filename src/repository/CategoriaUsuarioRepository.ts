@@ -28,13 +28,14 @@ export class CategoriaUsuarioRepository {
         }
     }
 
-    async insertCategoriaUsuario(nome: string): Promise<CategoriaUsuario>{
+    async insertCategoriaUsuario(categoriaUsuario: CategoriaUsuario): Promise<CategoriaUsuario>{
         const resultado = await executeQuery(
             'INSERT INTO categoriasUsuario(nome) VALUES (?)', 
-            [nome]
+            [categoriaUsuario.nome]
         );
         console.log('Categoria de usuario inserida com sucesso!', resultado);
-        return new CategoriaUsuario(resultado.insertId, nome);
+        categoriaUsuario.id = resultado.insertId;
+        return categoriaUsuario;
     }
     
 

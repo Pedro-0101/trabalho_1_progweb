@@ -8,25 +8,20 @@ export class CategoriaUsuarioService {
         this.categoriaUsuarioRepository = CategoriaUsuarioRepository.getInstance();
     }
 
-    public criarCategoriaUsuario(nome: string): CategoriaUsuario {
+    async criarCategoriaUsuario(nome: string): Promise<CategoriaUsuario>{
         
+        // Instancia nova categoria de usuario
         let categoriaUsuario = new CategoriaUsuario(nome);
 
-        // Verifica se a categoria foi criada corretamente
-        if (!categoriaUsuario) {
-            throw new Error("Erro ao criar a categoria.");
-        }
-
-        // Adiciona a categoria ao repositório
-        this.categoriaUsuarioRepository.addCategoriaUsuario(categoriaUsuario);
-
-        // Retorna a categoria criada
+        // Adiciona a categoria ao repositório e retorna
+        categoriaUsuario = await this.categoriaUsuarioRepository.insertCategoriaUsuario(categoriaUsuario);
         return categoriaUsuario;
+
     }
 
-    public listarCategoriasUsuarios(): CategoriaUsuario[] {
+    /*public listarCategoriasUsuarios(): CategoriaUsuario[] {
         // Retorna a lista de categorias de usuário
         return this.categoriaUsuarioRepository.getListaCategoriasUsuarios();
-    }
+    }*/
 
 }
