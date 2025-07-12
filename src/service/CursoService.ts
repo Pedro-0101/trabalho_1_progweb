@@ -8,25 +8,19 @@ export class CursoService {
         this.cursoRepository = CursoRepository.getInstance();
     }
 
-    public criarCurso(nome: string): Curso {
+    async criarCurso(nome: string): Promise<Curso>{
         
+        // Instancia o novo curso
         let curso = new Curso(nome);
 
-        // Verifica se o curso foi criado corretamente
-        if (!curso) {
-            throw new Error("Erro ao criar o curso.");
-        }
-
-        // Adiciona o curso ao repositório
-        this.cursoRepository.addCurso(curso);
-
-        // Retorna o curso criado
+        // Adiciona o curso ao repositório e retorna
+        curso = await this.cursoRepository.insertCurso(curso);
         return curso;
     }
 
-    public listarCursos(): Curso[] {
+    /*public listarCursos(): Curso[] {
         // Retorna a lista de cursos
         return this.cursoRepository.getListaCursos();
-    }
+    }*/
 
 }

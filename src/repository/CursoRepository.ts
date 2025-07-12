@@ -28,13 +28,15 @@ export class CursoRepository {
         }
     }
 
-    async insertCurso(nome: string): Promise<Curso>{
+    async insertCurso(curso: Curso): Promise<Curso>{
         const resultado = await executeQuery(
             'INSERT INTO cursos(nome) VALUES (?)', 
-            [nome]
+            [curso.nome]
         );
+        
         console.log('Curso inserido com sucesso!', resultado);
-        return new Curso(resultado.insertId, nome);
+        curso.id = resultado.insertId;
+        return curso;
     }
     /*
     public getListaCursos(): Curso[] {
