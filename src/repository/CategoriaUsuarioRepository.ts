@@ -16,21 +16,21 @@ export class CategoriaUsuarioRepository {
     }
 
     private async createTable(){
-        const query = `CREATE TABLE IF NOT EXISTS categoriaUsuario (
+        const query = `CREATE TABLE IF NOT EXISTS categoriasUsuario (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL
         )`;
         try{
             const resultado = await executeQuery(query, []);
-            console.log('Tabela categoriaUsuario criada com sucesso: ', resultado);
+            console.log('Tabela categoriasUsuario criada com sucesso: ', resultado);
         }catch(err){
-            console.error('Erro ao criar tabela categoriaUsuario', err);
+            console.error('Erro ao criar tabela categoriasUsuario', err);
         }
     }
 
     async insertCategoriaUsuario(nome: string): Promise<CategoriaUsuario>{
         const resultado = await executeQuery(
-            'INSERT INTO categoriaUsuario(nome) VALUES (?)', 
+            'INSERT INTO categoriasUsuario(nome) VALUES (?)', 
             [nome]
         );
         console.log('Categoria de usuario inserida com sucesso!', resultado);

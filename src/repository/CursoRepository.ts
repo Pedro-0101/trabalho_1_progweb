@@ -16,21 +16,21 @@ export class CursoRepository {
     }
 
     private async createTable(){
-        const query = `CREATE TABLE IF NOT EXISTS curso (
+        const query = `CREATE TABLE IF NOT EXISTS cursos (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL
         )`;
         try{
             const resultado = await executeQuery(query, []);
-            console.log('Tabela curso criada com sucesso: ', resultado);
+            console.log('Tabela cursos criada com sucesso: ', resultado);
         }catch(err){
-            console.error('Erro ao criar tabela curso', err);
+            console.error('Erro ao criar tabela cursos', err);
         }
     }
 
     async insertCurso(nome: string): Promise<Curso>{
         const resultado = await executeQuery(
-            'INSERT INTO curso(nome) VALUES (?)', 
+            'INSERT INTO cursos(nome) VALUES (?)', 
             [nome]
         );
         console.log('Curso inserido com sucesso!', resultado);

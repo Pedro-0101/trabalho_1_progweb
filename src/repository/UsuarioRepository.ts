@@ -1,18 +1,42 @@
 import { Usuario } from "../model/Usuario";
+import { executeQuery } from "../database/mysql";
 
 export class UsuarioRepository {
     private static instance: UsuarioRepository;
-    private listaUsuarios: Usuario[] = [];
 
-    private constructor() {}
-
-    public static getInstance(): UsuarioRepository {
-        if (!UsuarioRepository.instance) {
-            UsuarioRepository.instance = new UsuarioRepository();
-        }
-        return UsuarioRepository.instance;
+    private constructor() {
+        this.createTable();
     }
 
+    public static getInstance(): UsuarioRepository {
+        if (!this.instance) {
+            this.instance = new UsuarioRepository();
+        }
+        return this.instance;
+    }
+
+    private async createTable(){
+        const query = `CREATE TABLE IF NOT EXISTS usuario (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL,
+            cpf VARCHAR(255) NOT NULL,
+            ativo VARCHAR(255) NOT NULL,
+            categoria_id INT NOT NULL,
+            curso_id INT NOT NULL,
+            FOREIGN KEY (categoria_id) REFERENCES categoriasUsuario(id),
+            FOREIGN KEY (curso_id) REFERENCES cursos(id)
+        )`;
+        try{
+            const resultado = await executeQuery(query, []);
+            console.log('Tabela usuarios criada com sucesso: ', resultado);
+        }catch(err){
+            console.error('Erro ao criar tabela usuario', err);
+        }
+    }
+
+
+
+    /*
     public getListaUsuarios(): Usuario[] {
         return this.listaUsuarios;
     }
@@ -68,5 +92,5 @@ export class UsuarioRepository {
         const index = this.listaUsuarios.findIndex( u => u.cpf === cpf);
         this.listaUsuarios.splice(index, 1);
 
-    }
+    }*/
 }

@@ -16,25 +16,26 @@ export class CategoriaLivroRepository {
     }
 
     private async createTable(){
-        const query = `CREATE TABLE IF NOT EXISTS categoriaLivro (
+        const query = `CREATE TABLE IF NOT EXISTS categoriasLivro (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL
         )`;
         try{
             const resultado = await executeQuery(query, []);
-            console.log('Tabela categoriaLivro criada com sucesso: ', resultado);
+            console.log('Tabela categoriasLivro criada com sucesso: ', resultado);
         }catch(err){
-            console.error('Erro ao criar tabela categoriaLivro', err);
+            console.error('Erro ao criar tabela categoriasLivro', err);
         }
     }
 
-    async insertCategoriaLivro(nome: string): Promise<CategoriaLivro>{
+    public async insertCategoriaLivro(categoriaLivro: CategoriaLivro): Promise<CategoriaLivro>{
         const resultado = await executeQuery(
-            'INSERT INTO categoriaLivro(nome) VALUES (?)', 
-            [nome]
+            'INSERT INTO categoriasLivro(nome) VALUES (?)', 
+            [categoriaLivro.nome]
         );
         console.log('Categoria de livro inserida com sucesso!', resultado);
-        return new CategoriaLivro(resultado.insertId, nome);
+        categoriaLivro.id = resultado.insertId;
+        return categoriaLivro;
     }
 
 

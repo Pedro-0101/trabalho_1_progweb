@@ -1,17 +1,41 @@
 import { Emprestimo } from "../model/Emprestimo";
+import { executeQuery } from "../database/mysql";
 
 export class EmprestimoRepository {
     private static instance: EmprestimoRepository;
-    private listaEmprestimos: Emprestimo[] = [];
 
-    private constructor() {}
-
-    public static getInstance(): EmprestimoRepository {
-        if (!EmprestimoRepository.instance) {
-            EmprestimoRepository.instance = new EmprestimoRepository();
+    private constructor() {
+            this.createTable();
         }
-        return EmprestimoRepository.instance;
-    }
+    
+        public static getInstance(): EmprestimoRepository {
+            if (!this.instance) {
+                this.instance = new EmprestimoRepository();
+            }
+            return this.instance;
+        }
+    
+        private async createTable(){
+            const query = `CREATE TABLE IF NOT EXISTS emprestimo (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                usuario_id VARCHAR(255) NOT NULL
+            )`;
+            try{
+                const resultado = await executeQuery(query, []);
+                console.log('Tabela categoriaUsuario criada com sucesso: ', resultado);
+            }catch(err){
+                console.error('Erro ao criar tabela categoriaUsuario', err);
+            }
+        }
+    
+        async insertCategoriaUsuario(nome: string): Promise<Emprestimo>{
+            const resultado = await executeQuery(
+                'INSERT INTO categoriaUsuario(nome) VALUES (?)', 
+                [nome]
+            );
+            console.log('Emprestimo inserido com sucesso!', resultado);
+            return new Emprestimo(resultado.insertId, nome);
+        }
 
     public getListaEmprestimos(): Emprestimo[] {
         return this.listaEmprestimos;

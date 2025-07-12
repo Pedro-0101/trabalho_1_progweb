@@ -8,27 +8,18 @@ export class CategoriaLivroService {
         this.CategoriaLivroRepository = CategoriaLivroRepository.getInstance();
     }
 
-    public criarCategoriaLivro(nome: string): CategoriaLivro {
-        
+    public async criarCategoriaLivro(nome: string): Promise<CategoriaLivro> {
         
         let categoriaLivro = new CategoriaLivro(nome);
 
-        // Verifica se a categoria foi criada corretamente
-        if (!categoriaLivro) {
-            throw new Error("Erro ao criar a categoria.");
-        }
-
-        // Adiciona a categoria ao repositório
-        this.CategoriaLivroRepository.addCategoriaLivro(categoriaLivro);
-
-        // Retorna a categoria criada
+        // Adiciona a categoria ao repositório e retorna ao controller
+        categoriaLivro = await this.CategoriaLivroRepository.insertCategoriaLivro(categoriaLivro);
         return categoriaLivro;
-
     }
 
-    public listarCategorias(): CategoriaLivro[] {
+   /* public listarCategorias(): CategoriaLivro[] {
         // Retorna todas as categorias
         return this.CategoriaLivroRepository.getListaCategoriasLivros();
-    }
+    }*/
 
 }

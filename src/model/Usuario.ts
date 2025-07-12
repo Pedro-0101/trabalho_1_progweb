@@ -1,20 +1,12 @@
-import { UsuarioRepository } from "../repository/UsuarioRepository";
-import { CategoriaUsuarioRepository } from "../repository/CategoriaUsuarioRepository";
-import { CursoRepository } from "../repository/CursoRepository";
-import { textUtils } from "../utils/textUtil";
-
 export class Usuario {
     id: number;
     nome: string;
     cpf: string;
-    ativo: boolean;
+    ativo: string;
     categoriaId: number;
     cursoId: number;
 
-    private usuarioRepository: UsuarioRepository;
-    private categoriaUsuario: CategoriaUsuarioRepository;
-    private cursoRepository: CursoRepository;
-
+/*
     private calcularDigitoVerificador(cpf: string, digito: string, peso: number): boolean {
 
         let soma = 0;
@@ -55,54 +47,13 @@ export class Usuario {
         return true;
 
     }
-
-    constructor(nome: string, cpf: string, categoriaId: number, cursoId: number) {
-
-        this.usuarioRepository = UsuarioRepository.getInstance();
-        this.categoriaUsuario = CategoriaUsuarioRepository.getInstance();
-        this.cursoRepository = CursoRepository.getInstance();
-
-        nome = textUtils.capitalizarTexto(nome);
-
-        // Valida o nome do usuário
-        if (!nome || nome.trim() === "" || nome.length < 3) {
-            throw new Error("O nome do usuário deve ter mais de 3 caracteres válidos.");
-        }
-
-        // Remove espaços em branco extras e capitaliza a primeira letra
-        nome = nome.trim();
-        nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-
-        cpf = cpf.trim();
-        cpf = cpf.replace(/[^0-9]/g, ""); // Remove caracteres não numéricos
-
-        // valida o CPF
-        if(!this.validarCpf(cpf)) {
-            throw new Error("CPF inválido.");
-        }
-
-        // Verifica se cpf já existe
-        if (this.usuarioRepository.getListaUsuarios().some(usuario => usuario.cpf === cpf)) {
-            throw new Error("CPF já cadastrado.");
-        }
-
-        // Verifica se a categoria existe
-        if (!this.categoriaUsuario.getListaCategoriasUsuarios().some(categoria => categoria.id === categoriaId)) {
-            throw new Error("Categoria inválida.");
-        }
-
-        // Verifica se o curso existe
-        if (!this.cursoRepository.getListaCursos().some(curso => curso.id === cursoId)) {
-            throw new Error("Curso inválido.");
-        }
-
-        // Cria um novo usuário com um ID único
-        let id = this.usuarioRepository.getListaUsuarios().length + 1;
+*/
+    constructor(id: number, nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number) {
 
         this.id = id;                  
         this.nome = nome;              
         this.cpf = cpf;                
-        this.ativo = true;             
+        this.ativo = ativo;             
         this.categoriaId = categoriaId;
         this.cursoId = cursoId;        
 
