@@ -126,6 +126,23 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"EmprestimoDTO": {
+				"properties": {
+					"cpf": {
+						"type": "string"
+					},
+					"codigoExemplar": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"cpf",
+					"codigoExemplar"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CursoDTO": {
 				"properties": {
 					"id": {
@@ -945,6 +962,54 @@
 						}
 					}
 				]
+			},
+			"post": {
+				"operationId": "AddEmprestimo",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Emprestimo"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/EmprestimoDTO"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/curso": {

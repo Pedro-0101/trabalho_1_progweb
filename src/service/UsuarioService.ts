@@ -2,16 +2,19 @@ import { Usuario } from "../model/entity/Usuario";
 import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { CategoriaUsuarioService } from "./CategoriaUsuarioService";
 import { CursoService } from "./CursoService";
+import { EmprestimoService } from "./EmprestimoService";
 
 export class UsuarioService {
     private usuarioRepository: UsuarioRepository;
-    private categiriaUsuarioService: CategoriaUsuarioService
+    private categiriaUsuarioService: CategoriaUsuarioService;
     private cursoService: CursoService;
+    private emprestimoService: EmprestimoService;
     
     constructor() {
         this.usuarioRepository = UsuarioRepository.getInstance();
         this.categiriaUsuarioService = new CategoriaUsuarioService();
         this.cursoService = new CursoService();
+        this.emprestimoService = new EmprestimoService();
     }
 
     private async validaDadosUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario>{
@@ -83,7 +86,11 @@ export class UsuarioService {
         if(!usuario)throw new Error('CPF invalido.');
 
         // Verificar se usuario nao tem emprestimo aberto
-
+        const emprestimosAbertos = await this.emprestimoService.getListaEmprestimos(true, 0, usuario.id);
+        if(emprestimosAbertos){
+            console.error('Usuario possui emprestimos em aberto.');
+            return false;
+        }
         return await this.usuarioRepository.deletarUsuario(cpf);
     }
 }

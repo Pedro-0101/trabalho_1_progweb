@@ -14,10 +14,11 @@ export class EmprestimoController extends Controller {
 		@Res() fail: TsoaResponse<400, BasicResponseDto>,
 		@Res() success: TsoaResponse<200, BasicResponseDto>,
 		@Query() ativos: boolean,
-		@Query() estoqueId?: number
+		@Query() estoqueId?: number,
+        @Query() usuaioId?: number
 	): Promise<void> {
 		try {
-			const listaEmprestimo = await this.estoqueService.getListaEmprestimos(ativos, estoqueId);
+			const listaEmprestimo = await this.estoqueService.getListaEmprestimos(ativos, estoqueId, usuaioId);
 			return success(200, new BasicResponseDto('Lista de emprestimos', listaEmprestimo));
 		} catch (error: any) {
 			return fail(400, new BasicResponseDto(error.message, undefined));

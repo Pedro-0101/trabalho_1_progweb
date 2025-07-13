@@ -64,7 +64,7 @@ export class EmprestimoRepository {
         return rows[0]?.total ?? 0;
     }
 
-    async getListaEmprestimosEmAberto(estoqueId?: number): Promise<Emprestimo[] | null> {
+    async getListaEmprestimosEmAberto(estoqueId?: number, usuarioId?: number): Promise<Emprestimo[] | null> {
     try {
         const conditions: string[] = ['data_entrega IS NULL'];
         const params: any[] = [];
@@ -72,6 +72,10 @@ export class EmprestimoRepository {
         if (estoqueId) {
             conditions.push('estoque_id = ?');
             params.push(estoqueId);
+        }
+        if (usuarioId) {
+            conditions.push('usuario_id = ?');
+            params.push(usuarioId);
         }
 
         let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
@@ -98,7 +102,7 @@ export class EmprestimoRepository {
     }
 }
 
-    async getListaEmprestimosFechados(estoqueId?: number): Promise<Emprestimo[] | null> {
+    async getListaEmprestimosFechados(estoqueId?: number, usuarioId?: number): Promise<Emprestimo[] | null> {
     try {
         const conditions: string[] = ['data_entrega IS NOT NULL'];
         const params: any[] = [];
@@ -106,6 +110,10 @@ export class EmprestimoRepository {
         if (estoqueId) {
             conditions.push('estoque_id = ?');
             params.push(estoqueId);
+        }
+        if (usuarioId) {
+            conditions.push('usuario_id = ?');
+            params.push(usuarioId);
         }
 
         let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
@@ -116,7 +124,7 @@ export class EmprestimoRepository {
             return null;
         }
         return rows;
-        
+
     } catch (err) {
         console.error('Erro ao buscar empréstimos fechados', err);
         return null;

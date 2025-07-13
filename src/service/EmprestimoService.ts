@@ -88,12 +88,12 @@ export class EmprestimoService {
         );
     }
 
-    async getListaEmprestimos(ativo: boolean, estoqueId?: number): Promise<Emprestimo[] | null> {
+    async getListaEmprestimos(ativo: boolean, estoqueId?: number, usuarioId?: number): Promise<Emprestimo[] | null> {
 
         if(ativo){
-            return await this.emprestimoRepository.getListaEmprestimosEmAberto(estoqueId);
+            return await this.emprestimoRepository.getListaEmprestimosEmAberto(estoqueId, usuarioId);
         }else{
-            return await this.emprestimoRepository.getListaEmprestimosFechados(estoqueId);
+            return await this.emprestimoRepository.getListaEmprestimosFechados(estoqueId, usuarioId);
         }
 
     }

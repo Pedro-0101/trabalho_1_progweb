@@ -42,9 +42,11 @@ export class EstoqueService {
         const exemplar = await this.getEstoqueByLivroId(livro_id);
         if(!exemplar)throw new Error('Exemplar invalido.');
 
-        const qtde_atualizada = exemplar?.quantidadeEmprestada + quantidade;
+        const qtde_atualizada = exemplar.quantidadeEmprestada + quantidade;
 
-        return await this.estoqueRepository.atualizarQuantidadeEmprestada(exemplar.id, qtde_atualizada);
+        const att =  await this.estoqueRepository.atualizarQuantidadeEmprestada(exemplar.id, qtde_atualizada);
+        const exemplarAtualizado = this.atualizarDisponibilidade(exemplar.id);
+        return att;
 
     }
 

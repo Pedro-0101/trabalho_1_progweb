@@ -56,8 +56,8 @@ let EstoqueController = class EstoqueController extends tsoa_1.Controller {
     addUsuario(dto, fail, success) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const novoEsxemplar = yield this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
-                return success(201, new BasicResponseDto_1.BasicResponseDto('Exemplar inserido com sucesso', novoEsxemplar));
+                const novoExemplar = yield this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
+                return success(201, new BasicResponseDto_1.BasicResponseDto('Exemplar inserido com sucesso', novoExemplar));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));

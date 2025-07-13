@@ -25,6 +25,7 @@ exports.EmprestimoController = void 0;
 const tsoa_1 = require("tsoa");
 const BasicResponseDto_1 = require("../model/dto/BasicResponseDto");
 const EmprestimoService_1 = require("../service/EmprestimoService");
+const EmprestimoDto_1 = require("../model/dto/EmprestimoDto");
 let EmprestimoController = class EmprestimoController extends tsoa_1.Controller {
     constructor() {
         super(...arguments);
@@ -35,6 +36,17 @@ let EmprestimoController = class EmprestimoController extends tsoa_1.Controller 
             try {
                 const listaEmprestimo = yield this.estoqueService.getListaEmprestimos(ativos, estoqueId);
                 return success(200, new BasicResponseDto_1.BasicResponseDto('Lista de emprestimos', listaEmprestimo));
+            }
+            catch (error) {
+                return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+            }
+        });
+    }
+    addEmprestimo(dto, fail, success) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const novoEmprestimo = yield this.estoqueService.registrarEmprestimo(dto.cpf, dto.codigoExemplar);
+                return success(201, new BasicResponseDto_1.BasicResponseDto('Exemplar inserido com sucesso', novoEmprestimo));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
@@ -53,6 +65,15 @@ __decorate([
     __metadata("design:paramtypes", [Function, Function, Boolean, Number]),
     __metadata("design:returntype", Promise)
 ], EmprestimoController.prototype, "listarEmprestimos", null);
+__decorate([
+    (0, tsoa_1.Post)(),
+    __param(0, (0, tsoa_1.Body)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [EmprestimoDto_1.EmprestimoDTO, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EmprestimoController.prototype, "addEmprestimo", null);
 exports.EmprestimoController = EmprestimoController = __decorate([
     (0, tsoa_1.Route)('emprestimo'),
     (0, tsoa_1.Tags)('Emprestimo')

@@ -72,6 +72,15 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EmprestimoDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "cpf": {"dataType":"string","required":true},
+            "codigoExemplar": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CursoDTO": {
         "dataType": "refObject",
         "properties": {
@@ -624,6 +633,38 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'listarEmprestimos',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsEmprestimoController_addEmprestimo: Record<string, TsoaRoute.ParameterSchema> = {
+                dto: {"in":"body","name":"dto","required":true,"ref":"EmprestimoDTO"},
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"201","required":true,"ref":"BasicResponseDto"},
+        };
+        app.post('/emprestimo',
+            ...(fetchMiddlewares<RequestHandler>(EmprestimoController)),
+            ...(fetchMiddlewares<RequestHandler>(EmprestimoController.prototype.addEmprestimo)),
+
+            async function EmprestimoController_addEmprestimo(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEmprestimoController_addEmprestimo, request, response });
+
+                const controller = new EmprestimoController();
+
+              await templateService.apiHandler({
+                methodName: 'addEmprestimo',
                 controller,
                 response,
                 next,
