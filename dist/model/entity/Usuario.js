@@ -25,11 +25,9 @@ class Usuario {
         return primeiroDigito && segundoDigito;
     }
     constructor(nome, cpf, ativo, categoriaId, cursoId, id) {
+        cpf = cpf.replace(/[^\d]/g, "");
         if (!nome || nome.trim() === "") {
             throw new Error("O nome do usuário não pode ser vazio.");
-        }
-        if (!cpf || cpf.trim() === "") {
-            throw new Error("O CPF não pode ser vazio.");
         }
         if (!this.validarCpf(cpf)) {
             throw new Error("CPF inválido.");

@@ -54,6 +54,15 @@ class CursoRepository {
             return new Curso_1.Curso(row.nome, row.id);
         });
     }
+    getCursos() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM cursos', []);
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+            return rows;
+        });
+    }
 }
 exports.CursoRepository = CursoRepository;
 /*

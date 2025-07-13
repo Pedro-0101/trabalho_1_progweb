@@ -56,6 +56,23 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CursoDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"nome"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CategoriaUsuarioDTO": {
 				"properties": {
 					"id": {
@@ -99,7 +116,7 @@
 		"description": "Documentacao da API usando Swagger"
 	},
 	"paths": {
-		"/Usuario": {
+		"/usuario": {
 			"get": {
 				"operationId": "ListarUsuarios",
 				"responses": {
@@ -173,6 +190,127 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/UsuarioDTO"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/usuario/{cpf}": {
+			"get": {
+				"operationId": "GetUsuarioByCpf",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuario"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "cpf",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/curso": {
+			"get": {
+				"operationId": "ListarCursos",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Curso"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "AddCurso",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Curso"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CursoDTO"
 							}
 						}
 					}

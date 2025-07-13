@@ -46,7 +46,7 @@ let CategoriaLivroController = class CategoriaLivroController extends tsoa_1.Con
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const novaCategoriaLivro = yield this.categoriaLivroService.criarCategoriaLivro(dto.nome);
-                return success(201, new BasicResponseDto_1.BasicResponseDto('Categoria criada com sucesso', novaCategoriaLivro));
+                return success(201, new BasicResponseDto_1.BasicResponseDto('Categoria de livro criada com sucesso', novaCategoriaLivro));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));

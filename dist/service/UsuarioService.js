@@ -29,9 +29,13 @@ class UsuarioService {
             // Verifica se existe o curso
             const curso = yield this.cursoService.getCursoById(cursoId);
             if (!curso)
-                throw new Error('Categoria de usuario invalida.');
+                throw new Error('Curso invalido.');
             // Cria instância temporária apenas para validar e padronizar dados
             const usuarioTemp = new Usuario_1.Usuario(nome, cpf, ativo, categoriaId, cursoId);
+            // Verifica se existe o cpf
+            const usuarioRepetido = yield this.getUsuarioByCpf(usuarioTemp.cpf);
+            if (usuarioRepetido)
+                throw new Error('Cpf invalido, cpf ja cadastrado.');
             // Persiste e obtém o ID gerado
             const id = yield this.usuarioRepository.insertUsuario(usuarioTemp);
             // Retorna nova instância imutável com o ID preenchido
@@ -40,6 +44,7 @@ class UsuarioService {
     }
     getUsuarioByCpf(cpf) {
         return __awaiter(this, void 0, void 0, function* () {
+            cpf = cpf.replace(/[^\d]/g, "");
             if (!cpf)
                 throw new Error('CPF invalido.');
             return this.usuarioRepository.getUsuarioByCpf(cpf);

@@ -22,10 +22,14 @@ export class UsuarioService {
 
         // Verifica se existe o curso
         const curso = await this.cursoService.getCursoById(cursoId);
-        if(!curso)throw new Error('Categoria de usuario invalida.');
+        if(!curso)throw new Error('Curso invalido.');
 
         // Cria instância temporária apenas para validar e padronizar dados
         const usuarioTemp = new Usuario(nome, cpf, ativo, categoriaId, cursoId);
+
+        // Verifica se existe o cpf
+        const usuarioRepetido = await this.getUsuarioByCpf(usuarioTemp.cpf);
+        if(usuarioRepetido)throw new Error('Cpf invalido, cpf ja cadastrado.');
 
         // Persiste e obtém o ID gerado
         const id = await this.usuarioRepository.insertUsuario(usuarioTemp);
@@ -36,6 +40,7 @@ export class UsuarioService {
 
     async getUsuarioByCpf(cpf: string): Promise<Usuario | null> {
 
+        cpf = cpf.replace(/[^\d]/g, "");
         if(!cpf)throw new Error('CPF invalido.');
         return this.usuarioRepository.getUsuarioByCpf(cpf);
     }

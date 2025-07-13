@@ -21,6 +21,7 @@ export class Usuario {
     }
 
     private validarCpf(cpf: string): boolean {
+
         if (!cpf || cpf.length !== 11) {
             return false;
         }
@@ -36,12 +37,11 @@ export class Usuario {
     }
 
     constructor(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number, id?: number) {
+
+        cpf = cpf.replace(/[^\d]/g, "");
+
         if (!nome || nome.trim() === "") {
             throw new Error("O nome do usuário não pode ser vazio.");
-        }
-
-        if (!cpf || cpf.trim() === "") {
-            throw new Error("O CPF não pode ser vazio.");
         }
 
         if (!this.validarCpf(cpf)) {

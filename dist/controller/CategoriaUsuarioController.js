@@ -46,7 +46,7 @@ let CategoriaUsuarioController = class CategoriaUsuarioController extends tsoa_1
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const novaCategoriaUsuario = yield this.categoriaUsuarioService.criarCategoriaUsuario(dto.nome);
-                return success(201, new BasicResponseDto_1.BasicResponseDto('Categoria criada com sucesso', novaCategoriaUsuario));
+                return success(201, new BasicResponseDto_1.BasicResponseDto('Categoria de usuario criada com sucesso', novaCategoriaUsuario));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));

@@ -34,8 +34,19 @@ let UsuarioController = class UsuarioController extends tsoa_1.Controller {
     listarUsuarios(fail, success) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const categoriasUsuario = yield this.UsuarioService.getUsuarios();
-                return success(200, new BasicResponseDto_1.BasicResponseDto('Lista de categorias de usuarios', categoriasUsuario));
+                const usuarios = yield this.UsuarioService.getUsuarios();
+                return success(200, new BasicResponseDto_1.BasicResponseDto('Lista de usuarios', usuarios));
+            }
+            catch (error) {
+                return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+            }
+        });
+    }
+    getUsuarioByCpf(cpf, fail, success) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const usuario = yield this.UsuarioService.getUsuarioByCpf(cpf);
+                return success(200, new BasicResponseDto_1.BasicResponseDto('Detalhes do usuario', usuario));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
@@ -45,8 +56,8 @@ let UsuarioController = class UsuarioController extends tsoa_1.Controller {
     addUsuario(dto, fail, success) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const novaUsuario = yield this.UsuarioService.criarUsuario(dto.nome, dto.cpf, dto.ativo, dto.categoriaId, dto.cursoId);
-                return success(201, new BasicResponseDto_1.BasicResponseDto('Categoria criada com sucesso', novaUsuario));
+                const novoUsuario = yield this.UsuarioService.criarUsuario(dto.nome, dto.cpf, dto.ativo, dto.categoriaId, dto.cursoId);
+                return success(201, new BasicResponseDto_1.BasicResponseDto('Usuario criado com sucesso', novoUsuario));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
@@ -64,6 +75,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsuarioController.prototype, "listarUsuarios", null);
 __decorate([
+    (0, tsoa_1.Get)('{cpf}'),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Function, Function]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "getUsuarioByCpf", null);
+__decorate([
     (0, tsoa_1.Post)(),
     __param(0, (0, tsoa_1.Body)()),
     __param(1, (0, tsoa_1.Res)()),
@@ -73,6 +93,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsuarioController.prototype, "addUsuario", null);
 exports.UsuarioController = UsuarioController = __decorate([
-    (0, tsoa_1.Route)('Usuario'),
+    (0, tsoa_1.Route)('usuario'),
     (0, tsoa_1.Tags)('Usuario')
 ], UsuarioController);

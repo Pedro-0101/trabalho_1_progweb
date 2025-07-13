@@ -33,5 +33,10 @@ class CursoService {
             return yield this.cursoRepository.getCursoById(cursoId);
         });
     }
+    getCursos() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.cursoRepository.getCursos();
+        });
+    }
 }
 exports.CursoService = CursoService;
