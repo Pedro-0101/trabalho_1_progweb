@@ -117,25 +117,25 @@ export class UsuarioService {
         for (const usuario of usuarios || []) {
             let novoStatus: string | null = null;
 
-            // Buscar todos os empréstimos abertos do usuário
+            // Buscar todos os emprestimos abertos do usuario
             const emprestimos = await emprestimoService.getListaEmprestimos(true, usuario.id);
 
             if (!emprestimos || emprestimos.length === 0) {
-                // Sem empréstimos abertos, mantém ativo
+                // Sem emprestimos abertos, mantem ativo
                 continue;
             }
 
-            // Pega o maior suspensao_ate dos empréstimos
+            // Pega o maior suspensao_ate dos emprestimos
             const maiorSuspensaoAte = emprestimos
                 .map(emp => emp.suspensaoAte)
                 .filter((dt): dt is Date => dt !== null && dt !== undefined)
                 .reduce((max, dt) => (dt > max ? dt : max), new Date(0));
 
-            // Se maior suspensão já passou, usuário fica ativo
+            // Se maior suspensao ja passou, usuario fica ativo
             if (maiorSuspensaoAte && maiorSuspensaoAte < hoje) {
                 novoStatus = "Ativo";
             } else {
-                // Contar empréstimos com mais de 20 dias de atraso
+                // Contar emprestimos com mais de 20 dias de atraso
                 const atrasosMais20Dias = emprestimos.filter(emp => {
                     const diasAtraso = DateUtils.diferencaDias(hoje, emp.dataDevolucao);
                     return diasAtraso > 20;
@@ -150,7 +150,7 @@ export class UsuarioService {
                 }
             }
 
-            // Atualiza status só se for diferente do atual
+            // Atualiza status so se for diferente do atual
             if (novoStatus && usuario.ativo !== novoStatus) {
                 console.log(`Atualizando status do usuário ${usuario.cpf} de ${usuario.ativo} para ${novoStatus}`);
                 await this.usuarioRepository.atualizarSuspensao(usuario.cpf, novoStatus);
