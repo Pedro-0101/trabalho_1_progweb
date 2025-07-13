@@ -52,4 +52,12 @@ export class EstoqueService {
         return await this.estoqueRepository.getEstoqueDisponivel(disponivel, livroId);
 
     }
+
+    async getEstoqueById(id: number): Promise<Estoque | null> {
+
+        if(!id)throw new Error('Id de estoque invalido.');
+
+        return await this.estoqueRepository.getEstoqueById(id);
+
+    }
 }

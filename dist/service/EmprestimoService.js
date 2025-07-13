@@ -32,7 +32,7 @@ class EmprestimoService {
                 throw new Error("Usuário inativo.");
             if (usuario.ativo == "Suspenso")
                 throw new Error("Usuário suspenso.");
-            // Busca estoque e valida
+            // Busca estoque e valida ***Rever essa validacao***
             const estoque = yield this.estoqueService.getEstoqueByLivroId(codigoExemplar);
             if (!estoque)
                 throw new Error("Estoque não encontrado.");

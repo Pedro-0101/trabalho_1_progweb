@@ -24,6 +24,20 @@ export class EstoqueController extends Controller {
 		}
 	}
 
+	@Get('{id}')
+	async getEstoqueById(
+		@Path() id: number,
+		@Res() fail: TsoaResponse<400, BasicResponseDto>,
+		@Res() success: TsoaResponse<200, BasicResponseDto>
+	): Promise<void> {
+		try {
+			const estoque = await this.estoqueService.getEstoqueById(id);
+			return success(200, new BasicResponseDto('Detalhes do estoque', estoque));
+		} catch (error: any) {
+			return fail(400, new BasicResponseDto(error.message, undefined));
+		}
+	}
+
 	@Post()
 	async addUsuario(
 		@Body() dto: EstoqueDTO,

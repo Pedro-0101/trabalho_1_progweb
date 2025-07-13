@@ -57,5 +57,12 @@ class EstoqueService {
             return yield this.estoqueRepository.getEstoqueDisponivel(disponivel, livroId);
         });
     }
+    getEstoqueById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!id)
+                throw new Error('Id de estoque invalido.');
+            return yield this.estoqueRepository.getEstoqueById(id);
+        });
+    }
 }
 exports.EstoqueService = EstoqueService;

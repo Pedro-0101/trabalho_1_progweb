@@ -42,6 +42,17 @@ let EstoqueController = class EstoqueController extends tsoa_1.Controller {
             }
         });
     }
+    getEstoqueById(id, fail, success) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const estoque = yield this.estoqueService.getEstoqueById(id);
+                return success(200, new BasicResponseDto_1.BasicResponseDto('Detalhes do estoque', estoque));
+            }
+            catch (error) {
+                return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+            }
+        });
+    }
     addUsuario(dto, fail, success) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -65,6 +76,15 @@ __decorate([
     __metadata("design:paramtypes", [Function, Function, Boolean, Number]),
     __metadata("design:returntype", Promise)
 ], EstoqueController.prototype, "listarEstoqueDisponivel", null);
+__decorate([
+    (0, tsoa_1.Get)('{id}'),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "getEstoqueById", null);
 __decorate([
     (0, tsoa_1.Post)(),
     __param(0, (0, tsoa_1.Body)()),
