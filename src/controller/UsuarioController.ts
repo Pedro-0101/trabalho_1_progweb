@@ -71,4 +71,18 @@ export class UsuarioController extends Controller{
             return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
+
+    @Delete('{cpf}')
+    async deletarUsuario(
+        @Path() cpf: string,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void> {
+        try {
+            await this.UsuarioService.deletarUsuario(cpf);
+            return success(200, new BasicResponseDto('Usuario deletado com sucesso com sucesso', undefined));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
+        }
+    }
 }

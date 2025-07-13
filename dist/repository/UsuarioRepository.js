@@ -103,5 +103,20 @@ class UsuarioRepository {
             }
         });
     }
+    deletarUsuario(cpf) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('DELETE FROM usuarios WHERE cpf = ?', [cpf]);
+                if (resultado.affectedRows === 0) {
+                    return false;
+                }
+                return true;
+            }
+            catch (err) {
+                console.error('Erro ao deletar usuário:', err);
+                throw err;
+            }
+        });
+    }
 }
 exports.UsuarioRepository = UsuarioRepository;

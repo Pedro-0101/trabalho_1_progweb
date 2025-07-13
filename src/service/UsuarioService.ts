@@ -73,4 +73,14 @@ export class UsuarioService {
         return await this.usuarioRepository.atualizarUsuario(usuarioAtualizado.nome, usuarioAtualizado.cpf, usuarioAtualizado.ativo, usuarioAtualizado.categoriaId, usuarioAtualizado.cursoId);
 
     }
+
+    async deletarUsuario(cpf: string): Promise<Boolean> {
+
+        cpf = cpf.replace(/[^\d]/g, "");
+        if(!cpf)throw new Error('CPF invalido.');
+        const usuario = await this.getUsuarioByCpf(cpf);
+        if(!usuario)throw new Error('CPF invalido.');
+
+        return await this.usuarioRepository.deletarUsuario(cpf);
+    }
 }

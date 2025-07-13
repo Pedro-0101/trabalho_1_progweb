@@ -109,4 +109,20 @@ export class UsuarioRepository {
             throw err;
         }
     }
+
+    async deletarUsuario(cpf: string): Promise<Boolean> {
+        try {
+            const resultado = await executeQuery(
+                'DELETE FROM usuarios WHERE cpf = ?',
+                [cpf]
+            );
+            if (resultado.affectedRows === 0) {
+                return false;
+            }
+            return true
+        } catch (err) {
+            console.error('Erro ao deletar usuário:', err);
+            throw err;
+        }
+    }
 }

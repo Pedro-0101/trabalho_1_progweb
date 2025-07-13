@@ -72,5 +72,16 @@ class UsuarioService {
             return yield this.usuarioRepository.atualizarUsuario(usuarioAtualizado.nome, usuarioAtualizado.cpf, usuarioAtualizado.ativo, usuarioAtualizado.categoriaId, usuarioAtualizado.cursoId);
         });
     }
+    deletarUsuario(cpf) {
+        return __awaiter(this, void 0, void 0, function* () {
+            cpf = cpf.replace(/[^\d]/g, "");
+            if (!cpf)
+                throw new Error('CPF invalido.');
+            const usuario = yield this.getUsuarioByCpf(cpf);
+            if (!usuario)
+                throw new Error('CPF invalido.');
+            return yield this.usuarioRepository.deletarUsuario(cpf);
+        });
+    }
 }
 exports.UsuarioService = UsuarioService;
