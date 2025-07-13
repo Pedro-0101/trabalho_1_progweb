@@ -16,21 +16,21 @@ export class CategoriaLivroRepository {
 	}
 
 	private async createTable(){
-		const query = `CREATE TABLE IF NOT EXISTS categoriasLivro (
+		const query = `CREATE TABLE IF NOT EXISTS categorias_livro (
 				id INT AUTO_INCREMENT PRIMARY KEY,
 				nome VARCHAR(255) NOT NULL
 		)`;
 		try {
 			const resultado = await executeQuery(query, []);
-			console.log('Tabela categoriasLivro criada com sucesso: ', resultado);
+			console.log('Tabela categorias_livro criada com sucesso: ', resultado);
 		} catch (err) {
-			console.error('Erro ao criar tabela categoriasLivro', err);
+			console.error('Erro ao criar tabela categorias_livro', err);
 		}
 	}
 
 	async insertCategoriaLivro(categoriaLivro: CategoriaLivro): Promise<number> {
 		const resultado = await executeQuery(
-			'INSERT INTO categoriasLivro(nome) VALUES (?)',
+			'INSERT INTO categorias_livro(nome) VALUES (?)',
 			[categoriaLivro.nome]
 		);
 		console.log('Categoria de livro inserida com sucesso!', resultado);
@@ -40,7 +40,7 @@ export class CategoriaLivroRepository {
 	async getCategoriaLivroById(categoriaId: number): Promise<CategoriaLivro | null> {
 
 		const rows = await executeQuery(
-			'SELECT * FROM categoiriasLivro WHERE id = ?',
+			'SELECT * FROM categoirias_livro WHERE id = ?',
 			[categoriaId]
 		);
 
@@ -59,7 +59,7 @@ export class CategoriaLivroRepository {
 
     async getCategoriasLivro(): Promise<CategoriaLivro[] | null> {
         const rows = await executeQuery(
-			'SELECT * FROM categoiriasLivro',
+			'SELECT * FROM categorias_livro',
 			[]
 		);
 
@@ -70,18 +70,3 @@ export class CategoriaLivroRepository {
 		return rows
     }
 }
-
-		/*
-		public getListaCategoriasLivros(): CategoriaLivro[] {
-				return this.listaCategoriasLivros;
-		}
-
-		public addCategoriaLivro(categoria: CategoriaLivro): void {
-				this.listaCategoriasLivros.push(categoria);
-		}
-
-		public getCategoriaLivroById(id: number): CategoriaLivro | undefined {
-				return this.listaCategoriasLivros.find(categoria => categoria.id === id);
-		}
-}
-		*/

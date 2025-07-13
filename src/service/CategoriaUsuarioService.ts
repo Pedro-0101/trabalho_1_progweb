@@ -26,9 +26,10 @@ export class CategoriaUsuarioService {
 
     }
 
-    /*public listarCategoriasUsuarios(): CategoriaUsuario[] {
-        // Retorna a lista de categorias de usuário
-        return this.categoriaUsuarioRepository.getListaCategoriasUsuarios();
-    }*/
+    async getCategoriasUsuario(): Promise<CategoriaUsuario[] | null> {
+
+        return await this.categoriaUsuarioRepository.getCategoriasUsuario();
+
+    }
 
 }

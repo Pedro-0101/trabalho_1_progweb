@@ -25,6 +25,7 @@ exports.CategoriaLivroController = void 0;
 const tsoa_1 = require("tsoa");
 const CategoriaLivroService_1 = require("../service/CategoriaLivroService");
 const BasicResponseDto_1 = require("../model/dto/BasicResponseDto");
+const CategoriaLivroDto_1 = require("../model/dto/CategoriaLivroDto");
 let CategoriaLivroController = class CategoriaLivroController extends tsoa_1.Controller {
     constructor() {
         super(...arguments);
@@ -41,6 +42,17 @@ let CategoriaLivroController = class CategoriaLivroController extends tsoa_1.Con
             }
         });
     }
+    addCategoriaLivro(dto, fail, success) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const novaCategoriaLivro = yield this.categoriaLivroService.criarCategoriaLivro(dto.nome);
+                return success(201, new BasicResponseDto_1.BasicResponseDto('Categoria criada com sucesso', novaCategoriaLivro));
+            }
+            catch (error) {
+                return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+            }
+        });
+    }
 };
 exports.CategoriaLivroController = CategoriaLivroController;
 __decorate([
@@ -51,6 +63,15 @@ __decorate([
     __metadata("design:paramtypes", [Function, Function]),
     __metadata("design:returntype", Promise)
 ], CategoriaLivroController.prototype, "listarCategoriasLivro", null);
+__decorate([
+    (0, tsoa_1.Post)(),
+    __param(0, (0, tsoa_1.Body)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [CategoriaLivroDto_1.CategoriaLivroDTO, Function, Function]),
+    __metadata("design:returntype", Promise)
+], CategoriaLivroController.prototype, "addCategoriaLivro", null);
 exports.CategoriaLivroController = CategoriaLivroController = __decorate([
     (0, tsoa_1.Route)('categoriaLivro'),
     (0, tsoa_1.Tags)('CategoriaLivro')

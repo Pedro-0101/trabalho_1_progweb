@@ -33,5 +33,10 @@ class CategoriaUsuarioService {
             return yield this.categoriaUsuarioRepository.getCategoriaUsuarioById(categoriaId);
         });
     }
+    getCategoriasUsuario() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.categoriaUsuarioRepository.getCategoriasUsuario();
+        });
+    }
 }
 exports.CategoriaUsuarioService = CategoriaUsuarioService;

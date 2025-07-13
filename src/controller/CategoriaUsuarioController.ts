@@ -1,20 +1,39 @@
-/*import { CategoriaUsuarioService } from "../service/CategoriaUsuarioService";
-import { CategoriaUsuario } from "../model/CategoriaUsuario";
-import { Request, Response } from "express";
+import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse} from "tsoa";
+import { CategoriaUsuarioService } from "../service/CategoriaUsuarioService";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { CategoriaUsuarioDTO } from "../model/dto/CategoriaUsuarioDto";
 
-const categoriaUsuarioService = new CategoriaUsuarioService();
+@Route('categoriaUsuario')
+@Tags('CategoriaUsuario')
 
-export class CategoriaUsuarioController {
+export class CategoriaUsuarioController extends Controller{
 
-    public listarCategoriasUsuarios(req: Request, res: Response): CategoriaUsuario[] | void{
+    categoriaUsuarioService = new CategoriaUsuarioService();
+    
+    @Get()
+    async listarCategoriasUsuario(
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise< | void> {
         try {
-            // Lista todas as categorias
-            const categorias: CategoriaUsuario[] = categoriaUsuarioService.listarCategoriasUsuarios();
-            res.status(200).json(categorias);
-        } catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : "Erro ao listar as categorias."
-            });
+            const categoriasUsuario = await this.categoriaUsuarioService.getCategoriasUsuario();
+            return success(200, new BasicResponseDto('Lista de categorias de usuarios', categoriasUsuario));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
-}*/
+
+    @Post()
+    async addCategoriaUsuario(
+        @Body() dto: CategoriaUsuarioDTO,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<201, BasicResponseDto>
+    ): Promise< | void> {
+        try {
+            const novaCategoriaUsuario = await this.categoriaUsuarioService.criarCategoriaUsuario(dto.nome);
+            return success(201, new BasicResponseDto('Categoria criada com sucesso', novaCategoriaUsuario));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
+        }
+    }
+}

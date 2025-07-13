@@ -16,21 +16,21 @@ export class CategoriaUsuarioRepository {
     }
 
     private async createTable() {
-        const query = `CREATE TABLE IF NOT EXISTS categoriasUsuario (
+        const query = `CREATE TABLE IF NOT EXISTS categorias_usuario (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL
         )`;
         try {
             const resultado = await executeQuery(query, []);
-            console.log('Tabela categoriasUsuario criada com sucesso: ', resultado);
+            console.log('Tabela categorias_usuario criada com sucesso: ', resultado);
         } catch (err) {
-            console.error('Erro ao criar tabela categoriasUsuario', err);
+            console.error('Erro ao criar tabela categorias_usuario', err);
         }
     }
 
     async insertCategoriaUsuario(categoriaUsuario: CategoriaUsuario): Promise<number> {
         const resultado = await executeQuery(
-            'INSERT INTO categoriasUsuario(nome) VALUES (?)',
+            'INSERT INTO categorias_usuario(nome) VALUES (?)',
             [categoriaUsuario.nome]
         );
         console.log('Categoria de usuário inserida com sucesso!', resultado);
@@ -40,7 +40,7 @@ export class CategoriaUsuarioRepository {
     async getCategoriaUsuarioById(categoriaId: number): Promise<CategoriaUsuario | null> {
 
         const rows = await executeQuery(
-            'SELECT * FROM categoriasUsuario WHERE id = ?',
+            'SELECT * FROM categorias_usuario WHERE id = ?',
             [categoriaId]
         );
 
@@ -56,19 +56,18 @@ export class CategoriaUsuarioRepository {
         );
 
     }
+
+    async getCategoriasUsuario(): Promise<CategoriaUsuario[] | null> {
+        const rows = await executeQuery(
+        'SELECT * FROM categorias_usuario',
+        []
+    );
+
+    if (!rows || rows.length === 0) {
+        return null;
+    }
+
+    return rows;
+
+    }
 }
- 
-
-    /*
-    public getListaCategoriasUsuarios(): CategoriaUsuario[] {
-        return this.listaCategoriasUsuarios;
-    }
-    
-    public addCategoriaUsuario(categoria: CategoriaUsuario): void {
-        this.listaCategoriasUsuarios.push(categoria);
-    }
-
-    public getCategoriaUsuarioById(id: number): CategoriaUsuario | undefined {
-        return this.listaCategoriasUsuarios.find(categoria => categoria.id === id);
-    }
-    */

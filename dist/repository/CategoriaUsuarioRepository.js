@@ -24,29 +24,29 @@ class CategoriaUsuarioRepository {
     }
     createTable() {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = `CREATE TABLE IF NOT EXISTS categoriasUsuario (
+            const query = `CREATE TABLE IF NOT EXISTS categorias_usuario (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL
         )`;
             try {
                 const resultado = yield (0, mysql_1.executeQuery)(query, []);
-                console.log('Tabela categoriasUsuario criada com sucesso: ', resultado);
+                console.log('Tabela categorias_usuario criada com sucesso: ', resultado);
             }
             catch (err) {
-                console.error('Erro ao criar tabela categoriasUsuario', err);
+                console.error('Erro ao criar tabela categorias_usuario', err);
             }
         });
     }
     insertCategoriaUsuario(categoriaUsuario) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO categoriasUsuario(nome) VALUES (?)', [categoriaUsuario.nome]);
+            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO categorias_usuario(nome) VALUES (?)', [categoriaUsuario.nome]);
             console.log('Categoria de usuário inserida com sucesso!', resultado);
             return resultado.insertId;
         });
     }
     getCategoriaUsuarioById(categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categoriasUsuario WHERE id = ?', [categoriaId]);
+            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categorias_usuario WHERE id = ?', [categoriaId]);
             if (!rows || rows.length === 0) {
                 return null;
             }
@@ -54,18 +54,14 @@ class CategoriaUsuarioRepository {
             return new CategoriaUsuario_1.CategoriaUsuario(row.nome, row.id);
         });
     }
+    getCategoriasUsuario() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categorias_usuario', []);
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+            return rows;
+        });
+    }
 }
 exports.CategoriaUsuarioRepository = CategoriaUsuarioRepository;
-/*
-public getListaCategoriasUsuarios(): CategoriaUsuario[] {
-    return this.listaCategoriasUsuarios;
-}
-
-public addCategoriaUsuario(categoria: CategoriaUsuario): void {
-    this.listaCategoriasUsuarios.push(categoria);
-}
-
-public getCategoriaUsuarioById(id: number): CategoriaUsuario | undefined {
-    return this.listaCategoriasUsuarios.find(categoria => categoria.id === id);
-}
-*/ 

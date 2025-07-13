@@ -24,29 +24,29 @@ class CategoriaLivroRepository {
     }
     createTable() {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = `CREATE TABLE IF NOT EXISTS categoriasLivro (
+            const query = `CREATE TABLE IF NOT EXISTS categorias_livro (
 				id INT AUTO_INCREMENT PRIMARY KEY,
 				nome VARCHAR(255) NOT NULL
 		)`;
             try {
                 const resultado = yield (0, mysql_1.executeQuery)(query, []);
-                console.log('Tabela categoriasLivro criada com sucesso: ', resultado);
+                console.log('Tabela categorias_livro criada com sucesso: ', resultado);
             }
             catch (err) {
-                console.error('Erro ao criar tabela categoriasLivro', err);
+                console.error('Erro ao criar tabela categorias_livro', err);
             }
         });
     }
     insertCategoriaLivro(categoriaLivro) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO categoriasLivro(nome) VALUES (?)', [categoriaLivro.nome]);
+            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO categorias_livro(nome) VALUES (?)', [categoriaLivro.nome]);
             console.log('Categoria de livro inserida com sucesso!', resultado);
             return resultado.insertId;
         });
     }
     getCategoriaLivroById(categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categoiriasLivro WHERE id = ?', [categoriaId]);
+            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categoirias_livro WHERE id = ?', [categoriaId]);
             if (!rows || rows.length === 0) {
                 return null;
             }
@@ -56,7 +56,7 @@ class CategoriaLivroRepository {
     }
     getCategoriasLivro() {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categoiriasLivro', []);
+            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categorias_livro', []);
             if (!rows || rows.length === 0) {
                 return null;
             }
@@ -65,17 +65,3 @@ class CategoriaLivroRepository {
     }
 }
 exports.CategoriaLivroRepository = CategoriaLivroRepository;
-/*
-public getListaCategoriasLivros(): CategoriaLivro[] {
-        return this.listaCategoriasLivros;
-}
-
-public addCategoriaLivro(categoria: CategoriaLivro): void {
-        this.listaCategoriasLivros.push(categoria);
-}
-
-public getCategoriaLivroById(id: number): CategoriaLivro | undefined {
-        return this.listaCategoriasLivros.find(categoria => categoria.id === id);
-}
-}
-*/ 

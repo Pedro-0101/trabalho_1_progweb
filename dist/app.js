@@ -18,7 +18,7 @@ app.use('/api', apiRouter);
 // Função para logar informações quando o servidor é iniciado
 function logInfo() {
     console.log('Servidor iniciado com sucesso!');
-    console.log('Acesse a biblioteca em http://localhost:3090/libary');
+    console.log('Acesse a documentacao da api em http://localhost:3040/api-docs');
 }
 /*
 //Funcao para cadastrar cursos, categorias de livros e usuarios conforme instrucoes
