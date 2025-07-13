@@ -134,7 +134,11 @@ export class EmprestimoService {
         // Calcula atraso
         const diasAtraso = EmprestimoService.calcularSuspensao(emprestimo.dataDevolucao, dataEntregaDate);
         const diasSuspensao = diasAtraso * 3;
-        const suspensao_ate = DateUtils.somaData(dataEntregaDate, diasSuspensao);
+        var suspensao_ate: Date | null = null
+
+        if(diasSuspensao != 0){
+            suspensao_ate = DateUtils.somaData(dataEntregaDate, diasSuspensao);
+        }
 
         // Atualiza emprestimo
         const emprestimoAtualizado = await this.emprestimoRepository.registraDevolucao(id, dataEntregaString, diasAtraso, suspensao_ate);

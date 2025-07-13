@@ -160,7 +160,7 @@ export class EmprestimoRepository {
         }
     }
 
-    async registraDevolucao(id: number, dataEntrega: string, diasAtraso: number, suspensao_ate: Date): Promise<Emprestimo | null> {
+    async registraDevolucao(id: number, dataEntrega: string, diasAtraso: number, suspensao_ate: Date | null): Promise<Emprestimo | null> {
         try{
 
             const resultado = await executeQuery(
