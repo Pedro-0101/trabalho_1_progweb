@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse } from "tsoa";
+import { Body, Controller, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse, Query } from "tsoa";
 import { LivroService } from "../service/LivroService";
 import { BasicResponseDto } from "../model/dto/BasicResponseDto";
 import { LivroDTO } from "../model/dto/LivroDto";
@@ -12,10 +12,13 @@ export class LivroController extends Controller {
     @Get()
     async listarLivros(
         @Res() fail: TsoaResponse<400, BasicResponseDto>,
-        @Res() success: TsoaResponse<200, BasicResponseDto>
+        @Res() success: TsoaResponse<200, BasicResponseDto>,
+        @Query() autor?: string,
+        @Query() editora?: string,
+        @Query() categoriaId?: number
     ): Promise<void> {
         try {
-            const livros = await this.LivroService.getLivros();
+            const livros = await this.LivroService.getLivros(autor, editora, categoriaId);
             return success(200, new BasicResponseDto('Lista de livros', livros));
         } catch (error: any) {
             return fail(400, new BasicResponseDto(error.message, undefined));

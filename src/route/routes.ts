@@ -263,6 +263,9 @@ export function RegisterRoutes(app: Router) {
         const argsLivroController_listarLivros: Record<string, TsoaRoute.ParameterSchema> = {
                 fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
                 success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
+                autor: {"in":"query","name":"autor","dataType":"string"},
+                editora: {"in":"query","name":"editora","dataType":"string"},
+                categoriaId: {"in":"query","name":"categoriaId","dataType":"double"},
         };
         app.get('/livro',
             ...(fetchMiddlewares<RequestHandler>(LivroController)),

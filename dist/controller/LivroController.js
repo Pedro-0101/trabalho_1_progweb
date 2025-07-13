@@ -31,10 +31,10 @@ let LivroController = class LivroController extends tsoa_1.Controller {
         super(...arguments);
         this.LivroService = new LivroService_1.LivroService();
     }
-    listarLivros(fail, success) {
+    listarLivros(fail, success, autor, editora, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const livros = yield this.LivroService.getLivros();
+                const livros = yield this.LivroService.getLivros(autor, editora, categoriaId);
                 return success(200, new BasicResponseDto_1.BasicResponseDto('Lista de livros', livros));
             }
             catch (error) {
@@ -92,8 +92,11 @@ __decorate([
     (0, tsoa_1.Get)(),
     __param(0, (0, tsoa_1.Res)()),
     __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Query)()),
+    __param(3, (0, tsoa_1.Query)()),
+    __param(4, (0, tsoa_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function, Function]),
+    __metadata("design:paramtypes", [Function, Function, String, String, Number]),
     __metadata("design:returntype", Promise)
 ], LivroController.prototype, "listarLivros", null);
 __decorate([

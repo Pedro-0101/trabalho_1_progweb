@@ -65,9 +65,9 @@ class LivroService {
             return yield this.livroRepository.getLivroAEE(autor, editora, edicao);
         });
     }
-    getLivros() {
+    getLivros(autor, editora, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.livroRepository.getLivros();
+            return yield this.livroRepository.getLivros(autor, editora, categoriaId);
         });
     }
     atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {

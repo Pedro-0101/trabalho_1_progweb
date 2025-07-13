@@ -106,14 +106,34 @@ class LivroRepository {
             }
         });
     }
-    getLivros() {
+    getLivros(autor, editora, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros', []);
+                const conditions = [];
+                const params = [];
+                if (autor) {
+                    conditions.push("autor = ?");
+                    params.push(autor.trim());
+                }
+                if (editora) {
+                    conditions.push("editora = ?");
+                    params.push(editora.trim());
+                }
+                if (categoriaId) {
+                    conditions.push("categoria_id = ?");
+                    params.push(categoriaId);
+                }
+                let query = "SELECT * FROM livros";
+                if (conditions.length > 0) {
+                    query += " WHERE " + conditions.join(" AND ");
+                }
+                console.log("Query final:", query);
+                console.log("Params:", params);
+                const rows = yield (0, mysql_1.executeQuery)(query, params);
                 if (!rows || rows.length === 0) {
                     return null;
                 }
-                return rows;
+                return rows.map((row) => new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id));
             }
             catch (err) {
                 console.error('Erro ao buscar livros:', err);

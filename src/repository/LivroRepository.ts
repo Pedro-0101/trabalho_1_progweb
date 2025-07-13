@@ -134,23 +134,60 @@ export class LivroRepository {
         }
     }
 
-    async getLivros(): Promise<Livro[] | null> {
-        try {
-            const rows = await executeQuery(
-                'SELECT * FROM livros',
-                []
-            );
+    async getLivros(autor?: string, editora?: string, categoriaId?: number): Promise<Livro[] | null> {
+    try {
+        const conditions: string[] = [];
+        const params: any[] = [];
 
-            if (!rows || rows.length === 0) {
-                return null;
-            }
-
-            return rows;
-        } catch (err) {
-            console.error('Erro ao buscar livros:', err);
-            throw err;
+        if (autor) {
+            conditions.push("autor = ?");
+            params.push(autor.trim());
         }
+        if (editora) {
+            conditions.push("editora = ?");
+            params.push(editora.trim());
+        }
+        if (categoriaId) {
+            conditions.push("categoria_id = ?");
+            params.push(categoriaId);
+        }
+
+        let query = "SELECT * FROM livros";
+        if (conditions.length > 0) {
+            query += " WHERE " + conditions.join(" AND ");
+        }
+
+        const rows = await executeQuery(query, params);
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        interface LivroRow {
+            id: number;
+            titulo: string;
+            autor: string;
+            editora: string;
+            edicao: string;
+            isbn: string;
+            categoria_id: number;
+        }
+
+        return (rows as LivroRow[]).map((row: LivroRow) => new Livro(
+            row.titulo,
+            row.autor,
+            row.editora,
+            row.edicao,
+            row.isbn,
+            row.categoria_id,
+            row.id
+        ));
+    } catch (err) {
+        console.error('Erro ao buscar livros:', err);
+        throw err;
     }
+}
+
 
     async atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro | null> {
         try {

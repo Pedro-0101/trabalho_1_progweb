@@ -71,10 +71,8 @@ export class LivroService {
 
     }
 
-    async getLivros(): Promise<Livro[] | null> {
-
-        return await this.livroRepository.getLivros();
-
+    async getLivros(autor?: string, editora?: string, categoriaId?: number): Promise<Livro[] | null> {
+        return await this.livroRepository.getLivros(autor, editora, categoriaId);
     }
 
     async atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro | null> {
