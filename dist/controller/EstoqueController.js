@@ -31,10 +31,10 @@ let EstoqueController = class EstoqueController extends tsoa_1.Controller {
         super(...arguments);
         this.estoqueService = new EstoqueService_1.EstoqueService();
     }
-    listarEstoqueDisponivel(fail, success, disponivel, livroId) {
+    listarEstoque(fail, success, disponivel, livroId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const estoqueDisponivel = yield this.estoqueService.getEstoqueDisponivel(disponivel, livroId);
+                const estoqueDisponivel = yield this.estoqueService.getListaEstoque(disponivel, livroId);
                 return success(200, new BasicResponseDto_1.BasicResponseDto('Lista de exemplares', estoqueDisponivel));
             }
             catch (error) {
@@ -56,8 +56,30 @@ let EstoqueController = class EstoqueController extends tsoa_1.Controller {
     addUsuario(dto, fail, success) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const novoUsuario = yield this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
-                return success(201, new BasicResponseDto_1.BasicResponseDto('Usuario criado com sucesso', novoUsuario));
+                const novoEsxemplar = yield this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
+                return success(201, new BasicResponseDto_1.BasicResponseDto('Exemplar inserido com sucesso', novoEsxemplar));
+            }
+            catch (error) {
+                return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+            }
+        });
+    }
+    atualizaDisponibilidade(id, fail, success) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const exemplarAtualizado = yield this.estoqueService.atualizarDisponibilidade(id);
+                return success(200, new BasicResponseDto_1.BasicResponseDto('Disponibilidade do exemplar atualizada com sucesso', exemplarAtualizado));
+            }
+            catch (error) {
+                return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+            }
+        });
+    }
+    deletarUsuario(id, fail, success) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.estoqueService.deletarEstoque(id);
+                return success(200, new BasicResponseDto_1.BasicResponseDto('Estoque deletado com sucesso com sucesso', undefined));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
@@ -75,7 +97,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Function, Function, Boolean, Number]),
     __metadata("design:returntype", Promise)
-], EstoqueController.prototype, "listarEstoqueDisponivel", null);
+], EstoqueController.prototype, "listarEstoque", null);
 __decorate([
     (0, tsoa_1.Get)('{id}'),
     __param(0, (0, tsoa_1.Path)()),
@@ -94,6 +116,24 @@ __decorate([
     __metadata("design:paramtypes", [EstoqueDto_1.EstoqueDTO, Function, Function]),
     __metadata("design:returntype", Promise)
 ], EstoqueController.prototype, "addUsuario", null);
+__decorate([
+    (0, tsoa_1.Put)('{id}'),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "atualizaDisponibilidade", null);
+__decorate([
+    (0, tsoa_1.Delete)('{id}'),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Function, Function]),
+    __metadata("design:returntype", Promise)
+], EstoqueController.prototype, "deletarUsuario", null);
 exports.EstoqueController = EstoqueController = __decorate([
     (0, tsoa_1.Route)('estoque'),
     (0, tsoa_1.Tags)('Estoque')

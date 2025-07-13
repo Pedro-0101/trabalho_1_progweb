@@ -43,57 +43,137 @@ class EstoqueRepository {
     }
     insertEstoque(estoque) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO estoques(livro_id, quantidade, quantidade_emprestada, disponivel) VALUES (?, ?, ?, ?)', [estoque.livroId, estoque.quantidade, estoque.quantidadeEmprestada, estoque.disponivel]);
-            console.log('Estoque inserido com sucesso!', resultado);
-            return resultado.insertId;
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO estoques(livro_id, quantidade, quantidade_emprestada, disponivel) VALUES (?, ?, ?, ?)', [estoque.livroId, estoque.quantidade, estoque.quantidadeEmprestada, estoque.disponivel]);
+                console.log('Estoque inserido com sucesso!', resultado);
+                return resultado.insertId;
+            }
+            catch (err) {
+                console.error('Erro ao inserir estoque', err);
+                return 0;
+            }
         });
     }
     getEstoqueByLivroId(livro_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM estoques WHERE livro_id = ?', [livro_id]);
-            if (!rows || rows.length === 0) {
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM estoques WHERE livro_id = ?', [livro_id]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Estoque_1.Estoque(row.livro_id, row.quantidade, row.disponivel, row.quantidade_emprestada, row.id);
+            }
+            catch (err) {
+                console.error('Erro ao buscar estoque por livro_id', err);
                 return null;
             }
-            const row = rows[0];
-            return new Estoque_1.Estoque(row.livro_id, row.quantidade, row.disponivel, row.quantidade_emprestada, row.id);
         });
     }
     atualizarQuantidadeEmprestada(estoqueId, qtde_atualizada) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultado = yield (0, mysql_1.executeQuery)('UPDATE estoques SET quantidade_emprestada = ? WHERE id = ?', [qtde_atualizada, estoqueId]);
-            console.log('Quantidade emprestada atualizada com sucesso', resultado);
-            return true;
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('UPDATE estoques SET quantidade_emprestada = ? WHERE id = ?', [qtde_atualizada, estoqueId]);
+                console.log('Quantidade emprestada atualizada com sucesso', resultado);
+                return true;
+            }
+            catch (err) {
+                console.error('Erro ao atualizar quantidade emprestada', err);
+                return false;
+            }
         });
     }
-    getEstoqueDisponivel(disponivel, livroId) {
+    getListaEstoque(disponivel, livroId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const conditions = [];
-            const params = [];
-            conditions.push("disponivel = ?");
-            params.push(disponivel);
-            if (livroId) {
-                conditions.push("livro_id = ?");
-                params.push(livroId);
+            try {
+                const conditions = [];
+                const params = [];
+                conditions.push("disponivel = ?");
+                params.push(disponivel);
+                if (livroId) {
+                    conditions.push("livro_id = ?");
+                    params.push(livroId);
+                }
+                let query = 'SELECT * FROM estoques';
+                if (conditions.length > 0) {
+                    query += ' WHERE ' + conditions.join(' AND ');
+                }
+                const rows = yield (0, mysql_1.executeQuery)(query, params);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                return rows.map((row) => new Estoque_1.Estoque(row.livro_id, row.quantidade, row.disponivel, row.quantidade_emprestada, row.id));
             }
-            let query = 'SELECT * FROM estoques';
-            if (conditions.length > 0) {
-                query += ' WHERE ' + conditions.join(' AND ');
-            }
-            const rows = yield (0, mysql_1.executeQuery)(query, params);
-            if (!rows || rows.length === 0) {
+            catch (err) {
+                console.error('Erro ao buscar lista de estoques', err);
                 return null;
             }
-            return rows.map((row) => new Estoque_1.Estoque(row.livro_id, row.quantidade, row.disponivel, row.quantidade_emprestada, row.id));
         });
     }
     getEstoqueById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM estoques WHERE id = ?', [id]);
-            if (!rows || rows.length === 0) {
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM estoques WHERE id = ?', [id]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Estoque_1.Estoque(row.livro_id, row.quantidade, row.disponivel, row.quantidade_emprestada, row.id);
+            }
+            catch (err) {
+                console.error('Erro ao buscar estoque por id', err);
                 return null;
             }
-            const row = rows[0];
-            return new Estoque_1.Estoque(row.livro_id, row.quantidade, row.disponivel, row.quantidade_emprestada, row.id);
+        });
+    }
+    atualizarDisponibilidade(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)(`UPDATE estoques SET disponivel = 
+                CASE WHEN quantidade > quantidade_emprestada THEN 
+                    1 
+                    ELSE 
+                    0 
+                END 
+                WHERE id = ?`, [id]);
+                if (resultado.affectedRows != 0) {
+                    return this.getEstoqueById(id);
+                }
+                else {
+                    return null;
+                }
+            }
+            catch (err) {
+                console.error('Erro ao atualizar disponibilidade do estoque', err);
+                return null;
+            }
+        });
+    }
+    getDisponibilidadeEstoque(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('SELECT disponivel FROM estoques WHERE id = ?', [id]);
+                return resultado;
+            }
+            catch (err) {
+                console.error('Erro ao buscar estoque por id', err);
+                return false;
+            }
+        });
+    }
+    deletarEstoque(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('DELETE FROM estoques WHERE id = ?', [id]);
+                if (resultado.affectedRows == 0) {
+                    throw new Error('Erro ao deletar estoque');
+                }
+                return true;
+            }
+            catch (err) {
+                console.error('Erro ao deletar estoque', err);
+                return false;
+            }
         });
     }
 }

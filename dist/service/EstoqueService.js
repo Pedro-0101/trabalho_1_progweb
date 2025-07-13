@@ -52,9 +52,9 @@ class EstoqueService {
             return yield this.estoqueRepository.atualizarQuantidadeEmprestada(exemplar.id, qtde_atualizada);
         });
     }
-    getEstoqueDisponivel(disponivel, livroId) {
+    getListaEstoque(disponivel, livroId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.estoqueRepository.getEstoqueDisponivel(disponivel, livroId);
+            return yield this.estoqueRepository.getListaEstoque(disponivel, livroId);
         });
     }
     getEstoqueById(id) {
@@ -62,6 +62,33 @@ class EstoqueService {
             if (!id)
                 throw new Error('Id de estoque invalido.');
             return yield this.estoqueRepository.getEstoqueById(id);
+        });
+    }
+    atualizarDisponibilidade(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!id)
+                throw new Error('Id do estoque invalido');
+            return yield this.estoqueRepository.atualizarDisponibilidade(id);
+        });
+    }
+    getDisponibilidadeEstoque(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!id)
+                throw new Error('Id de estoque invalido');
+            return yield this.estoqueRepository.getDisponibilidadeEstoque(id);
+        });
+    }
+    deletarEstoque(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!id)
+                throw new Error('Id de estoque invalido');
+            const exemplar = yield this.estoqueRepository.getEstoqueById(id);
+            if (!exemplar)
+                throw new Error('Exemplar nao encontrado.');
+            if (exemplar.quantidadeEmprestada != 0) {
+                throw new Error('Exemplar esta com emprestimo em aberto.');
+            }
+            return yield this.estoqueRepository.deletarEstoque(id);
         });
     }
 }

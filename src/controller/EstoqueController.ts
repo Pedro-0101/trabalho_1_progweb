@@ -52,7 +52,7 @@ export class EstoqueController extends Controller {
 		}
 	}
 
-	@Put()
+	@Put('{id}')
 	async atualizaDisponibilidade(
 		@Path() id: number,
 		@Res() fail: TsoaResponse<400, BasicResponseDto>,
