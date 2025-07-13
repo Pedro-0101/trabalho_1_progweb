@@ -76,6 +76,33 @@ export class UsuarioRepository {
         }
     }
 
+    async getUsuarioById(usuarioId: number): Promise<Usuario | null> {
+        try {
+            const rows = await executeQuery(
+                'SELECT * FROM usuarios WHERE id = ?',
+                [usuarioId]
+            );
+
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+
+            const row = rows[0];
+
+            return new Usuario(
+                row.nome,
+                row.cpf,
+                row.ativo,
+                row.categoria_id,
+                row.curso_id,
+                row.id
+            );
+        } catch (err) {
+            console.error('Erro ao buscar usuário por id:', err);
+            throw err;
+        }
+    }
+
     async getUsuarios(categoriaId?: number, cursoId?: number): Promise<Usuario[] | null> {
         try {
 
@@ -138,5 +165,23 @@ export class UsuarioRepository {
             console.error('Erro ao deletar usuário:', err);
             throw err;
         }
+    }
+
+    async atualizarSuspensao(cpf: string, ativo: string): Promise<boolean>{
+
+        try {
+            const resultado = await executeQuery(
+                'UPDATE usuarios SET ativo = ? WHERE cpf = ?',
+                [ativo, cpf]
+            );
+            if (resultado.affectedRows === 0) {
+                return false;
+            }
+            return true
+        } catch (err) {
+            console.error('Erro ao atualizar status de usuário:', err);
+            throw err;
+        }
+
     }
 }

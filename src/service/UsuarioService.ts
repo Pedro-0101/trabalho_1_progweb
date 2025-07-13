@@ -58,6 +58,13 @@ export class UsuarioService {
         return this.usuarioRepository.getUsuarioByCpf(cpf);
     }
 
+    async getUsuarioById(usuarioId: number): Promise<Usuario | null> {
+
+        if(!usuarioId)throw new Error('Id do usuario invalido.');
+
+        return this.usuarioRepository.getUsuarioById(usuarioId);
+    }
+
     async getUsuarios(categoriaId?: number, cursoId?: number): Promise< Usuario[] | null> {
 
         return await this.usuarioRepository.getUsuarios(categoriaId, cursoId);
@@ -92,5 +99,14 @@ export class UsuarioService {
             return false;
         }
         return await this.usuarioRepository.deletarUsuario(cpf);
+    }
+
+    async atualizarSuspensao(cpf: string, ativo: string): Promise<boolean>{
+
+        if(!cpf)throw new Error('Cpf do usuario invalido.');
+        if(!ativo)throw new Error('Status de usuario invalido.');
+
+        return await this.usuarioRepository.atualizarSuspensao(cpf, ativo);
+
     }
 }

@@ -116,20 +116,55 @@ export class EmprestimoRepository {
             params.push(usuarioId);
         }
 
-        let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
+            let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
 
-        const rows = await executeQuery(query, params);
+            const rows = await executeQuery(query, params);
 
         if (!rows || rows.length === 0) {
             return null;
         }
-        return rows;
+            return rows;
 
-    } catch (err) {
-        console.error('Erro ao buscar empréstimos fechados', err);
-        return null;
+        } catch (err) {
+            console.error('Erro ao buscar empréstimos fechados', err);
+            return null;
+        }
     }
-}
 
+    async getEmprestimoById(id: number): Promise<Emprestimo | null> {
+        try{
+            const rows = await executeQuery(
+                `SELECT * FROM emprestimos WHERE id = ?`,
+                [id]
+            );
 
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+            return rows[0];
+
+        } catch (err) {
+            console.error('Erro ao buscar empréstimos fechados', err);
+            return null;
+        }
+    }
+
+    async registraDevolucao(id: number, dataEntrega: Date, diasAtraso: number, suspensao_ate: Date): Promise<Emprestimo | null> {
+        try{
+
+            const resultado = await executeQuery(
+                'UPDATE emprestimos SET data_entrega = ?, dias_atraso = ?, suspensao_ate = ? WHERE id = ?',
+                [dataEntrega, diasAtraso, suspensao_ate, id]
+            );
+            if(!resultado.affectedRows || resultado.affectedRows === 0){
+                console.error(`Nao foi possivela registrar a devolucao do emprestimo ${id}.`);
+                return null;
+            }
+            return this.getEmprestimoById(id);
+            
+        }catch (err) {
+            console.error('Erro ao registrar devolucao', err);
+            return null;
+        }
+    }
 }

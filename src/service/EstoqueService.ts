@@ -37,7 +37,6 @@ export class EstoqueService {
     async atualizarQuantidadeEmprestada(livro_id: number, quantidade: number): Promise<boolean> {
 
         if(!livro_id)throw new Error('Id do livro invalido.');
-        if(!quantidade)throw new Error('Quantidade invalida.');
 
         const exemplar = await this.getEstoqueByLivroId(livro_id);
         if(!exemplar)throw new Error('Exemplar invalido.');
@@ -45,7 +44,7 @@ export class EstoqueService {
         const qtde_atualizada = exemplar.quantidadeEmprestada + quantidade;
 
         const att =  await this.estoqueRepository.atualizarQuantidadeEmprestada(exemplar.id, qtde_atualizada);
-        const exemplarAtualizado = this.atualizarDisponibilidade(exemplar.id);
+        await this.atualizarDisponibilidade(exemplar.id);
         return att;
 
     }
