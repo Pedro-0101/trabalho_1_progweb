@@ -23,17 +23,17 @@ class LivroService {
             // Instância para validação e formatação
             const livro = new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
             // Verifica se existe livro com mesmo isbn
-            const livroReptidoIsbn = yield this.getLivroByIsbn(livro.isbn);
-            if (livroReptidoIsbn)
-                throw new Error(`O livro ${livro.titulo} ja foi incluido.`);
-            // Verifica se existe livro com mesma combinacao de autor, edicao e editora
+            const livroRepetidoIsbn = yield this.getLivroByIsbn(livro.isbn);
+            if (livroRepetidoIsbn)
+                throw new Error(`O livro com ISBN ${livro.isbn} já foi incluído.`);
+            // Verifica se existe livro com mesma combinação de autor, edição e editora
             const livroRepetidoAEE = yield this.getLivroAEE(livro.autor, livro.editora, livro.edicao);
             if (livroRepetidoAEE)
-                throw new Error(`O livro ${livro.titulo} ja foi incluido.`);
+                throw new Error(`O livro com autor ${livro.autor}, editora ${livro.editora} e edição ${livro.edicao} já foi incluído.`);
             // Verifica se existe categoria de livro
             const existeCategoria = yield this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
             if (!existeCategoria)
-                throw new Error('Categoria de livro invalida');
+                throw new Error('Categoria de livro inválida.');
             return livro;
         });
     }
@@ -48,10 +48,7 @@ class LivroService {
     }
     getLivroByIsbn(isbn) {
         return __awaiter(this, void 0, void 0, function* () {
-            const livro = yield this.livroRepository.getLivroByIsbn(isbn);
-            if (!livro)
-                throw new Error(`Livro com ISBN ${isbn} não encontrado.`);
-            return livro;
+            return yield this.livroRepository.getLivroByIsbn(isbn);
         });
     }
     getLivroById(livroId) {
@@ -75,14 +72,20 @@ class LivroService {
     }
     atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const livro = yield this.validarLivro(titulo, autor, editora, edicao, isbn, categoriaId);
+            const livro = yield new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
+            // Verifica se existe categoria de livro
+            const existeCategoria = yield this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
+            if (!existeCategoria)
+                throw new Error('Categoria de livro inválida.');
             return yield this.livroRepository.atualizarLivro(livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId);
         });
     }
     deletarLivro(isbn) {
         return __awaiter(this, void 0, void 0, function* () {
-            const livro = yield this.getLivroByIsbn(isbn);
-            return yield this.deletarLivro(livro.isbn);
+            const livro = yield this.getLivroByIsbn(isbn.trim());
+            if (!livro)
+                throw new Error(`Livro com o isbn ${isbn} nao encontrado`);
+            return yield this.livroRepository.deletarLivro(livro.isbn);
         });
     }
 }

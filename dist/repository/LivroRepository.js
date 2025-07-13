@@ -47,39 +47,63 @@ class LivroRepository {
     }
     insertLivro(livro) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO livros(titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)', [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId]);
-            console.log('Livro inserido com sucesso!', resultado);
-            return resultado.insertId;
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO livros(titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)', [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId]);
+                console.log('Livro inserido com sucesso!', resultado);
+                return resultado.insertId;
+            }
+            catch (err) {
+                console.error('Erro ao inserir livro:', err);
+                throw err;
+            }
         });
     }
     getLivroByIsbn(isbn) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros WHERE isbn = ?', [isbn.trim()]);
-            if (!rows || rows.length === 0) {
-                return null;
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros WHERE isbn = ?', [isbn]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id);
             }
-            const row = rows[0];
-            return new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id);
+            catch (err) {
+                console.error('Erro ao buscar livro por ISBN:', err);
+                throw err;
+            }
         });
     }
     getLivroById(livroId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros WHERE id = ?', [livroId]);
-            if (!rows || rows.length === 0) {
-                return null;
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros WHERE id = ?', [livroId]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id);
             }
-            const row = rows[0];
-            return new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id);
+            catch (err) {
+                console.error('Erro ao buscar livro por ID:', err);
+                throw err;
+            }
         });
     }
     getLivroAEE(autor, editora, edicao) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros WHERE autor = ? AND editora = ? AND edicao = ?', [autor.trim(), editora.trim(), edicao.trim()]);
-            if (!rows || rows.length === 0) {
-                return null;
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros WHERE autor = ? AND editora = ? AND edicao = ?', [autor, editora, edicao]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id);
             }
-            const row = rows[0];
-            return new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id);
+            catch (err) {
+                console.error('Erro ao buscar livro por autor, editora e edição:', err);
+                throw err;
+            }
         });
     }
     getLivros() {

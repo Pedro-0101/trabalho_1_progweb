@@ -54,7 +54,7 @@ export class LivroRepository {
         try {
             const rows = await executeQuery(
                 'SELECT * FROM livros WHERE isbn = ?',
-                [isbn.trim()]
+                [isbn]
             );
 
             if (!rows || rows.length === 0) {
@@ -110,7 +110,7 @@ export class LivroRepository {
         try {
             const rows = await executeQuery(
                 'SELECT * FROM livros WHERE autor = ? AND editora = ? AND edicao = ?',
-                [autor.trim(), editora.trim(), edicao.trim()]
+                [autor, editora, edicao]
             );
 
             if (!rows || rows.length === 0) {
