@@ -65,4 +65,18 @@ export class EstoqueController extends Controller {
 			return fail(400, new BasicResponseDto(error.message, undefined));
 		}
 	}
+
+	@Delete('{id}')
+    async deletarUsuario(
+        @Path() id: number,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void> {
+        try {
+            await this.estoqueService.deletarEstoque(id);
+            return success(200, new BasicResponseDto('Estoque deletado com sucesso com sucesso', undefined));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
+        }
+    }
 }

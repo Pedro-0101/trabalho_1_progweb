@@ -177,4 +177,38 @@ export class EstoqueRepository {
             return null;
         }
     }
+
+    async getDisponibilidadeEstoque(id: number): Promise<boolean> {
+
+        try {
+            const resultado: boolean = await executeQuery(
+                'SELECT disponivel FROM estoques WHERE id = ?',
+                [id]
+            );
+
+            return resultado;
+
+        } catch (err) {
+            console.error('Erro ao buscar estoque por id', err);
+            return false;
+        }
+    }
+
+    async deletarEstoque(id: number): Promise<boolean> {
+
+        try {
+            const resultado = await executeQuery(
+                'DELETE FROM estoques WHERE id = ?',
+                [id]
+            );
+            if(resultado.affectedRows == 0){
+                throw new Error('Erro ao deletar estoque');
+            }
+            return true;
+        } catch (err) {
+            console.error('Erro ao deletar estoque', err);
+            return false;
+        }
+
+    }
 }

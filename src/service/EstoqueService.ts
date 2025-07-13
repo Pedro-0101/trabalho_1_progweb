@@ -69,4 +69,25 @@ export class EstoqueService {
         return await this.estoqueRepository.atualizarDisponibilidade(id);
 
     }
+
+    async getDisponibilidadeEstoque(id: number): Promise<boolean> {
+
+        if(!id)throw new Error('Id de estoque invalido');
+
+        return await this.estoqueRepository.getDisponibilidadeEstoque(id);
+
+    }
+
+    async deletarEstoque(id: number): Promise<boolean> {
+
+        if(!id)throw new Error('Id de estoque invalido');
+        const exemplar = await this.estoqueRepository.getEstoqueById(id);
+        if(!exemplar)throw new Error('Exemplar nao encontrado.');
+
+        if(exemplar.quantidadeEmprestada != 0){
+            throw new Error('Exemplar esta com emprestimo em aberto.');
+        }
+        return await this.estoqueRepository.deletarEstoque(id);
+
+    }
 }
