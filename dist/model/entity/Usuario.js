@@ -33,6 +33,7 @@ class Usuario {
             throw new Error("CPF inválido.");
         }
         nome = textUtil_1.textUtils.capitalizarTexto(nome);
+        ativo = textUtil_1.textUtils.capitalizarTexto(ativo);
         this.id = id !== null && id !== void 0 ? id : 0;
         this.nome = nome;
         this.cpf = cpf;
