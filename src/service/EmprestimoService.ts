@@ -26,7 +26,7 @@ export class EmprestimoService {
         if (usuario.ativo == "Inativo") throw new Error("Usuário inativo.");
         if (usuario.ativo == "Suspenso") throw new Error("Usuário suspenso.");
 
-        // Busca estoque e valida ***Rever essa validacao***
+        // Busca estoque e valida
         const estoque = await estoqueService.getEstoqueByLivroId(codigoExemplar);
         if (!estoque) throw new Error("Estoque não encontrado.");
         if (!estoque.disponivel) throw new Error("Estoque indisponível.");

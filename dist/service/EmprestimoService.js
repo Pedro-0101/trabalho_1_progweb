@@ -113,12 +113,13 @@ class EmprestimoService {
             // Define data de devolucao
             const dataEntregaString = dateUtils_1.DateUtils.formatarData(new Date(), 'aaaa-mm-dd');
             const dataEntregaDate = dateUtils_1.DateUtils.parseDataFromString(dataEntregaString);
-            console.log("dataDevolucao:", emprestimo.dataDevolucao);
-            console.log("dataEntrega:", dataEntregaDate);
             // Calcula atraso
             const diasAtraso = EmprestimoService.calcularSuspensao(emprestimo.dataDevolucao, dataEntregaDate);
             const diasSuspensao = diasAtraso * 3;
-            const suspensao_ate = dateUtils_1.DateUtils.somaData(dataEntregaDate, diasSuspensao);
+            var suspensao_ate = null;
+            if (diasSuspensao != 0) {
+                suspensao_ate = dateUtils_1.DateUtils.somaData(dataEntregaDate, diasSuspensao);
+            }
             // Atualiza emprestimo
             const emprestimoAtualizado = yield this.emprestimoRepository.registraDevolucao(id, dataEntregaString, diasAtraso, suspensao_ate);
             if (!emprestimoAtualizado) {

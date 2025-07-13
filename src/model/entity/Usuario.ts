@@ -49,6 +49,7 @@ export class Usuario {
         }
 
         nome = textUtils.capitalizarTexto(nome);
+        ativo = textUtils.capitalizarTexto(ativo);
 
         this.id = id ?? 0;
         this.nome = nome;

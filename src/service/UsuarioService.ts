@@ -3,6 +3,7 @@ import { UsuarioRepository } from "../repository/UsuarioRepository";
 import { CategoriaUsuarioService } from "./CategoriaUsuarioService";
 import { CursoService } from "./CursoService";
 import { EmprestimoService } from "./EmprestimoService";
+import { DateUtils } from "../utils/dateUtils";
 
 export class UsuarioService {
     private usuarioRepository: UsuarioRepository;
@@ -106,5 +107,54 @@ export class UsuarioService {
 
         return await this.usuarioRepository.atualizarSuspensao(cpf, ativo);
 
+    }
+
+    async verificarEAtualizarStatusUsuarios(): Promise<void> {
+        const emprestimoService = new EmprestimoService();
+        const usuarios = await this.usuarioRepository.getUsuarios();
+        const hoje = new Date();
+
+        for (const usuario of usuarios || []) {
+            let novoStatus: string | null = null;
+
+            // Buscar todos os empréstimos abertos do usuário
+            const emprestimos = await emprestimoService.getListaEmprestimos(true, usuario.id);
+
+            if (!emprestimos || emprestimos.length === 0) {
+                // Sem empréstimos abertos, mantém ativo
+                continue;
+            }
+
+            // Pega o maior suspensao_ate dos empréstimos
+            const maiorSuspensaoAte = emprestimos
+                .map(emp => emp.suspensaoAte)
+                .filter((dt): dt is Date => dt !== null && dt !== undefined)
+                .reduce((max, dt) => (dt > max ? dt : max), new Date(0));
+
+            // Se maior suspensão já passou, usuário fica ativo
+            if (maiorSuspensaoAte && maiorSuspensaoAte < hoje) {
+                novoStatus = "Ativo";
+            } else {
+                // Contar empréstimos com mais de 20 dias de atraso
+                const atrasosMais20Dias = emprestimos.filter(emp => {
+                    const diasAtraso = DateUtils.diferencaDias(hoje, emp.dataDevolucao);
+                    return diasAtraso > 20;
+                }).length;
+
+                if (atrasosMais20Dias >= 1) {
+                    novoStatus = "Suspenso";
+                }
+
+                if (emprestimos.length >= 2) {
+                    novoStatus = "Inativo";
+                }
+            }
+
+            // Atualiza status só se for diferente do atual
+            if (novoStatus && usuario.ativo !== novoStatus) {
+                console.log(`Atualizando status do usuário ${usuario.cpf} de ${usuario.ativo} para ${novoStatus}`);
+                await this.usuarioRepository.atualizarSuspensao(usuario.cpf, novoStatus);
+            }
+        }
     }
 }
