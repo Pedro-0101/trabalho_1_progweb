@@ -1,82 +1,66 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LivroService = void 0;
-const Livro_1 = require("../model/Livro");
+const Livro_1 = require("../model/entity/Livro");
 const LivroRepository_1 = require("../repository/LivroRepository");
-const EmprestimoService_1 = require("./EmprestimoService");
-const EstoqueService_1 = require("./EstoqueService");
+const CategoriaLivroService_1 = require("./CategoriaLivroService");
 class LivroService {
     constructor() {
         this.livroRepository = LivroRepository_1.LivroRepository.getInstance();
+        this.categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
     }
     criarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
-        let livro = new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
-        // Verifica se o livro foi criado corretamente
-        if (!livro) {
-            throw new Error("Erro ao criar o livro.");
-        }
-        // Adiciona o livro ao repositório
-        this.livroRepository.addLivro(livro);
-        // Retorna o livro criado
-        return livro;
+        return __awaiter(this, void 0, void 0, function* () {
+            // Instância temporária só para validação e formatação
+            const livroTemp = new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
+            // Verifica se existe livro com mesmo isbn
+            const livroReptidoIsbn = yield this.getLivroByIsbn(livroTemp.isbn);
+            if (livroReptidoIsbn)
+                throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
+            // Verifica se existe livro com mesma combinacao de autor, edicao e editora
+            const livroRepetidoAEE = yield this.getLivroAEE(livroTemp.autor, livroTemp.editora, livroTemp.edicao);
+            if (livroRepetidoAEE)
+                throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
+            // Verifica se existe categoria de livro
+            const existeCategoria = yield this.categoriaLivroService.getCategoriaLivroById(livroTemp.categoriaId);
+            if (!existeCategoria)
+                throw new Error('Categoria de livro invalida');
+            // Persiste e obtém o ID gerado
+            const id = yield this.livroRepository.insertLivro(livroTemp);
+            // Retorna nova instância com ID preenchido
+            return new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId, id);
+        });
     }
-    ListarLivrosFiltro(filtroAutor, filtroEditora, filtroCategoria) {
-        try {
-            let listaLivros;
-            listaLivros = this.livroRepository.getListaLivros();
-            if (filtroAutor) {
-                listaLivros.filter(livro => { livro.autor === filtroAutor; });
-            }
-            if (filtroEditora) {
-                listaLivros.filter(livro => { livro.editora === filtroEditora; });
-            }
-            if (filtroCategoria) {
-                listaLivros.filter(livro => { livro.categoriaId === filtroCategoria; });
-            }
-            return listaLivros;
-        }
-        catch (error) {
-            throw new Error('Erro ao listar livros com filtro');
-        }
-    }
-    detalhesLivro(isbn) {
-        try {
-            if (!isbn) {
-                throw new Error("Erro ao requisitar detalhes do livro: ISBN invalido: " + isbn);
-            }
-            const livro = this.livroRepository.getLivroByIsbn(isbn);
+    getLivroByIsbn(isbn) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const livro = yield this.livroRepository.getLivroByIsbn(isbn);
+            if (!livro)
+                throw new Error(`Livro com ISBN ${isbn} não encontrado.`);
             return livro;
-        }
-        catch (error) {
-            throw new Error("Erro ao requisitar detalhes do livro");
-        }
+        });
     }
-    atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
-        try {
-            const livroAtualizado = this.livroRepository.atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId);
-            return livroAtualizado;
-        }
-        catch (error) {
-            throw new Error("Erro ao atualizar informacoes do livro");
-        }
+    getLivroById(livroId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!livroId)
+                throw new Error('Id do livro invalido.');
+            return this.livroRepository.getLivroById(livroId);
+        });
     }
-    deletarLivro(isbn) {
-        try {
-            const emprestimoService = new EmprestimoService_1.EmprestimoService();
-            const estoqueService = new EstoqueService_1.EstoqueService();
-            const estoqueId = estoqueService.getEstoqueId(null, isbn);
-            let qtdeEmprestada = emprestimoService.qtdeEmprestada(estoqueId);
-            if (qtdeEmprestada === 0) {
-                estoqueService.deletarEstoque(estoqueId);
-                this.livroRepository.deletarLivro(isbn);
-            }
-            else {
-                throw new Error("Erro ao deletar livro, possui empresimos em andamento");
-            }
-        }
-        catch (error) {
-            throw new Error("Erro ao deletar livro");
-        }
+    getLivroAEE(autor, editora, edicao) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!autor || !editora || !edicao)
+                throw new Error('Erro ao consultar repeticao de livro.');
+            return yield this.livroRepository.getLivroAEE(autor, editora, edicao);
+        });
     }
 }
 exports.LivroService = LivroService;

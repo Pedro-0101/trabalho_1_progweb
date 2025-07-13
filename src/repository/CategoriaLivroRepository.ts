@@ -1,4 +1,4 @@
-import { CategoriaLivro } from "../model/CategoriaLivro";
+import { CategoriaLivro } from "../model/entity/CategoriaLivro";
 import { executeQuery } from "../database/mysql";
 
 export class CategoriaLivroRepository {
@@ -56,6 +56,19 @@ export class CategoriaLivroRepository {
 		);
 
 	}
+
+    async getCategoriasLivro(): Promise<CategoriaLivro[] | null> {
+        const rows = await executeQuery(
+			'SELECT * FROM categoiriasLivro',
+			[]
+		);
+
+		if (!rows || rows.length === 0) {
+			return null;
+		}
+
+		return rows
+    }
 }
 
 		/*

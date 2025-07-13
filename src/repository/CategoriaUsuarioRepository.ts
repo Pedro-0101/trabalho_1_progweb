@@ -1,4 +1,4 @@
-import { CategoriaUsuario } from "../model/CategoriaUsuario";
+import { CategoriaUsuario } from "../model/entity/CategoriaUsuario";
 import { executeQuery } from "../database/mysql";
 
 export class CategoriaUsuarioRepository {

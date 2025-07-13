@@ -1,67 +1,52 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstoqueService = void 0;
-const Estoque_1 = require("../model/Estoque");
+const Estoque_1 = require("../model/entity/Estoque");
 const EstoqueRepository_1 = require("../repository/EstoqueRepository");
-const LivroRepository_1 = require("../repository/LivroRepository");
+const LivroService_1 = require("./LivroService");
 class EstoqueService {
     constructor() {
         this.estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
-        this.livroRepository = LivroRepository_1.LivroRepository.getInstance();
+        this.livroService = new LivroService_1.LivroService();
     }
     registrarEstoque(isbn, quantidade) {
-        let estoque = new Estoque_1.Estoque(isbn, 1, true);
-        // Verifica se o estoque foi criado corretamente
-        if (!estoque) {
-            throw new Error("Erro ao criar o estoque.");
-        }
-        // Adiciona o estoque ao repositório
-        this.estoqueRepository.addEstoqueNovo(estoque);
-        // Retorna o estoque criado
-        return estoque;
+        return __awaiter(this, void 0, void 0, function* () {
+            // Busca o livro pelo ISBN
+            const livro = yield this.livroService.getLivroByIsbn(isbn);
+            if (!livro)
+                throw new Error('Livro invalido.');
+            // Cria instância temporária apenas para validação
+            const estoqueTemp = new Estoque_1.Estoque(livro.id, quantidade, true);
+            // Persiste e obtém o ID gerado
+            const id = yield this.estoqueRepository.insertEstoque(estoqueTemp);
+            // Retorna nova instância com ID preenchido
+            return new Estoque_1.Estoque(livro.id, quantidade, true, 0, id);
+        });
     }
-    getListaEstoques() {
-        return this.estoqueRepository.getListaEstoques();
+    getEstoqueByLivroId(livro_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!livro_id)
+                throw new Error('Id do livro invalido.');
+            return this.estoqueRepository.getEstoqueByLivroId(livro_id);
+        });
     }
-    getByCodigo(codigo) {
-        return this.estoqueRepository.getEstoqueByCodigo(codigo);
-    }
-    atualizaDisponibilidade(codigo) {
-        const estoque = this.estoqueRepository.getEstoqueByCodigo(codigo);
-        if (!estoque) {
-            throw new Error("Exemplar não encontrado.");
-        }
-        this.estoqueRepository.atualizarDisponibilidade(estoque.livroId);
-        return estoque;
-    }
-    deletarEstoque(codigo) {
-        const estoque = this.estoqueRepository.getEstoqueByCodigo(codigo);
-        if (!estoque) {
-            throw new Error("Exemplar não encontrado.");
-        }
-        this.estoqueRepository.deletarEstoque(codigo);
-    }
-    getEstoqueId(livroId, isbn) {
-        if (livroId) {
-            let estoque = this.estoqueRepository.getEstoqueByLivroId(livroId);
-            if (estoque) {
-                return estoque.id;
-            }
-            else {
-                throw new Error("Estoque nao encontrado");
-            }
-        }
-        if (isbn) {
-            let livro = this.livroRepository.getLivroByIsbn(isbn);
-            let estoque = this.estoqueRepository.getEstoqueByLivroId(livro.id);
-            if (estoque) {
-                return estoque.id;
-            }
-            else {
-                throw new Error("Estoque nao encontrado");
-            }
-        }
-        throw new Error("Estoque nao encontrado");
+    atualizarQuantidadeEmprestada(livro_id, quantidade) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!livro_id)
+                throw new Error('Id do livro invalido.');
+            if (!quantidade)
+                throw new Error('Quantidade invalida.');
+            return yield this.estoqueRepository.atualizarQuantidadeEmprestada(livro_id, quantidade);
+        });
     }
 }
 exports.EstoqueService = EstoqueService;

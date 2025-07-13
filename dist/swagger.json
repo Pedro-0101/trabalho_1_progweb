@@ -1,0 +1,75 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"BasicResponseDto": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"object": {}
+				},
+				"required": [
+					"message",
+					"object"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "API Documentacao",
+		"version": "1.0.0",
+		"description": "Documentacao da API usando Swagger"
+	},
+	"paths": {
+		"/categoriaLivro": {
+			"get": {
+				"operationId": "ListarCategoriasLivro",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"CategoriaLivro"
+				],
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3040/api",
+			"description": "Servidor de Desenvolvimento"
+		}
+	]
+}

@@ -1,9 +1,20 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EstoqueRepository = void 0;
+const Estoque_1 = require("../model/entity/Estoque");
+const mysql_1 = require("../database/mysql");
 class EstoqueRepository {
     constructor() {
-        this.listaEstoques = [];
+        this.createTable();
     }
     static getInstance() {
         if (!EstoqueRepository.instance) {
@@ -11,23 +22,74 @@ class EstoqueRepository {
         }
         return EstoqueRepository.instance;
     }
-    getListaEstoques() {
+    createTable() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `CREATE TABLE IF NOT EXISTS estoques (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            livro_id INT NOT NULL,
+            quantidade INT NOT NULL,
+            quantidade_emprestada INT NOT NULL,
+            disponivel BOOLEAN NOT NULL,
+            FOREIGN KEY (livro_id) REFERENCES livros(id)
+        )`;
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)(query, []);
+                console.log('Tabela estoques criada com sucesso:', resultado);
+            }
+            catch (err) {
+                console.error('Erro ao criar tabela estoques', err);
+            }
+        });
+    }
+    insertEstoque(estoque) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO estoques(livro_id, quantidade, quantidade_emprestada, disponivel) VALUES (?, ?, ?, ?)', [estoque.livroId, estoque.quantidade, estoque.quantidadeEmprestada, estoque.disponivel]);
+            console.log('Estoque inserido com sucesso!', resultado);
+            return resultado.insertId;
+        });
+    }
+    getEstoqueByLivroId(livro_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM estoques WHERE livro_id = ?', [livro_id]);
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+            const row = rows[0];
+            return new Estoque_1.Estoque(row.id, row.livro_id, row.quantidade, row.quantidade_emprestada, row.disponivel);
+        });
+    }
+    atualizarQuantidadeEmprestada(livro_id, quantidade) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const estoque = yield this.getEstoqueByLivroId(livro_id);
+            if (!estoque) {
+                throw new Error(`Estoque para livro com ID ${livro_id} não encontrado.`);
+            }
+            const qtde_atualizada = estoque.quantidadeEmprestada + quantidade;
+            const resultado = yield (0, mysql_1.executeQuery)('UPDATE estoques SET quantidade_emprestada = ? WHERE id = ?', [qtde_atualizada, estoque.id]);
+            console.log('Quantidade emprestada atualizada com sucesso', resultado);
+            return true;
+        });
+    }
+}
+exports.EstoqueRepository = EstoqueRepository;
+/*
+    public getListaEstoques(): Estoque[] {
         return this.listaEstoques;
     }
-    addEstoqueNovo(estoque) {
-        this.listaEstoques.push(estoque);
-    }
-    addEstoqueExistente(livroId, quantidade) {
+
+    public addEstoqueExistente(livroId: number, quantidade: number): void {
         const estoque = this.listaEstoques.find(e => e.livroId === livroId);
         if (estoque) {
             estoque.quantidade += quantidade;
         }
     }
-    getQuantidadeLivro(livroId) {
+
+    public getQuantidadeLivro(livroId: number): number {
         const estoque = this.listaEstoques.find(e => e.livroId === livroId);
         return estoque ? estoque.quantidade : 0;
     }
-    atualizarDisponibilidade(livroId) {
+
+    public atualizarDisponibilidade(livroId: number): Estoque | null {
         const estoque = this.listaEstoques.find(e => e.livroId === livroId);
         if (estoque) {
             estoque.disponivel = estoque.quantidade > estoque.quantidadeEmprestada;
@@ -37,36 +99,38 @@ class EstoqueRepository {
             throw new Error(`Estoque para livro com ID ${livroId} não encontrado.`);
         }
     }
-    getEstoqueByLivroId(livroId) {
+
+    public getEstoqueByLivroId(livroId: number): Estoque | undefined {
         return this.listaEstoques.find(e => e.livroId === livroId);
     }
-    getEstoqueById(id) {
+
+    public getEstoqueById(id: number): Estoque | undefined {
         return this.listaEstoques.find(e => e.id === id);
     }
-    atualizarQuantidadeEmprestada(livroId, quantidade) {
+
+    public atualizarQuantidadeEmprestada(livroId: number, quantidade: number): void {
         const estoque = this.listaEstoques.find(e => e.livroId === livroId);
         if (estoque) {
             estoque.quantidadeEmprestada += quantidade;
             this.atualizarDisponibilidade(livroId);
-        }
-        else {
+        } else {
             throw new Error(`Estoque para livro com ID ${livroId} não encontrado.`);
         }
     }
-    getEstoqueByCodigo(codigo) {
+
+    public getEstoqueByCodigo(codigo: number): Estoque | null {
         const estoque = this.listaEstoques.find(e => e.id === codigo);
         return estoque || null;
     }
-    deletarEstoque(codigo) {
+
+    public deletarEstoque(codigo: number): void {
         const estoque = this.getEstoqueById(codigo);
         if (!estoque) {
             throw new Error(`Estoque com código ${codigo} não encontrado.`);
         }
-        if (estoque.quantidadeEmprestada > 0) {
+        if(estoque.quantidadeEmprestada > 0) {
             throw new Error(`Não é possível remover o estoque com código ${codigo} porque ele está emprestado.`);
         }
         // Remove o estoque da lista
         this.listaEstoques = this.listaEstoques.filter(e => e.id !== codigo);
-    }
-}
-exports.EstoqueRepository = EstoqueRepository;
+    }*/

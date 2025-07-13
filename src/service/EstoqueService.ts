@@ -1,4 +1,4 @@
-import { Estoque } from "../model/Estoque";
+import { Estoque } from "../model/entity/Estoque";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { LivroService } from "./LivroService";
 

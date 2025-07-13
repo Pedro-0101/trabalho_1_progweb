@@ -1,4 +1,4 @@
-import { CategoriaLivro } from "../model/CategoriaLivro";
+import { CategoriaLivro } from "../model/entity/CategoriaLivro";
 import { CategoriaLivroRepository } from "../repository/CategoriaLivroRepository";
 
 export class CategoriaLivroService {
@@ -23,6 +23,12 @@ export class CategoriaLivroService {
 
         if(!categoriaId)throw new Error('Categoria de livro invalida.');
         return await this.CategoriaLivroRepository.getCategoriaLivroById(categoriaId);
+
+    }
+
+    async getCategoriasLivro(): Promise<CategoriaLivro[] | null> {
+
+        return await this.CategoriaLivroRepository.getCategoriasLivro();
 
     }
 

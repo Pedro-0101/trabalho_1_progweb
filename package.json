@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/app.js",
-    "build": "tsc"
+    "build": "npx tsoa spec-and-routes && npx tsc"
   },
   "author": "pedro paulino pinto",
   "license": "ISC",
@@ -17,6 +17,10 @@
     "express": "^5.1.0"
   },
   "dependencies": {
-    "mysql2": "^3.14.1"
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "mysql2": "^3.14.1",
+    "swagger-ui-express": "^5.0.1",
+    "tsoa": "^6.6.0"
   }
 }

@@ -1,20 +1,27 @@
-import { CategoriaLivro } from "../model/CategoriaLivro";
+import { Body , Controller , Delete , Get , Path , Post , Put , Query , Res , Route , SuccessResponse, Tags ,
+TsoaResponse } from "tsoa";
 import { CategoriaLivroService } from "../service/CategoriaLivroService";
-import { Request, Response } from "express";
+import { CategoriaLivroDTO } from "../model/dto/CategoriaLivroDto";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { CategoriaLivro } from "../model/entity/CategoriaLivro";
 
-const categoriaLivroService = new CategoriaLivroService();
+@Route('categoriaLivro')
+@Tags('CategoriaLivro')
 
-export class CategoriaLivroController {
+export class CategoriaLivroController extends Controller{
 
-    public listarCategorias(req: Request, res: Response): CategoriaLivro | void {
+    categoriaLivroService = new CategoriaLivroService();
+    
+    @Get()
+    async listarCategoriasLivro(
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void> {
         try {
-            // Lista todas as categorias
-            const categorias: CategoriaLivro[] = categoriaLivroService.listarCategorias();
-            res.status(200).json(categorias);
-        } catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : "Erro ao listar as categorias."
-            });
+            const categoriasLivro = await this.categoriaLivroService.getCategoriasLivro();
+            return success(200, new BasicResponseDto('Lista de categorias de livros', categoriasLivro));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
 
