@@ -1,9 +1,6 @@
-import { Body , Controller , Delete , Get , Path , Post , Put , Query , Res , Route , SuccessResponse, Tags ,
-TsoaResponse } from "tsoa";
+import {Controller, Get, Res, Route, Tags, TsoaResponse} from "tsoa";
 import { CategoriaLivroService } from "../service/CategoriaLivroService";
-import { CategoriaLivroDTO } from "../model/dto/CategoriaLivroDto";
 import { BasicResponseDto } from "../model/dto/BasicResponseDto";
-import { CategoriaLivro } from "../model/entity/CategoriaLivro";
 
 @Route('categoriaLivro')
 @Tags('CategoriaLivro')

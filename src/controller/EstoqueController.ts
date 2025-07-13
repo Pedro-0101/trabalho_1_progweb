@@ -1,4 +1,4 @@
-import { Estoque } from '../model/Estoque';
+/*import { Estoque } from '../model/Estoque';
 import { EstoqueService } from '../service/EstoqueService';
 import { Request, Response } from 'express';
 
@@ -64,4 +64,4 @@ export class EstoqueController {
       res.status(500).json({ message: 'Erro ao remover exemplar', error });
     }
   }
-}
+}*/

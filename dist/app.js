@@ -42,25 +42,6 @@ cs.criarCurso("ADS");
 cs.criarCurso("ENG");
 cs.criarCurso("ADM");
 
-/* Rotas */
-/*
-// Define os gerenciadores de rotas
-var indexRouter = require('./routes/IndexRoute');
-var catalogosRouter = require('./routes/CatalogoRoute');
-var emprestimosRouter = require('./routes/EmprestimoRoute');
-var estoquesRouter = require('./routes/EstoqueRoute');
-var livrosRouter = require('./routes/LivroRoute');
-var usuariosRouter = require('./routes/UsuarioRoute');
-
-// Usa as rotas definidas
-app.use('/libary', indexRouter);
-app.use('/libary/catalogos', catalogosRouter);
-app.use('/libary/emprestimos', emprestimosRouter);
-app.use('/libary/estoque', estoquesRouter);
-app.use('/libary/livros', livrosRouter);
-app.use('/libary/usuarios', usuariosRouter);
-
-
 setInterval(() => {
   console.log('Executando verificao de emprestimos');
   let es = new EmprestimoService();

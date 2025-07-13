@@ -1,37 +1,41 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.EmprestimoController = void 0;
-const EmprestimoService_1 = require("../service/EmprestimoService");
-class EmprestimoController {
+/*import { EmprestimoService } from "../service/EmprestimoService";
+import { Emprestimo } from "../model/Emprestimo";
+import e, { Request, Response } from "express";
+
+export class EmprestimoController {
+    private emprestimoService: EmprestimoService;
+
     constructor() {
-        this.emprestimoService = new EmprestimoService_1.EmprestimoService();
+        this.emprestimoService = new EmprestimoService();
     }
-    registrarEmprestimo(req, res) {
+
+    public registrarEmprestimo(req: Request, res: Response): void {
         try {
             const novoEmprestimo = this.emprestimoService.registrarEmprestimo(req.body.cpf, req.body.codigoExemplar, new Date());
             res.status(201).json(novoEmprestimo);
-        }
-        catch (error) {
+        } catch (error) {
             res.status(500).json({ message: "Erro ao registrar empréstimo", error });
         }
     }
-    listarEmprestimos(req, res) {
+
+    public listarEmprestimos(req: Request, res: Response): Emprestimo[] | void {
         try {
             const emprestimos = this.emprestimoService.listarEmprestimos();
             res.status(200).json(emprestimos);
-        }
-        catch (error) {
+        } catch (error) {
             res.status(500).json({ message: "Erro ao listar empréstimos", error });
         }
     }
-    registrarDevolucao(req, res, id) {
+
+    public registrarDevolucao(req: Request, res: Response, id: string): Emprestimo | void {
         try {
             const emprestimo = this.emprestimoService.registrarDevolucao(parseInt(id));
             res.status(200).json(emprestimo);
-        }
-        catch (error) {
+        } catch (error) {
             res.status(500).json({ message: "Erro ao registrar devolução", error });
         }
     }
-}
-exports.EmprestimoController = EmprestimoController;
+
+    
+}*/ 

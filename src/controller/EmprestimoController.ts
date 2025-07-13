@@ -1,4 +1,4 @@
-import { EmprestimoService } from "../service/EmprestimoService";
+/*import { EmprestimoService } from "../service/EmprestimoService";
 import { Emprestimo } from "../model/Emprestimo";
 import e, { Request, Response } from "express";
 
@@ -37,4 +37,4 @@ export class EmprestimoController {
     }
 
     
-}
+}*/

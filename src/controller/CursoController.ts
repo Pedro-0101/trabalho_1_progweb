@@ -1,4 +1,4 @@
-import { CursoService } from "../service/CursoService";
+/*import { CursoService } from "../service/CursoService";
 import { Curso } from "../model/Curso";
 import { Request, Response } from "express";
 
@@ -17,4 +17,4 @@ export class CursoController {
       res.status(500).json({ message: "Erro ao listar cursos", error });
     }
   }
-}
+}*/

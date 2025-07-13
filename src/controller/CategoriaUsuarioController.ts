@@ -1,4 +1,4 @@
-import { CategoriaUsuarioService } from "../service/CategoriaUsuarioService";
+/*import { CategoriaUsuarioService } from "../service/CategoriaUsuarioService";
 import { CategoriaUsuario } from "../model/CategoriaUsuario";
 import { Request, Response } from "express";
 
@@ -17,4 +17,4 @@ export class CategoriaUsuarioController {
             });
         }
     }
-}
+}*/
