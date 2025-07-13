@@ -40,6 +40,12 @@ export class UsuarioService {
         return this.usuarioRepository.getUsuarioByCpf(cpf);
     }
 
+    async getUsuarios(): Promise< Usuario[] | null> {
+
+        return await this.usuarioRepository.getUsuarios();
+
+    }
+
     /*public listaUsuariosFiltro(categoriaId: number | null, cursoId: number | null): Usuario[]{
 
         const listaUsuarios = this.usuarioRepository.getListaUsuarios();

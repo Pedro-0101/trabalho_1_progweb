@@ -1,3 +1,4 @@
+import { PrimaryExpression } from "typescript";
 import { Curso } from "../model/entity/Curso";
 import { CursoRepository } from "../repository/CursoRepository";
 
@@ -26,9 +27,10 @@ export class CursoService {
 
     }
 
-    /*public listarCursos(): Curso[] {
-        // Retorna a lista de cursos
-        return this.cursoRepository.getListaCursos();
-    }*/
+    async getCursos(): Promise<Curso[] | null> {
+
+        return await this.cursoRepository.getCursos();
+
+    }
 
 }

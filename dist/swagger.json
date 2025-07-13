@@ -21,6 +21,41 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"UsuarioDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"nome": {
+						"type": "string"
+					},
+					"cpf": {
+						"type": "string"
+					},
+					"ativo": {
+						"type": "string"
+					},
+					"categoriaId": {
+						"type": "number",
+						"format": "double"
+					},
+					"cursoId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"nome",
+					"cpf",
+					"ativo",
+					"categoriaId",
+					"cursoId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CategoriaUsuarioDTO": {
 				"properties": {
 					"id": {
@@ -64,6 +99,86 @@
 		"description": "Documentacao da API usando Swagger"
 	},
 	"paths": {
+		"/Usuario": {
+			"get": {
+				"operationId": "ListarUsuarios",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuario"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "AddUsuario",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Usuario"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UsuarioDTO"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/categoriaUsuario": {
 			"get": {
 				"operationId": "ListarCategoriasUsuario",

@@ -26,7 +26,7 @@ export class LivroRepository {
             categoria_id INT NOT NULL,
             UNIQUE (isbn),
             CONSTRAINT u_livro UNIQUE(autor, editora, edicao),
-            FOREIGN KEY (categoria_id) REFERENCES categoriasLivro(id)
+            FOREIGN KEY (categoria_id) REFERENCES categorias_livro(id)
         )`;
         try {
             const resultado = await executeQuery(query, []);

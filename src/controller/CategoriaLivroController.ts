@@ -31,7 +31,7 @@ export class CategoriaLivroController extends Controller{
     ): Promise< | void> {
         try {
             const novaCategoriaLivro = await this.categoriaLivroService.criarCategoriaLivro(dto.nome);
-            return success(201, new BasicResponseDto('Categoria criada com sucesso', novaCategoriaLivro));
+            return success(201, new BasicResponseDto('Categoria de livro criada com sucesso', novaCategoriaLivro));
         } catch (error: any) {
             return fail(400, new BasicResponseDto(error.message, undefined));
         }

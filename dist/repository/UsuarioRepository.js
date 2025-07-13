@@ -32,7 +32,7 @@ class UsuarioRepository {
             categoria_id INT NOT NULL,
             curso_id INT NOT NULL,
             UNIQUE (cpf),
-            FOREIGN KEY (categoria_id) REFERENCES categoriasUsuario(id),
+            FOREIGN KEY (categoria_id) REFERENCES categorias_usuario(id),
             FOREIGN KEY (curso_id) REFERENCES cursos(id)
         )`;
             try {
@@ -61,63 +61,14 @@ class UsuarioRepository {
             return new Usuario_1.Usuario(row.nome, row.cpf, row.ativo, row.categoria_id, row.curso_id, row.id);
         });
     }
+    getUsuarios() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM usuarios', []);
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+            return rows;
+        });
+    }
 }
 exports.UsuarioRepository = UsuarioRepository;
-/*
-public getListaUsuarios(): Usuario[] {
-    return this.listaUsuarios;
-}
-
-public addUsuario(usuario: Usuario): void {
-    this.listaUsuarios.push(usuario);
-}
-
-public getUsuarioById(id: number): Usuario | undefined {
-    return this.listaUsuarios.find(usuario => usuario.id === id);
-}
-
-public getUsuarioByCpf(cpf: string): Usuario{
-
-    if(!cpf){
-        throw new Error("CPF invalido");
-    }
-
-    const usuario = this.getListaUsuarios().find( u => u.cpf === cpf);
-
-    if(usuario){
-        return usuario;
-    }else{
-        throw new Error("Usuario nao encontrado");
-    }
-
-}
-
-public atualizaUsuario(nome: string, cpf: string, categoriaId: number, cursoId: number): Usuario{
-
-    const usuario = this.getUsuarioByCpf(cpf);
-
-    if(!usuario){
-        throw new Error("Erro ao atualizar usuario");
-    }
-
-    usuario.nome = nome;
-    usuario.cpf = cpf;
-    usuario.categoriaId = categoriaId;
-    usuario.cursoId = cursoId;
-
-    return usuario;
-}
-
-public removeUsuario(cpf: string): void{
-
-    const usuario = this.getUsuarioByCpf(cpf);
-
-    if(!usuario){
-        throw new Error("Erro ao remover usuario: Usuario nao encontrado");
-    }
-
-    const index = this.listaUsuarios.findIndex( u => u.cpf === cpf);
-    this.listaUsuarios.splice(index, 1);
-
-}
-}*/ 

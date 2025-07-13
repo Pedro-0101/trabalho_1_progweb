@@ -4,6 +4,8 @@
 import type { TsoaRoute } from '@tsoa/runtime';
 import {  fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { UsuarioController } from './../controller/UsuarioController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CategoriaUsuarioController } from './../controller/CategoriaUsuarioController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CategoriaLivroController } from './../controller/CategoriaLivroController';
@@ -19,6 +21,19 @@ const models: TsoaRoute.Models = {
         "properties": {
             "message": {"dataType":"string","required":true},
             "object": {"dataType":"any","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UsuarioDTO": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double","required":true},
+            "nome": {"dataType":"string","required":true},
+            "cpf": {"dataType":"string","required":true},
+            "ativo": {"dataType":"string","required":true},
+            "categoriaId": {"dataType":"double","required":true},
+            "cursoId": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
@@ -58,6 +73,69 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        const argsUsuarioController_listarUsuarios: Record<string, TsoaRoute.ParameterSchema> = {
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
+        };
+        app.get('/Usuario',
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController)),
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController.prototype.listarUsuarios)),
+
+            async function UsuarioController_listarUsuarios(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUsuarioController_listarUsuarios, request, response });
+
+                const controller = new UsuarioController();
+
+              await templateService.apiHandler({
+                methodName: 'listarUsuarios',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsUsuarioController_addUsuario: Record<string, TsoaRoute.ParameterSchema> = {
+                dto: {"in":"body","name":"dto","required":true,"ref":"UsuarioDTO"},
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"201","required":true,"ref":"BasicResponseDto"},
+        };
+        app.post('/Usuario',
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController)),
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController.prototype.addUsuario)),
+
+            async function UsuarioController_addUsuario(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUsuarioController_addUsuario, request, response });
+
+                const controller = new UsuarioController();
+
+              await templateService.apiHandler({
+                methodName: 'addUsuario',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsCategoriaUsuarioController_listarCategoriasUsuario: Record<string, TsoaRoute.ParameterSchema> = {
                 fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
                 success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},

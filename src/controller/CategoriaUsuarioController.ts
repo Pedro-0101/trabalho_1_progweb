@@ -31,7 +31,7 @@ export class CategoriaUsuarioController extends Controller{
     ): Promise< | void> {
         try {
             const novaCategoriaUsuario = await this.categoriaUsuarioService.criarCategoriaUsuario(dto.nome);
-            return success(201, new BasicResponseDto('Categoria criada com sucesso', novaCategoriaUsuario));
+            return success(201, new BasicResponseDto('Categoria de usuario criada com sucesso', novaCategoriaUsuario));
         } catch (error: any) {
             return fail(400, new BasicResponseDto(error.message, undefined));
         }

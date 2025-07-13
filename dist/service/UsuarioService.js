@@ -45,5 +45,10 @@ class UsuarioService {
             return this.usuarioRepository.getUsuarioByCpf(cpf);
         });
     }
+    getUsuarios() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.usuarioRepository.getUsuarios();
+        });
+    }
 }
 exports.UsuarioService = UsuarioService;

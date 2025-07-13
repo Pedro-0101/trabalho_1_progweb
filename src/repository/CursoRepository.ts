@@ -56,6 +56,21 @@ export class CursoRepository {
             row.id
         );
     }
+
+    async getCursos(): Promise<Curso[] | null> {
+
+        const rows = await executeQuery(
+            'SELECT * FROM cursos',
+            []
+        );
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        return rows;
+
+    }
 }
 
     /*

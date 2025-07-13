@@ -1,102 +1,39 @@
-/*import { UsuarioService } from "../service/UsuarioService";
-import { Usuario } from "../model/Usuario";
-import { Request, Response } from "express";
+import { Body, Controller, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse} from "tsoa";
+import { UsuarioService } from "../service/UsuarioService";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { UsuarioDTO } from "../model/dto/UsuarioDto";
 
-export class UsuarioController{
-    private UsuarioController : UsuarioController;
+@Route('csuario')
+@Tags('Usuario')
 
-    constructor(){
-        this.UsuarioController = new UsuarioController();
-    }
+export class UsuarioController extends Controller{
 
-    public cadastrarUsuario(req: Request): Usuario | null{
-
-        try{
-            
-            const usuarioService = new UsuarioService();
-            const nome = req.body.nome;
-            const cpf = req.body.cpf;
-            const categoria = Number(req.body.categoria);
-            const curso = Number(req.body.curso);
-
-            const usuarioCadastrado = usuarioService.criarUsuario(nome, cpf, categoria, curso);
-            if(usuarioCadastrado){
-                return usuarioCadastrado;
-            }else{
-                throw new Error("Erro ao cadastrar novo usuario");
-            }
-
-        }catch(error){
-            throw new Error("Erro ao cadastrar novo usuario");
-        }
-
-    }
-
-    public listaUsuariosFiltro(req: Request): Usuario[] | null{
-
-        try{
-            
-            const usuarioService = new UsuarioService();
-            const categoria = req.body.categoria;
-            const curso = req.body.curso;
-
-            const listaUsuarios = usuarioService.listaUsuariosFiltro(categoria, curso);
-            if(listaUsuarios){
-                return listaUsuarios;
-            }else{
-                throw new Error("Erro ao listar usuarios")
-            }
-
-        }catch(error){
-            throw new Error("Erro ao listar usuarios");
-        }
-
-    }
-
-    public getUsuario(cpf: string): Usuario | null{
-        
-        try{
-            
-            const usuarioService = new UsuarioService();
-            const usuario = usuarioService.getUsuarioByCpf(cpf);
-            if(usuario){
-                return usuario;
-            }else{
-                throw new Error("Usuario nao encontrado");
-            }
-        }catch(error){
-            throw new Error("Erro ao requisitar usuario");
-        }
-        
-    }
-
-    public atualizaUsuario(req: Request): Usuario | null{
-        try{
-            
-            const usuarioService = new UsuarioService();
-            const nome = req.body.nome;
-            const cpf = req.body.cpf;
-            const categoria = Number(req.body.categoria);
-            const curso = Number(req.body.curso);
-
-            const usuarioAtualizado = usuarioService.atualizaUsuario(nome, cpf, categoria, curso);
-            return usuarioAtualizado;
-
-        }catch(error){
-            throw new Error("Erro ao cadastrar novo usuario");
-        }
-    }
+    UsuarioService = new UsuarioService();
     
-    
-    public removeFuncionario(cpf: string): void{
-        try{
-            
-            const usuarioService = new UsuarioService();
-            usuarioService.removeUsuario(cpf);
-
-        }catch(error){
-            throw new Error("Erro ao remover usuario");
+    @Get()
+    async listarUsuarios(
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise< | void> {
+        try {
+            const usuarios = await this.UsuarioService.getUsuarios();
+            return success(200, new BasicResponseDto('Lista de usuarios', usuarios));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
-    
-}*/
+
+    @Post()
+    async addUsuario(
+        @Body() dto: UsuarioDTO,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<201, BasicResponseDto>
+    ): Promise< | void> {
+        try {
+            const novoUsuario = await this.UsuarioService.criarUsuario(dto.nome, dto.cpf, dto.ativo, dto.categoriaId, dto.cursoId);
+            return success(201, new BasicResponseDto('Usuario criado com sucesso', novoUsuario));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
+        }
+    }
+}

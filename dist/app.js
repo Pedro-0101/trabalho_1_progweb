@@ -20,35 +20,5 @@ function logInfo() {
     console.log('Servidor iniciado com sucesso!');
     console.log('Acesse a documentacao da api em http://localhost:3040/api-docs');
 }
-/*
-//Funcao para cadastrar cursos, categorias de livros e usuarios conforme instrucoes
-
-// Categorias de livro
-const cls = new CategoriaLivroService();
-cls.criarCategoriaLivro("Romance");
-cls.criarCategoriaLivro("Computacao");
-cls.criarCategoriaLivro("Letras");
-cls.criarCategoriaLivro("Gestao");
-
-// Categorias de usuario
-const cus = new CategoriaUsuarioService();
-cus.criarCategoriaUsuario("Professor");
-cus.criarCategoriaUsuario("Aluno");
-cus.criarCategoriaUsuario("Bibliotecario");
-
-// Cursos
-const cs = new CursoService();
-cs.criarCurso("ADS");
-cs.criarCurso("ENG");
-cs.criarCurso("ADM");
-
-setInterval(() => {
-  console.log('Executando verificao de emprestimos');
-  let es = new EmprestimoService();
-
-  es.verificarEmprestimos();
-  
-}, 5 * 60 * 1000);
-*/
-// Inicia o servidor na porta especificada e chama a função de log
+// Inicia o servidor na porta especificada
 app.listen(port, logInfo);
