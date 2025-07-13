@@ -14,21 +14,22 @@ const Usuario_1 = require("../model/entity/Usuario");
 const UsuarioRepository_1 = require("../repository/UsuarioRepository");
 const CategoriaUsuarioService_1 = require("./CategoriaUsuarioService");
 const CursoService_1 = require("./CursoService");
+const EmprestimoService_1 = require("./EmprestimoService");
 class UsuarioService {
     constructor() {
         this.usuarioRepository = UsuarioRepository_1.UsuarioRepository.getInstance();
-        this.categiriaUsuarioService = new CategoriaUsuarioService_1.CategoriaUsuarioService();
-        this.cursoService = new CursoService_1.CursoService();
     }
     validaDadosUsuario(nome, cpf, ativo, categoriaId, cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const categiriaUsuarioService = new CategoriaUsuarioService_1.CategoriaUsuarioService();
+            const cursoService = new CursoService_1.CursoService();
             cpf = cpf.replace(/[^\d]/g, "");
             // Verificar se existe a categoria
-            const categoriaUsuario = yield this.categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
+            const categoriaUsuario = yield categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
             if (!categoriaUsuario)
                 throw new Error('Categoria de usuario invalida');
             // Verifica se existe o curso
-            const curso = yield this.cursoService.getCursoById(cursoId);
+            const curso = yield cursoService.getCursoById(cursoId);
             if (!curso)
                 throw new Error('Curso invalido.');
             // Cria instância temporária apenas para validar e padronizar dados
@@ -57,6 +58,13 @@ class UsuarioService {
             return this.usuarioRepository.getUsuarioByCpf(cpf);
         });
     }
+    getUsuarioById(usuarioId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!usuarioId)
+                throw new Error('Id do usuario invalido.');
+            return this.usuarioRepository.getUsuarioById(usuarioId);
+        });
+    }
     getUsuarios(categoriaId, cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.usuarioRepository.getUsuarios(categoriaId, cursoId);
@@ -74,6 +82,7 @@ class UsuarioService {
     }
     deletarUsuario(cpf) {
         return __awaiter(this, void 0, void 0, function* () {
+            const emprestimoService = new EmprestimoService_1.EmprestimoService();
             // Verificar se exite usuario com o cpf
             cpf = cpf.replace(/[^\d]/g, "");
             if (!cpf)
@@ -82,7 +91,21 @@ class UsuarioService {
             if (!usuario)
                 throw new Error('CPF invalido.');
             // Verificar se usuario nao tem emprestimo aberto
+            const emprestimosAbertos = yield emprestimoService.getListaEmprestimos(true, 0, usuario.id);
+            if (emprestimosAbertos) {
+                console.error('Usuario possui emprestimos em aberto.');
+                return false;
+            }
             return yield this.usuarioRepository.deletarUsuario(cpf);
+        });
+    }
+    atualizarSuspensao(cpf, ativo) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!cpf)
+                throw new Error('Cpf do usuario invalido.');
+            if (!ativo)
+                throw new Error('Status de usuario invalido.');
+            return yield this.usuarioRepository.atualizarSuspensao(cpf, ativo);
         });
     }
 }

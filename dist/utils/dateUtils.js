@@ -2,40 +2,28 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DateUtils = void 0;
 class DateUtils {
-    formatarData(data, formato) {
-        /*        Formatos suportados:
-            * dd/mm/aaaa
-            * dd/mm/aa
-            * dd-mm-aaaa
-            * dd-mm-aa
-            * dd/mm/aaaa h:m:s
-            * dd/mm/aa h:m:s
-            * dd-mm-aaaa h:m:s
-            * dd-mm-aa h:m:s
-            * dd/mm/aaaa h:m:s
-            * dd/mm/aa h:m:s
-            * dd-mm-aaaa h:m:s
-            * dd-mm-aa h:m:s
-            */
+    static formatarData(data, formato) {
         // Componentes da data
-        const ano = data.getFullYear().toString();
+        const anoCompleto = data.getFullYear().toString();
+        const anoCurto = anoCompleto.slice(2, 4);
         const mes = (data.getMonth() + 1).toString().padStart(2, '0');
         const dia = data.getDate().toString().padStart(2, '0');
         // Componentes das horas
-        const diaSemana = data.getDay().toString();
         const hora = data.getHours().toString().padStart(2, '0');
         const min = data.getMinutes().toString().padStart(2, '0');
         const sec = data.getSeconds().toString().padStart(2, '0');
-        const ms = data.getMilliseconds().toString().padStart(2, '0');
         let retorno = formato;
-        retorno = retorno.replace(/dd/g, dia);
-        retorno = retorno.replace(/mm/g, mes);
+        // Substituição segura para "aaaa" e "aa"
         if (formato.includes('aaaa')) {
-            retorno = retorno.replace(/aaaa/g, ano);
+            retorno = retorno.replace(/aaaa/g, anoCompleto);
         }
         else {
-            retorno = retorno.replace(/aa/g, ano.slice(2, 4));
+            retorno = retorno.replace(/aa/g, anoCurto);
         }
+        // Substituir dia e mes
+        retorno = retorno.replace(/dd/g, dia);
+        retorno = retorno.replace(/mm/g, mes);
+        // Substituir hora:min:sec, se houver
         retorno = retorno.replace(/h/g, hora);
         retorno = retorno.replace(/m/g, min);
         retorno = retorno.replace(/s/g, sec);
@@ -56,6 +44,15 @@ class DateUtils {
         const novaData = new Date(date);
         novaData.setDate(novaData.getDate() + num);
         return novaData;
+    }
+    static parseDataFromString(dateString) {
+        // Validação básica
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+            throw new Error(`Formato inválido de data: ${dateString}. Esperado aaaa-mm-dd.`);
+        }
+        const [ano, mes, dia] = dateString.split('-').map(Number);
+        // Mês começa em 0 (janeiro)
+        return new Date(ano, mes - 1, dia);
     }
 }
 exports.DateUtils = DateUtils;

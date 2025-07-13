@@ -13,14 +13,14 @@ exports.LivroService = void 0;
 const Livro_1 = require("../model/entity/Livro");
 const LivroRepository_1 = require("../repository/LivroRepository");
 const CategoriaLivroService_1 = require("./CategoriaLivroService");
+const EstoqueService_1 = require("./EstoqueService");
 class LivroService {
     constructor() {
         this.livroRepository = LivroRepository_1.LivroRepository.getInstance();
-        this.categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
-        //this.emprestimoService = new EmprestimoService();
     }
     validarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
             // Instância para validação e formatação
             const livro = new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
             // Verifica se existe livro com mesmo isbn
@@ -32,7 +32,7 @@ class LivroService {
             if (livroRepetidoAEE)
                 throw new Error(`O livro com autor ${livro.autor}, editora ${livro.editora} e edição ${livro.edicao} já foi incluído.`);
             // Verifica se existe categoria de livro
-            const existeCategoria = yield this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
+            const existeCategoria = yield categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
             if (!existeCategoria)
                 throw new Error('Categoria de livro inválida.');
             return livro;
@@ -73,9 +73,10 @@ class LivroService {
     }
     atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
             const livro = yield new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
             // Verifica se existe categoria de livro
-            const existeCategoria = yield this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
+            const existeCategoria = yield categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
             if (!existeCategoria)
                 throw new Error('Categoria de livro inválida.');
             return yield this.livroRepository.atualizarLivro(livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId);
@@ -83,12 +84,19 @@ class LivroService {
     }
     deletarLivro(isbn) {
         return __awaiter(this, void 0, void 0, function* () {
+            const estoqueService = new EstoqueService_1.EstoqueService();
             // Verifica se livro existe
             const livro = yield this.getLivroByIsbn(isbn.trim());
             if (!livro)
                 throw new Error(`Livro com o isbn ${isbn} nao encontrado`);
             // Verificar se livro esta nao esta emprestado
-            //const livroEmprestado = this.emprestimoService
+            const exemplar = yield estoqueService.getEstoqueByLivroId(livro.id);
+            if (!exemplar)
+                throw new Error('Exemplar do livro nao encontrado no estoque');
+            if (exemplar.quantidadeEmprestada != 0) {
+                console.error('Livro tem exemplar com emprestimo em aberto.');
+                return false;
+            }
             return yield this.livroRepository.deletarLivro(livro.isbn);
         });
     }

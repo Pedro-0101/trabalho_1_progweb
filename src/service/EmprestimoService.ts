@@ -7,35 +7,33 @@ import { UsuarioService } from "./UsuarioService";
 
 export class EmprestimoService {
     private emprestimoRepository: EmprestimoRepository;
-    private estoqueService: EstoqueService;
-    private usuarioService: UsuarioService;
-    private livroService: LivroService;
 
     constructor() {
         this.emprestimoRepository = EmprestimoRepository.getInstance();
-        this.estoqueService = new EstoqueService();
-        this.usuarioService = new UsuarioService();
-        this.livroService = new LivroService();
     }
 
     public async registrarEmprestimo(cpf: string, codigoExemplar: number): Promise<Emprestimo> {
 
+        const usuarioService = new UsuarioService();
+        const estoqueService = new EstoqueService();
+        const livroService = new LivroService();
+
         const dataEmprestimo = new Date();
 
         // Busca usuário e valida
-        const usuario = await this.usuarioService.getUsuarioByCpf(cpf);
+        const usuario = await usuarioService.getUsuarioByCpf(cpf);
         if (!usuario) throw new Error("Usuário não encontrado.");
         if (usuario.ativo == "Inativo") throw new Error("Usuário inativo.");
         if (usuario.ativo == "Suspenso") throw new Error("Usuário suspenso.");
 
         // Busca estoque e valida ***Rever essa validacao***
-        const estoque = await this.estoqueService.getEstoqueByLivroId(codigoExemplar);
+        const estoque = await estoqueService.getEstoqueByLivroId(codigoExemplar);
         if (!estoque) throw new Error("Estoque não encontrado.");
         if (!estoque.disponivel) throw new Error("Estoque indisponível.");
 
         // Busca categoria usuário e categoria livro
         const categoriaUsuario = usuario.categoriaId;
-        const livro = await this.livroService.getLivroById(estoque.livroId);
+        const livro = await livroService.getLivroById(estoque.livroId);
         if (!livro) throw new Error("Livro não encontrado para este estoque.");
         
         // Calcula data devolução
@@ -74,7 +72,7 @@ export class EmprestimoService {
         const id = await this.emprestimoRepository.insertEmprestimo(emprestimoTemp);
 
         // Atualiza quantidade emprestada no estoque
-        await this.estoqueService.atualizarQuantidadeEmprestada(estoque.livroId, 1);
+        await estoqueService.atualizarQuantidadeEmprestada(estoque.livroId, 1);
 
         // Retorna instância final com id preenchido
         return new Emprestimo(
@@ -121,21 +119,25 @@ export class EmprestimoService {
 
     async registrarDevolucao(id: number): Promise<Emprestimo | null> {
 
+        const usuarioService = new UsuarioService();
+        const estoqueService = new EstoqueService();
+
         if(!id)throw new Error('Id de emprestimo invalido.');
 
         const emprestimo = await this.getEmprestimoById(id);
         if(!emprestimo)throw new Error('Emprestimo nao encontrado.');
 
         // Define data de devolucao
-        const dataEntrega = new Date();
+        const dataEntregaString = DateUtils.formatarData(new Date(), 'aaaa-mm-dd');
+        const dataEntregaDate = DateUtils.parseDataFromString(dataEntregaString);
 
         // Calcula atraso
-        const diasAtraso = EmprestimoService.calcularSuspensao(emprestimo.dataDevolucao, dataEntrega);
+        const diasAtraso = EmprestimoService.calcularSuspensao(emprestimo.dataDevolucao, dataEntregaDate);
         const diasSuspensao = diasAtraso * 3;
-        const suspensao_ate = DateUtils.somaData(dataEntrega, diasSuspensao);
+        const suspensao_ate = DateUtils.somaData(dataEntregaDate, diasSuspensao);
 
         // Atualiza emprestimo
-        const emprestimoAtualizado = await this.emprestimoRepository.registraDevolucao(id, dataEntrega, diasAtraso, suspensao_ate);
+        const emprestimoAtualizado = await this.emprestimoRepository.registraDevolucao(id, dataEntregaString, diasAtraso, suspensao_ate);
 
         if(!emprestimoAtualizado){
             console.error(`Nao foi possivela registrar a devolucao do emprestimo ${id}.`);
@@ -143,16 +145,16 @@ export class EmprestimoService {
         }
 
         // Altera disponibilidade do exemplar
-        const exemplar = await this.estoqueService.getEstoqueById(emprestimo.estoqueId);
+        const exemplar = await estoqueService.getEstoqueById(emprestimo.estoqueId);
         if(!exemplar)throw new Error('Nao foi possivel encontrar exemplar do emprestimo');
 
-        this.estoqueService.atualizarQuantidadeEmprestada(exemplar.livroId, -1);
+        estoqueService.atualizarQuantidadeEmprestada(exemplar.livroId, -1);
 
         // Altera status do usuario caso tenha atraso
         if(diasSuspensao != 0){
-            const usuario = await this.usuarioService.getUsuarioById(emprestimoAtualizado.usuarioId);
+            const usuario = await usuarioService.getUsuarioById(emprestimoAtualizado.usuarioId);
             if(!usuario)throw new Error('Usuario do emprestimo nao encontrado.');
-            this.usuarioService.atualizarSuspensao(usuario.cpf, 'Suspenso')
+            usuarioService.atualizarSuspensao(usuario.cpf, 'Suspenso')
         }
 
         return emprestimoAtualizado;

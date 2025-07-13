@@ -70,7 +70,7 @@ class EmprestimoRepository {
             return (_b = (_a = rows[0]) === null || _a === void 0 ? void 0 : _a.total) !== null && _b !== void 0 ? _b : 0;
         });
     }
-    getListaEmprestimosEmAberto(estoqueId) {
+    getListaEmprestimosEmAberto(estoqueId, usuarioId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conditions = ['data_entrega IS NULL'];
@@ -78,6 +78,10 @@ class EmprestimoRepository {
                 if (estoqueId) {
                     conditions.push('estoque_id = ?');
                     params.push(estoqueId);
+                }
+                if (usuarioId) {
+                    conditions.push('usuario_id = ?');
+                    params.push(usuarioId);
                 }
                 let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
                 const rows = yield (0, mysql_1.executeQuery)(query, params);
@@ -92,7 +96,7 @@ class EmprestimoRepository {
             }
         });
     }
-    getListaEmprestimosFechados(estoqueId) {
+    getListaEmprestimosFechados(estoqueId, usuarioId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conditions = ['data_entrega IS NOT NULL'];
@@ -100,6 +104,10 @@ class EmprestimoRepository {
                 if (estoqueId) {
                     conditions.push('estoque_id = ?');
                     params.push(estoqueId);
+                }
+                if (usuarioId) {
+                    conditions.push('usuario_id = ?');
+                    params.push(usuarioId);
                 }
                 let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
                 const rows = yield (0, mysql_1.executeQuery)(query, params);
@@ -110,6 +118,38 @@ class EmprestimoRepository {
             }
             catch (err) {
                 console.error('Erro ao buscar empréstimos fechados', err);
+                return null;
+            }
+        });
+    }
+    getEmprestimoById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const rows = yield (0, mysql_1.executeQuery)(`SELECT * FROM emprestimos WHERE id = ?`, [id]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Emprestimo_1.Emprestimo(row.usuario_id, row.estoque_id, new Date(row.data_emprestimo), new Date(row.data_devolucao), row.data_entrega ? new Date(row.data_entrega) : null, row.dias_atraso, row.suspensao_ate ? new Date(row.suspensao_ate) : null, row.id);
+            }
+            catch (err) {
+                console.error('Erro ao buscar empréstimo por id', err);
+                return null;
+            }
+        });
+    }
+    registraDevolucao(id, dataEntrega, diasAtraso, suspensao_ate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('UPDATE emprestimos SET data_entrega = ?, dias_atraso = ?, suspensao_ate = ? WHERE id = ?', [dataEntrega, diasAtraso, suspensao_ate, id]);
+                if (!resultado.affectedRows || resultado.affectedRows === 0) {
+                    console.error(`Nao foi possivela registrar a devolucao do emprestimo ${id}.`);
+                    return null;
+                }
+                return this.getEmprestimoById(id);
+            }
+            catch (err) {
+                console.error('Erro ao registrar devolucao', err);
                 return null;
             }
         });

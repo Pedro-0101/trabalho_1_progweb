@@ -73,6 +73,22 @@ class UsuarioRepository {
             }
         });
     }
+    getUsuarioById(usuarioId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM usuarios WHERE id = ?', [usuarioId]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Usuario_1.Usuario(row.nome, row.cpf, row.ativo, row.categoria_id, row.curso_id, row.id);
+            }
+            catch (err) {
+                console.error('Erro ao buscar usuário por id:', err);
+                throw err;
+            }
+        });
+    }
     getUsuarios(categoriaId, cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -128,6 +144,21 @@ class UsuarioRepository {
             }
             catch (err) {
                 console.error('Erro ao deletar usuário:', err);
+                throw err;
+            }
+        });
+    }
+    atualizarSuspensao(cpf, ativo) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('UPDATE usuarios SET ativo = ? WHERE cpf = ?', [ativo, cpf]);
+                if (resultado.affectedRows === 0) {
+                    return false;
+                }
+                return true;
+            }
+            catch (err) {
+                console.error('Erro ao atualizar status de usuário:', err);
                 throw err;
             }
         });

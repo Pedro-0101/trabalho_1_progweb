@@ -1,45 +1,31 @@
 export class DateUtils {
 
-    formatarData(data: Date, formato: string): string{
-
-        /*        Formatos suportados:
-            * dd/mm/aaaa
-            * dd/mm/aa
-            * dd-mm-aaaa
-            * dd-mm-aa
-            * dd/mm/aaaa h:m:s
-            * dd/mm/aa h:m:s
-            * dd-mm-aaaa h:m:s
-            * dd-mm-aa h:m:s
-            * dd/mm/aaaa h:m:s
-            * dd/mm/aa h:m:s
-            * dd-mm-aaaa h:m:s
-            * dd-mm-aa h:m:s
-            */
-
+    static formatarData(data: Date, formato: string): string {
         // Componentes da data
-        const ano = data.getFullYear().toString();
-        const mes = (data.getMonth()+1).toString().padStart(2, '0');
+        const anoCompleto = data.getFullYear().toString();
+        const anoCurto = anoCompleto.slice(2, 4);
+        const mes = (data.getMonth() + 1).toString().padStart(2, '0');
         const dia = data.getDate().toString().padStart(2, '0');
 
         // Componentes das horas
-        const diaSemana = data.getDay().toString();
         const hora = data.getHours().toString().padStart(2, '0');
         const min = data.getMinutes().toString().padStart(2, '0');
         const sec = data.getSeconds().toString().padStart(2, '0');
-        const ms = data.getMilliseconds().toString().padStart(2, '0');
-        
-        let retorno: string = formato;
 
+        let retorno = formato;
+
+        // Substituição segura para "aaaa" e "aa"
+        if (formato.includes('aaaa')) {
+            retorno = retorno.replace(/aaaa/g, anoCompleto);
+        } else {
+            retorno = retorno.replace(/aa/g, anoCurto);
+        }
+
+        // Substituir dia e mes
         retorno = retorno.replace(/dd/g, dia);
         retorno = retorno.replace(/mm/g, mes);
-        if(formato.includes('aaaa')) {
-            retorno = retorno.replace(/aaaa/g, ano);
-        }
-        else {
-            retorno = retorno.replace(/aa/g, ano.slice(2, 4));
-        }
 
+        // Substituir hora:min:sec, se houver
         retorno = retorno.replace(/h/g, hora);
         retorno = retorno.replace(/m/g, min);
         retorno = retorno.replace(/s/g, sec);
@@ -47,7 +33,7 @@ export class DateUtils {
         return retorno;
     }
 
-    public static diferencaDias(date1: Date, date2: Date | null): number {
+    static diferencaDias(date1: Date, date2: Date | null): number {
 
         if(!date2){
             return 0;
@@ -61,10 +47,22 @@ export class DateUtils {
         return Math.floor(diffMs / msPorDia);
     }
 
-    public static somaData(date: Date, num: number): Date {
+    static somaData(date: Date, num: number): Date {
         const novaData = new Date(date);
         novaData.setDate(novaData.getDate() + num);
         return novaData;
+    }
+
+    static parseDataFromString(dateString: string): Date {
+        // Validação básica
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+            throw new Error(`Formato inválido de data: ${dateString}. Esperado aaaa-mm-dd.`);
+        }
+
+        const [ano, mes, dia] = dateString.split('-').map(Number);
+
+        // Mês começa em 0 (janeiro)
+        return new Date(ano, mes - 1, dia);
     }
 
 }

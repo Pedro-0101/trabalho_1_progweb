@@ -6,16 +6,14 @@ import { EstoqueService } from "./EstoqueService";
 
 export class LivroService {
     private livroRepository: LivroRepository;
-    private categoriaLivroService: CategoriaLivroService;
-    private estoqueService: EstoqueService
 
     constructor() {
         this.livroRepository = LivroRepository.getInstance();
-        this.categoriaLivroService = new CategoriaLivroService();
-        this.estoqueService = new EstoqueService();
     }
 
     private async validarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro> {
+
+        const categoriaLivroService = new CategoriaLivroService();
 
         // Instância para validação e formatação
         const livro = new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
@@ -29,7 +27,7 @@ export class LivroService {
         if (livroRepetidoAEE) throw new Error(`O livro com autor ${livro.autor}, editora ${livro.editora} e edição ${livro.edicao} já foi incluído.`);
 
         // Verifica se existe categoria de livro
-        const existeCategoria = await this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
+        const existeCategoria = await categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
         if (!existeCategoria) throw new Error('Categoria de livro inválida.');
 
         return livro;
@@ -79,11 +77,13 @@ export class LivroService {
     }
 
     async atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro | null> {
+        
+        const categoriaLivroService = new CategoriaLivroService();
 
         const livro = await new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
 
         // Verifica se existe categoria de livro
-        const existeCategoria = await this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
+        const existeCategoria = await categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
         if (!existeCategoria) throw new Error('Categoria de livro inválida.');
 
         return await this.livroRepository.atualizarLivro(livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId);
@@ -92,12 +92,14 @@ export class LivroService {
 
     async deletarLivro(isbn: string): Promise<boolean>{
 
+        const estoqueService = new EstoqueService();
+
         // Verifica se livro existe
         const livro = await this.getLivroByIsbn(isbn.trim());
         if(!livro) throw new Error(`Livro com o isbn ${isbn} nao encontrado`);
 
         // Verificar se livro esta nao esta emprestado
-        const exemplar = await this.estoqueService.getEstoqueByLivroId(livro.id);
+        const exemplar = await estoqueService.getEstoqueByLivroId(livro.id);
         if(!exemplar) throw new Error('Exemplar do livro nao encontrado no estoque');
         
         if(exemplar.quantidadeEmprestada != 0){

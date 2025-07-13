@@ -6,27 +6,23 @@ import { EmprestimoService } from "./EmprestimoService";
 
 export class UsuarioService {
     private usuarioRepository: UsuarioRepository;
-    private categiriaUsuarioService: CategoriaUsuarioService;
-    private cursoService: CursoService;
-    private emprestimoService: EmprestimoService;
     
     constructor() {
         this.usuarioRepository = UsuarioRepository.getInstance();
-        this.categiriaUsuarioService = new CategoriaUsuarioService();
-        this.cursoService = new CursoService();
-        this.emprestimoService = new EmprestimoService();
     }
 
     private async validaDadosUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario>{
 
+        const categiriaUsuarioService = new CategoriaUsuarioService();
+        const cursoService = new CursoService()
         cpf = cpf.replace(/[^\d]/g, "");
 
         // Verificar se existe a categoria
-        const categoriaUsuario = await this.categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
+        const categoriaUsuario = await categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
         if(!categoriaUsuario)throw new Error('Categoria de usuario invalida');
     
         // Verifica se existe o curso
-        const curso = await this.cursoService.getCursoById(cursoId);
+        const curso = await cursoService.getCursoById(cursoId);
         if(!curso)throw new Error('Curso invalido.');
     
         // Cria instância temporária apenas para validar e padronizar dados
@@ -86,6 +82,8 @@ export class UsuarioService {
 
     async deletarUsuario(cpf: string): Promise<Boolean> {
 
+        const emprestimoService = new EmprestimoService();
+
         // Verificar se exite usuario com o cpf
         cpf = cpf.replace(/[^\d]/g, "");
         if(!cpf)throw new Error('CPF invalido.');
@@ -93,7 +91,7 @@ export class UsuarioService {
         if(!usuario)throw new Error('CPF invalido.');
 
         // Verificar se usuario nao tem emprestimo aberto
-        const emprestimosAbertos = await this.emprestimoService.getListaEmprestimos(true, 0, usuario.id);
+        const emprestimosAbertos = await emprestimoService.getListaEmprestimos(true, 0, usuario.id);
         if(emprestimosAbertos){
             console.error('Usuario possui emprestimos em aberto.');
             return false;

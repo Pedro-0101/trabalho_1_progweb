@@ -1,4 +1,3 @@
-import { PrimaryExpression } from "typescript";
 import { Curso } from "../model/entity/Curso";
 import { CursoRepository } from "../repository/CursoRepository";
 

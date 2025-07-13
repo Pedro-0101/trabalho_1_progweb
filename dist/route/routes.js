@@ -535,6 +535,7 @@ function RegisterRoutes(app) {
         success: { "in": "res", "name": "200", "required": true, "ref": "BasicResponseDto" },
         ativos: { "in": "query", "name": "ativos", "required": true, "dataType": "boolean" },
         estoqueId: { "in": "query", "name": "estoqueId", "dataType": "double" },
+        usuaioId: { "in": "query", "name": "usuaioId", "dataType": "double" },
     };
     app.get('/emprestimo', ...((0, runtime_1.fetchMiddlewares)(EmprestimoController_1.EmprestimoController)), ...((0, runtime_1.fetchMiddlewares)(EmprestimoController_1.EmprestimoController.prototype.listarEmprestimos)), function EmprestimoController_listarEmprestimos(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -572,6 +573,33 @@ function RegisterRoutes(app) {
                 const controller = new EmprestimoController_1.EmprestimoController();
                 yield templateService.apiHandler({
                     methodName: 'addEmprestimo',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsEmprestimoController_registrarDevolucao = {
+        id: { "in": "path", "name": "id", "required": true, "dataType": "double" },
+        fail: { "in": "res", "name": "400", "required": true, "ref": "BasicResponseDto" },
+        success: { "in": "res", "name": "200", "required": true, "ref": "BasicResponseDto" },
+    };
+    app.put('/emprestimo/devolucao/:id', ...((0, runtime_1.fetchMiddlewares)(EmprestimoController_1.EmprestimoController)), ...((0, runtime_1.fetchMiddlewares)(EmprestimoController_1.EmprestimoController.prototype.registrarDevolucao)), function EmprestimoController_registrarDevolucao(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEmprestimoController_registrarDevolucao, request, response });
+                const controller = new EmprestimoController_1.EmprestimoController();
+                yield templateService.apiHandler({
+                    methodName: 'registrarDevolucao',
                     controller,
                     response,
                     next,

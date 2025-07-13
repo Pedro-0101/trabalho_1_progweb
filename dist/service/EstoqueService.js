@@ -16,12 +16,12 @@ const LivroService_1 = require("./LivroService");
 class EstoqueService {
     constructor() {
         this.estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
-        this.livroService = new LivroService_1.LivroService();
     }
     registrarEstoque(livroId, quantidade) {
         return __awaiter(this, void 0, void 0, function* () {
+            const livroService = new LivroService_1.LivroService();
             // Busca o livro pelo id
-            const livro = yield this.livroService.getLivroById(livroId);
+            const livro = yield livroService.getLivroById(livroId);
             if (!livro)
                 throw new Error('Livro invalido.');
             // Cria instância temporária apenas para validação
@@ -43,13 +43,13 @@ class EstoqueService {
         return __awaiter(this, void 0, void 0, function* () {
             if (!livro_id)
                 throw new Error('Id do livro invalido.');
-            if (!quantidade)
-                throw new Error('Quantidade invalida.');
             const exemplar = yield this.getEstoqueByLivroId(livro_id);
             if (!exemplar)
                 throw new Error('Exemplar invalido.');
-            const qtde_atualizada = (exemplar === null || exemplar === void 0 ? void 0 : exemplar.quantidadeEmprestada) + quantidade;
-            return yield this.estoqueRepository.atualizarQuantidadeEmprestada(exemplar.id, qtde_atualizada);
+            const qtde_atualizada = exemplar.quantidadeEmprestada + quantidade;
+            const att = yield this.estoqueRepository.atualizarQuantidadeEmprestada(exemplar.id, qtde_atualizada);
+            yield this.atualizarDisponibilidade(exemplar.id);
+            return att;
         });
     }
     getListaEstoque(disponivel, livroId) {

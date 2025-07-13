@@ -1,20 +1,20 @@
-import e from "express";
 import { Estoque } from "../model/entity/Estoque";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { LivroService } from "./LivroService";
 
 export class EstoqueService {
     private estoqueRepository: EstoqueRepository;
-    private livroService: LivroService;
 
     constructor() {
         this.estoqueRepository = EstoqueRepository.getInstance();
-        this.livroService = new LivroService();
     }
 
     async registrarEstoque(livroId: number, quantidade: number): Promise<Estoque> {
+
+        const livroService = new LivroService();
+
         // Busca o livro pelo id
-        const livro = await this.livroService.getLivroById(livroId);
+        const livro = await livroService.getLivroById(livroId);
         if(!livro)throw new Error('Livro invalido.');
 
         // Cria instância temporária apenas para validação

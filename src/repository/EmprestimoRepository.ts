@@ -132,7 +132,7 @@ export class EmprestimoRepository {
     }
 
     async getEmprestimoById(id: number): Promise<Emprestimo | null> {
-        try{
+        try {
             const rows = await executeQuery(
                 `SELECT * FROM emprestimos WHERE id = ?`,
                 [id]
@@ -141,15 +141,26 @@ export class EmprestimoRepository {
             if (!rows || rows.length === 0) {
                 return null;
             }
-            return rows[0];
 
+            const row = rows[0];
+
+            return new Emprestimo(
+                row.usuario_id,
+                row.estoque_id,
+                new Date(row.data_emprestimo),
+                new Date(row.data_devolucao),
+                row.data_entrega ? new Date(row.data_entrega) : null,
+                row.dias_atraso,
+                row.suspensao_ate ? new Date(row.suspensao_ate) : null,
+                row.id
+            );
         } catch (err) {
-            console.error('Erro ao buscar empréstimos fechados', err);
+            console.error('Erro ao buscar empréstimo por id', err);
             return null;
         }
     }
 
-    async registraDevolucao(id: number, dataEntrega: Date, diasAtraso: number, suspensao_ate: Date): Promise<Emprestimo | null> {
+    async registraDevolucao(id: number, dataEntrega: string, diasAtraso: number, suspensao_ate: Date): Promise<Emprestimo | null> {
         try{
 
             const resultado = await executeQuery(

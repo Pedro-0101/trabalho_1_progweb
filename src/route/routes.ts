@@ -616,6 +616,7 @@ export function RegisterRoutes(app: Router) {
                 success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
                 ativos: {"in":"query","name":"ativos","required":true,"dataType":"boolean"},
                 estoqueId: {"in":"query","name":"estoqueId","dataType":"double"},
+                usuaioId: {"in":"query","name":"usuaioId","dataType":"double"},
         };
         app.get('/emprestimo',
             ...(fetchMiddlewares<RequestHandler>(EmprestimoController)),
@@ -665,6 +666,38 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'addEmprestimo',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsEmprestimoController_registrarDevolucao: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
+                success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
+        };
+        app.put('/emprestimo/devolucao/:id',
+            ...(fetchMiddlewares<RequestHandler>(EmprestimoController)),
+            ...(fetchMiddlewares<RequestHandler>(EmprestimoController.prototype.registrarDevolucao)),
+
+            async function EmprestimoController_registrarDevolucao(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsEmprestimoController_registrarDevolucao, request, response });
+
+                const controller = new EmprestimoController();
+
+              await templateService.apiHandler({
+                methodName: 'registrarDevolucao',
                 controller,
                 response,
                 next,
