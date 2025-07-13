@@ -76,18 +76,32 @@ export class UsuarioRepository {
         }
     }
 
-    async getUsuarios(): Promise<Usuario[] | null> {
+    async getUsuarios(categoriaId?: number, cursoId?: number): Promise<Usuario[] | null> {
         try {
-            const rows = await executeQuery(
-                'SELECT * FROM usuarios',
-                []
-            );
+
+            const conditions: string[] = [];
+            const params: any[] = [];
+
+            if (categoriaId) {
+                conditions.push("categoria_id = ?");
+                params.push(categoriaId);
+            }
+            if (cursoId) {
+                conditions.push("curso_id = ?");
+                params.push(cursoId);
+            }
+
+            let query = 'SELECT * FROM usuarios';
+            if (conditions.length > 0) {
+                query += ' WHERE ' + conditions.join(' AND ');
+            }
+            const rows = await executeQuery(query, params);
 
             if (!rows || rows.length === 0) {
                 return null;
             }
-
             return rows;
+
         } catch (err) {
             console.error('Erro ao buscar usuários:', err);
             throw err;

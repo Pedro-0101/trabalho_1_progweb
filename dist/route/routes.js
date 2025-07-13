@@ -97,6 +97,8 @@ function RegisterRoutes(app) {
     const argsUsuarioController_listarUsuarios = {
         fail: { "in": "res", "name": "400", "required": true, "ref": "BasicResponseDto" },
         success: { "in": "res", "name": "200", "required": true, "ref": "BasicResponseDto" },
+        categoriaId: { "in": "query", "name": "categoriaId", "dataType": "double" },
+        cursoId: { "in": "query", "name": "cursoId", "dataType": "double" },
     };
     app.get('/usuario', ...((0, runtime_1.fetchMiddlewares)(UsuarioController_1.UsuarioController)), ...((0, runtime_1.fetchMiddlewares)(UsuarioController_1.UsuarioController.prototype.listarUsuarios)), function UsuarioController_listarUsuarios(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {

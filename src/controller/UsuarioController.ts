@@ -13,10 +13,12 @@ export class UsuarioController extends Controller{
     @Get()
     async listarUsuarios(
         @Res() fail: TsoaResponse<400, BasicResponseDto>,
-        @Res() success: TsoaResponse<200, BasicResponseDto>
+        @Res() success: TsoaResponse<200, BasicResponseDto>,
+        @Query() categoriaId?: number,
+        @Query() cursoId?: number
     ): Promise< | void> {
         try {
-            const usuarios = await this.UsuarioService.getUsuarios();
+            const usuarios = await this.UsuarioService.getUsuarios(categoriaId, cursoId);
             return success(200, new BasicResponseDto('Lista de usuarios', usuarios));
         } catch (error: any) {
             return fail(400, new BasicResponseDto(error.message, undefined));

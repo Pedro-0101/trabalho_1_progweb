@@ -55,9 +55,9 @@ export class UsuarioService {
         return this.usuarioRepository.getUsuarioByCpf(cpf);
     }
 
-    async getUsuarios(): Promise< Usuario[] | null> {
+    async getUsuarios(categoriaId?: number, cursoId?: number): Promise< Usuario[] | null> {
 
-        return await this.usuarioRepository.getUsuarios();
+        return await this.usuarioRepository.getUsuarios(categoriaId, cursoId);
 
     }
 

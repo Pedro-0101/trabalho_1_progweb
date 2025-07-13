@@ -113,11 +113,11 @@ class LivroRepository {
                 const params = [];
                 if (autor) {
                     conditions.push("autor = ?");
-                    params.push(autor.trim());
+                    params.push(autor);
                 }
                 if (editora) {
                     conditions.push("editora = ?");
-                    params.push(editora.trim());
+                    params.push(editora);
                 }
                 if (categoriaId) {
                     conditions.push("categoria_id = ?");
@@ -127,8 +127,6 @@ class LivroRepository {
                 if (conditions.length > 0) {
                     query += " WHERE " + conditions.join(" AND ");
                 }
-                console.log("Query final:", query);
-                console.log("Params:", params);
                 const rows = yield (0, mysql_1.executeQuery)(query, params);
                 if (!rows || rows.length === 0) {
                     return null;

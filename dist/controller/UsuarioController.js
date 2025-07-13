@@ -31,10 +31,10 @@ let UsuarioController = class UsuarioController extends tsoa_1.Controller {
         super(...arguments);
         this.UsuarioService = new UsuarioService_1.UsuarioService();
     }
-    listarUsuarios(fail, success) {
+    listarUsuarios(fail, success, categoriaId, cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const usuarios = yield this.UsuarioService.getUsuarios();
+                const usuarios = yield this.UsuarioService.getUsuarios(categoriaId, cursoId);
                 return success(200, new BasicResponseDto_1.BasicResponseDto('Lista de usuarios', usuarios));
             }
             catch (error) {
@@ -92,8 +92,10 @@ __decorate([
     (0, tsoa_1.Get)(),
     __param(0, (0, tsoa_1.Res)()),
     __param(1, (0, tsoa_1.Res)()),
+    __param(2, (0, tsoa_1.Query)()),
+    __param(3, (0, tsoa_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Function, Function]),
+    __metadata("design:paramtypes", [Function, Function, Number, Number]),
     __metadata("design:returntype", Promise)
 ], UsuarioController.prototype, "listarUsuarios", null);
 __decorate([

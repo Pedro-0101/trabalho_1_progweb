@@ -73,10 +73,24 @@ class UsuarioRepository {
             }
         });
     }
-    getUsuarios() {
+    getUsuarios(categoriaId, cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM usuarios', []);
+                const conditions = [];
+                const params = [];
+                if (categoriaId) {
+                    conditions.push("categoria_id = ?");
+                    params.push(categoriaId);
+                }
+                if (cursoId) {
+                    conditions.push("curso_id = ?");
+                    params.push(cursoId);
+                }
+                let query = 'SELECT * FROM usuarios';
+                if (conditions.length > 0) {
+                    query += ' WHERE ' + conditions.join(' AND ');
+                }
+                const rows = yield (0, mysql_1.executeQuery)(query, params);
                 if (!rows || rows.length === 0) {
                     return null;
                 }

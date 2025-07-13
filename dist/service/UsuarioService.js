@@ -57,9 +57,9 @@ class UsuarioService {
             return this.usuarioRepository.getUsuarioByCpf(cpf);
         });
     }
-    getUsuarios() {
+    getUsuarios(categoriaId, cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.usuarioRepository.getUsuarios();
+            return yield this.usuarioRepository.getUsuarios(categoriaId, cursoId);
         });
     }
     atualizarUsuario(nome, cpf, ativo, categoriaId, cursoId) {

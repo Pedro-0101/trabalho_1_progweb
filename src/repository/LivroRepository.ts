@@ -141,11 +141,11 @@ export class LivroRepository {
 
         if (autor) {
             conditions.push("autor = ?");
-            params.push(autor.trim());
+            params.push(autor);
         }
         if (editora) {
             conditions.push("editora = ?");
-            params.push(editora.trim());
+            params.push(editora);
         }
         if (categoriaId) {
             conditions.push("categoria_id = ?");

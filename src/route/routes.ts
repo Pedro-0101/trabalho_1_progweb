@@ -103,6 +103,8 @@ export function RegisterRoutes(app: Router) {
         const argsUsuarioController_listarUsuarios: Record<string, TsoaRoute.ParameterSchema> = {
                 fail: {"in":"res","name":"400","required":true,"ref":"BasicResponseDto"},
                 success: {"in":"res","name":"200","required":true,"ref":"BasicResponseDto"},
+                categoriaId: {"in":"query","name":"categoriaId","dataType":"double"},
+                cursoId: {"in":"query","name":"cursoId","dataType":"double"},
         };
         app.get('/usuario',
             ...(fetchMiddlewares<RequestHandler>(UsuarioController)),
