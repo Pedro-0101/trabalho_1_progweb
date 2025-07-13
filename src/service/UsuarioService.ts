@@ -76,10 +76,13 @@ export class UsuarioService {
 
     async deletarUsuario(cpf: string): Promise<Boolean> {
 
+        // Verificar se exite usuario com o cpf
         cpf = cpf.replace(/[^\d]/g, "");
         if(!cpf)throw new Error('CPF invalido.');
         const usuario = await this.getUsuarioByCpf(cpf);
         if(!usuario)throw new Error('CPF invalido.');
+
+        // Verificar se usuario nao tem emprestimo aberto
 
         return await this.usuarioRepository.deletarUsuario(cpf);
     }

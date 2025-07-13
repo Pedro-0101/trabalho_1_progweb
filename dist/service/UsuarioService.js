@@ -74,12 +74,14 @@ class UsuarioService {
     }
     deletarUsuario(cpf) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Verificar se exite usuario com o cpf
             cpf = cpf.replace(/[^\d]/g, "");
             if (!cpf)
                 throw new Error('CPF invalido.');
             const usuario = yield this.getUsuarioByCpf(cpf);
             if (!usuario)
                 throw new Error('CPF invalido.');
+            // Verificar se usuario nao tem emprestimo aberto
             return yield this.usuarioRepository.deletarUsuario(cpf);
         });
     }

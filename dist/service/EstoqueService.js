@@ -18,10 +18,10 @@ class EstoqueService {
         this.estoqueRepository = EstoqueRepository_1.EstoqueRepository.getInstance();
         this.livroService = new LivroService_1.LivroService();
     }
-    registrarEstoque(isbn, quantidade) {
+    registrarEstoque(livroId, quantidade) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Busca o livro pelo ISBN
-            const livro = yield this.livroService.getLivroByIsbn(isbn);
+            // Busca o livro pelo id
+            const livro = yield this.livroService.getLivroById(livroId);
             if (!livro)
                 throw new Error('Livro invalido.');
             // Cria instância temporária apenas para validação
@@ -45,7 +45,16 @@ class EstoqueService {
                 throw new Error('Id do livro invalido.');
             if (!quantidade)
                 throw new Error('Quantidade invalida.');
-            return yield this.estoqueRepository.atualizarQuantidadeEmprestada(livro_id, quantidade);
+            const exemplar = yield this.getEstoqueByLivroId(livro_id);
+            if (!exemplar)
+                throw new Error('Exemplar invalido.');
+            const qtde_atualizada = (exemplar === null || exemplar === void 0 ? void 0 : exemplar.quantidadeEmprestada) + quantidade;
+            return yield this.estoqueRepository.atualizarQuantidadeEmprestada(exemplar.id, qtde_atualizada);
+        });
+    }
+    getEstoqueDisponivel(disponivel, livroId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.estoqueRepository.getEstoqueDisponivel(disponivel, livroId);
         });
     }
 }

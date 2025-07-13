@@ -1,67 +1,40 @@
-/*import { Estoque } from '../model/Estoque';
-import { EstoqueService } from '../service/EstoqueService';
-import { Request, Response } from 'express';
+import { Body, Controller, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse, Query } from "tsoa";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { EstoqueService } from "../service/EstoqueService";
+import { EstoqueDTO } from "../model/dto/EstoqueDto";
 
-export class EstoqueController {
-  private estoqueService: EstoqueService;
+@Route('estoque')
+@Tags('Estoque')
+export class EstoqueController extends Controller {
 
-  constructor() {
-    this.estoqueService = new EstoqueService();
-  }
+	estoqueService = new EstoqueService();
 
-  public registrarEstoque(req: Request, res: Response): void {
-    try {
-      const novoExemplar = this.estoqueService.registrarEstoque(req.body.isbn, 1);
-      res.status(201).json(novoExemplar);
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao cadastrar exemplar', error });
-    }
-  }
+	@Get()
+	async listarEstoqueDisponivel(
+		@Res() fail: TsoaResponse<400, BasicResponseDto>,
+		@Res() success: TsoaResponse<200, BasicResponseDto>,
+		@Query() disponivel: boolean,
+		@Query() livroId?: number
+	): Promise<void> {
+		try {
+			const estoqueDisponivel = await this.estoqueService.getEstoqueDisponivel(disponivel, livroId);
+			return success(200, new BasicResponseDto('Lista de exemplares', estoqueDisponivel));
+		} catch (error: any) {
+			return fail(400, new BasicResponseDto(error.message, undefined));
+		}
+	}
 
-  public listarEstoque(req: Request, res: Response): void {
-    try {
-      const estoques = this.estoqueService.getListaEstoques();
-      res.status(200).json(estoques);
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar exemplares', error });
-    }
-  }
-
-  public getByCodigo(codigo: number): Estoque | null {
-    try {
-      const estoque = this.estoqueService.getByCodigo(codigo);
-      if (estoque) {
-        return estoque;
-      } else {
-        throw new Error('Erro ao buscar exemplar');
-      }
-
-    } catch (error) {
-      throw new Error('Erro ao buscar exemplar');
-    }
-  }
-
-  public atualizaDisponibilidade(codigo: number): Estoque | null {
-    try {
-      const estoqueAtualizado = this.estoqueService.atualizaDisponibilidade(codigo);
-      return estoqueAtualizado;
-    }
-    catch (error) {
-      throw new Error('Erro ao atualizar exemplar');
-    }
-  }
-
-  public deletarEstoque(codigo: number, res: Response): void {
-    try {
-      const estoque = this.estoqueService.getByCodigo(codigo);
-      if (!estoque) {
-        throw new Error('Exemplar não encontrado');
-      }
-      this.estoqueService.deletarEstoque(codigo);
-      res.status(204).send(); // No content response
-    } catch (error) {
-      console.error('Erro ao remover exemplar:', error);
-      res.status(500).json({ message: 'Erro ao remover exemplar', error });
-    }
-  }
-}*/
+	@Post()
+	async addUsuario(
+		@Body() dto: EstoqueDTO,
+		@Res() fail: TsoaResponse<400, BasicResponseDto>,
+		@Res() success: TsoaResponse<201, BasicResponseDto>
+	): Promise< | void> {
+		try {
+			const novoUsuario = await this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
+			return success(201, new BasicResponseDto('Usuario criado com sucesso', novoUsuario));
+		} catch (error: any) {
+			return fail(400, new BasicResponseDto(error.message, undefined));
+		}
+	}
+}

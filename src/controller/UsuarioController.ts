@@ -51,7 +51,7 @@ export class UsuarioController extends Controller{
         } catch (error: any) {
             return fail(400, new BasicResponseDto(error.message, undefined));
         }
-    } // <-- Add this closing brace for addUsuario
+    }
 
     @Put('{cpf}')
     async atualizarUsuario(

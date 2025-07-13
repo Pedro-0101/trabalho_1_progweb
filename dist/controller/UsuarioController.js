@@ -63,7 +63,7 @@ let UsuarioController = class UsuarioController extends tsoa_1.Controller {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
             }
         });
-    } // <-- Add this closing brace for addUsuario
+    }
     atualizarUsuario(cpf, dto, fail, success) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

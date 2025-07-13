@@ -1,15 +1,19 @@
+import { Emprestimo } from "../model/entity/Emprestimo";
 import { Livro } from "../model/entity/Livro";
 import { LivroRepository } from "../repository/LivroRepository";
 import { CategoriaLivroService } from "./CategoriaLivroService";
+import { EmprestimoService } from "./EmprestimoService";
 
 
 export class LivroService {
     private livroRepository: LivroRepository;
     private categoriaLivroService: CategoriaLivroService;
+    private emprestimoService: EmprestimoService;
 
     constructor() {
         this.livroRepository = LivroRepository.getInstance();
         this.categoriaLivroService = new CategoriaLivroService();
+        //this.emprestimoService = new EmprestimoService();
     }
 
     private async validarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro> {
@@ -89,8 +93,13 @@ export class LivroService {
 
     async deletarLivro(isbn: string): Promise<boolean>{
 
+        // Verifica se livro existe
         const livro = await this.getLivroByIsbn(isbn.trim());
         if(!livro) throw new Error(`Livro com o isbn ${isbn} nao encontrado`)
+
+        // Verificar se livro esta nao esta emprestado
+        //const livroEmprestado = this.emprestimoService
+        
         return await this.livroRepository.deletarLivro(livro.isbn);
 
     }

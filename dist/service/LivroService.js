@@ -17,6 +17,7 @@ class LivroService {
     constructor() {
         this.livroRepository = LivroRepository_1.LivroRepository.getInstance();
         this.categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
+        //this.emprestimoService = new EmprestimoService();
     }
     validarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -82,9 +83,12 @@ class LivroService {
     }
     deletarLivro(isbn) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Verifica se livro existe
             const livro = yield this.getLivroByIsbn(isbn.trim());
             if (!livro)
                 throw new Error(`Livro com o isbn ${isbn} nao encontrado`);
+            // Verificar se livro esta nao esta emprestado
+            //const livroEmprestado = this.emprestimoService
             return yield this.livroRepository.deletarLivro(livro.isbn);
         });
     }

@@ -94,6 +94,38 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"EstoqueDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"livroId": {
+						"type": "number",
+						"format": "double"
+					},
+					"quantidade": {
+						"type": "number",
+						"format": "double"
+					},
+					"quantidadeEmprestada": {
+						"type": "number",
+						"format": "double"
+					},
+					"disponivel": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"id",
+					"livroId",
+					"quantidade",
+					"quantidadeEmprestada",
+					"disponivel"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CursoDTO": {
 				"properties": {
 					"id": {
@@ -628,6 +660,107 @@
 						}
 					}
 				]
+			}
+		},
+		"/estoque": {
+			"get": {
+				"operationId": "ListarEstoqueDisponivel",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Estoque"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "disponivel",
+						"required": true,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"in": "query",
+						"name": "livroId",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "AddUsuario",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Estoque"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/EstoqueDTO"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/curso": {
