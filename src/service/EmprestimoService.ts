@@ -21,7 +21,8 @@ export class EmprestimoService {
         // Busca usuário e valida
         const usuario = await this.usuarioService.getUsuarioByCpf(cpf);
         if (!usuario) throw new Error("Usuário não encontrado.");
-        if (usuario.ativo !== "Ativo") throw new Error("Usuário inativo.");
+        if (usuario.ativo == "Inativo") throw new Error("Usuário inativo.");
+        if (usuario.ativo == "Suspenso") throw new Error("Usuário suspenso.");
 
         // Busca estoque e valida
         const estoque = await this.estoqueService.getEstoqueByLivroId(codigoExemplar);
@@ -32,9 +33,9 @@ export class EmprestimoService {
         const categoriaUsuario = usuario.categoriaId;
         const livro = await this.livroService.getLivroById(estoque.livroId);
         if (!livro) throw new Error("Livro não encontrado para este estoque.");
-        const categoriaLivro = livro.categoriaId;
-
+        
         // Calcula data devolução
+        const categoriaLivro = livro.categoriaId;
         let dataDevolucao = new Date(dataEmprestimo);
         if (categoriaUsuario === 1) { // professor
             dataDevolucao.setDate(dataEmprestimo.getDate() + 40);

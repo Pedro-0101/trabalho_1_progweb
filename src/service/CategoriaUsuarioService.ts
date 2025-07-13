@@ -21,7 +21,7 @@ export class CategoriaUsuarioService {
 
     async getCategoriaUsuarioById(categoriaId: number): Promise<CategoriaUsuario | null>{
 
-        if(!categoriaId){throw new Error('Categoria invalida!')};
+        if(!categoriaId)throw new Error('Categoria invalida.');
         return await this.categoriaUsuarioRepository.getCategoriaUsuarioById(categoriaId);
 
     }

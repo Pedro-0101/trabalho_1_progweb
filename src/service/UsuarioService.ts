@@ -18,11 +18,11 @@ export class UsuarioService {
         
         // Verificar se existe a categoria
         const categoriaUsuario = await this.categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
-        if(!categoriaUsuario){ throw new Error('Categoria de usuario invalida!')};
+        if(!categoriaUsuario)throw new Error('Categoria de usuario invalida');
 
         // Verifica se existe o curso
         const curso = await this.cursoService.getCursoById(cursoId);
-        if(!curso){ throw new Error('Categoria de usuario invalida!')};
+        if(!curso)throw new Error('Categoria de usuario invalida.');
 
         // Cria instância temporária apenas para validar e padronizar dados
         const usuarioTemp = new Usuario(nome, cpf, ativo, categoriaId, cursoId);
@@ -36,10 +36,7 @@ export class UsuarioService {
 
     async getUsuarioByCpf(cpf: string): Promise<Usuario | null> {
 
-        if(!cpf){
-            throw new Error('CPF invalido!');
-        }
-
+        if(!cpf)throw new Error('CPF invalido.');
         return this.usuarioRepository.getUsuarioByCpf(cpf);
     }
 

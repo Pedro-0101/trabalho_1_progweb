@@ -21,7 +21,7 @@ export class CursoService {
 
     async getCursoById(cursoId: number): Promise<Curso | null> {
 
-        if(!cursoId){throw new Error('Curso invalido!')};
+        if(!cursoId)throw new Error('Curso invalido.');
         return await this.cursoRepository.getCursoById(cursoId);
 
     }

@@ -9,15 +9,22 @@ export class CategoriaLivroService {
     }
 
     async criarCategoriaLivro(nome: string): Promise<CategoriaLivro> {
-    // Cria instância inicial para validação e consistência
-    const categoriaTemp = new CategoriaLivro(nome);
+        // Cria instância inicial para validação e consistência
+        const categoriaTemp = new CategoriaLivro(nome);
 
-    // Persiste no banco e recebe o ID gerado
-    const id = await this.CategoriaLivroRepository.insertCategoriaLivro(categoriaTemp);
+        // Persiste no banco e recebe o ID gerado
+        const id = await this.CategoriaLivroRepository.insertCategoriaLivro(categoriaTemp);
 
-    // Retorna categoria de livro
-    return new CategoriaLivro(nome, id);
-  }
+        // Retorna categoria de livro
+        return new CategoriaLivro(nome, id);
+    }
+
+    async getCategoriaLivroById(categoriaId: number): Promise<CategoriaLivro | null> {
+
+        if(!categoriaId)throw new Error('Categoria de livro invalida.');
+        return await this.CategoriaLivroRepository.getCategoriaLivroById(categoriaId);
+
+    }
 
    /* public listarCategorias(): CategoriaLivro[] {
         // Retorna todas as categorias

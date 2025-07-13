@@ -1,13 +1,15 @@
 import { Livro } from "../model/Livro";
 import { LivroRepository } from "../repository/LivroRepository";
-import { EmprestimoService } from "./EmprestimoService";
-import { EstoqueService } from "./EstoqueService";
+import { CategoriaLivroService } from "./CategoriaLivroService";
+
 
 export class LivroService {
     private livroRepository: LivroRepository;
+    private categoriaLivroService: CategoriaLivroService;
 
     constructor() {
         this.livroRepository = LivroRepository.getInstance();
+        this.categoriaLivroService = new CategoriaLivroService();
     }
 
     async criarLivro(
@@ -23,16 +25,16 @@ export class LivroService {
 
         // Verifica se existe livro com mesmo isbn
         const livroReptidoIsbn = await this.getLivroByIsbn(livroTemp.isbn);
-        if(livroReptidoIsbn){
-            throw new Error(`O livro ${livroTemp.titulo} ja foi incluido`);
-        }
-
+        if(livroReptidoIsbn)throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
+        
         // Verifica se existe livro com mesma combinacao de autor, edicao e editora
         const livroRepetidoAEE = await this.getLivroAEE(livroTemp.autor, livroTemp.editora, livroTemp.edicao);
-        if(livroRepetidoAEE){
-            throw new Error(`O livro ${livroTemp.titulo} ja foi incluido`);
-        }
-
+        if(livroRepetidoAEE)throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
+        
+        // Verifica se existe categoria de livro
+        const existeCategoria = await this.categoriaLivroService.getCategoriaLivroById(livroTemp.categoriaId);
+        if(!existeCategoria)throw new Error('Categoria de livro invalida');
+        
         // Persiste e obtém o ID gerado
         const id = await this.livroRepository.insertLivro(livroTemp);
 
@@ -41,31 +43,23 @@ export class LivroService {
     }
 
     async getLivroByIsbn(isbn: string): Promise<Livro> {
+        
         const livro = await this.livroRepository.getLivroByIsbn(isbn);
-
-        if (!livro) {
-            throw new Error(`Livro com ISBN ${isbn} não encontrado.`);
-        }
-
+        if (!livro) throw new Error(`Livro com ISBN ${isbn} não encontrado.`);
         return livro;
+
     }
 
     async getLivroById(livroId: number): Promise<Livro | null> {
 
-        if(!livroId){
-            throw new Error('Id do livro invalido!');
-        }
-
+        if(!livroId)throw new Error('Id do livro invalido.');
         return this.livroRepository.getLivroById(livroId);
 
     }
 
     async getLivroAEE(autor: string, editora: string, edicao: string): Promise<Livro | null> {
 
-        if(!autor || !editora || !edicao){
-            throw new Error('Erro ao consultar repeticao de livro');
-        }
-
+        if(!autor || !editora || !edicao)throw new Error('Erro ao consultar repeticao de livro.');
         return await this.livroRepository.getLivroAEE(autor, editora, edicao);
 
     }

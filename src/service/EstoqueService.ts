@@ -1,7 +1,5 @@
 import { Estoque } from "../model/Estoque";
-import { Livro } from "../model/Livro";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
-import { LivroRepository } from "../repository/LivroRepository";
 import { LivroService } from "./LivroService";
 
 export class EstoqueService {
@@ -16,6 +14,7 @@ export class EstoqueService {
     async registrarEstoque(isbn: string, quantidade: number): Promise<Estoque> {
         // Busca o livro pelo ISBN
         const livro = await this.livroService.getLivroByIsbn(isbn);
+        if(!livro)throw new Error('Livro invalido.');
 
         // Cria instância temporária apenas para validação
         const estoqueTemp = new Estoque(livro.id, quantidade, true);
@@ -29,24 +28,15 @@ export class EstoqueService {
 
     async getEstoqueByLivroId(livro_id: number): Promise<Estoque | null> {
 
-        if(!livro_id){
-            throw new Error('Id do livro invalido!');
-        }
-
+        if(!livro_id)throw new Error('Id do livro invalido.');
         return this.estoqueRepository.getEstoqueByLivroId(livro_id);
 
     }
 
     async atualizarQuantidadeEmprestada(livro_id: number, quantidade: number): Promise<boolean> {
 
-        if(!livro_id){
-            throw new Error('Id do livro invalido!');
-        }
-
-        if(!quantidade){
-            throw new Error('Quantidade invalida!');
-        }
-
+        if(!livro_id)throw new Error('Id do livro invalido.');
+        if(!quantidade)throw new Error('Quantidade invalida.');
         return await this.estoqueRepository.atualizarQuantidadeEmprestada(livro_id, quantidade);
 
     }
