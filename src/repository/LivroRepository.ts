@@ -37,133 +37,150 @@ export class LivroRepository {
     }
 
     async insertLivro(livro: Livro): Promise<number> {
-        const resultado = await executeQuery(
-            'INSERT INTO livros(titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)',
-            [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId]
-        );
-
-        console.log('Livro inserido com sucesso!', resultado);
-        return resultado.insertId;
+        try {
+            const resultado = await executeQuery(
+                'INSERT INTO livros(titulo, autor, editora, edicao, isbn, categoria_id) VALUES (?, ?, ?, ?, ?, ?)',
+                [livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId]
+            );
+            console.log('Livro inserido com sucesso!', resultado);
+            return resultado.insertId;
+        } catch (err) {
+            console.error('Erro ao inserir livro:', err);
+            throw err;
+        }
     }
 
     async getLivroByIsbn(isbn: string): Promise<Livro | null> {
-        const rows = await executeQuery(
-            'SELECT * FROM livros WHERE isbn = ?',
-            [isbn.trim()]
-        );
+        try {
+            const rows = await executeQuery(
+                'SELECT * FROM livros WHERE isbn = ?',
+                [isbn.trim()]
+            );
 
-        if (!rows || rows.length === 0) {
-            return null;
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+
+            const row = rows[0];
+
+            return new Livro(
+                row.titulo,
+                row.autor,
+                row.editora,
+                row.edicao,
+                row.isbn,
+                row.categoria_id,
+                row.id
+            );
+        } catch (err) {
+            console.error('Erro ao buscar livro por ISBN:', err);
+            throw err;
         }
-
-        const row = rows[0];
-
-        return new Livro(
-            row.titulo,
-            row.autor,
-            row.editora,
-            row.edicao,
-            row.isbn,
-            row.categoria_id,
-            row.id
-        );
     }
 
     async getLivroById(livroId: number): Promise<Livro | null> {
-        const rows = await executeQuery(
-            'SELECT * FROM livros WHERE id = ?',
-            [livroId]
-        );
+        try {
+            const rows = await executeQuery(
+                'SELECT * FROM livros WHERE id = ?',
+                [livroId]
+            );
 
-        if (!rows || rows.length === 0) {
-            return null;
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+
+            const row = rows[0];
+
+            return new Livro(
+                row.titulo,
+                row.autor,
+                row.editora,
+                row.edicao,
+                row.isbn,
+                row.categoria_id,
+                row.id
+            );
+        } catch (err) {
+            console.error('Erro ao buscar livro por ID:', err);
+            throw err;
         }
-
-        const row = rows[0];
-
-        return new Livro(
-            row.titulo,
-            row.autor,
-            row.editora,
-            row.edicao,
-            row.isbn,
-            row.categoria_id,
-            row.id
-        );
     }
 
     async getLivroAEE(autor: string, editora: string, edicao: string): Promise<Livro | null> {
+        try {
+            const rows = await executeQuery(
+                'SELECT * FROM livros WHERE autor = ? AND editora = ? AND edicao = ?',
+                [autor.trim(), editora.trim(), edicao.trim()]
+            );
 
-        const rows = await executeQuery(
-            'SELECT * FROM livros WHERE autor = ? AND editora = ? AND edicao = ?',
-            [autor.trim(), editora.trim(), edicao.trim()]
-        );
+            if (!rows || rows.length === 0) {
+                return null;
+            }
 
-        if (!rows || rows.length === 0) {
-            return null;
+            const row = rows[0];
+
+            return new Livro(
+                row.titulo,
+                row.autor,
+                row.editora,
+                row.edicao,
+                row.isbn,
+                row.categoria_id,
+                row.id
+            );
+        } catch (err) {
+            console.error('Erro ao buscar livro por autor, editora e edição:', err);
+            throw err;
         }
-
-        const row = rows[0];
-
-        return new Livro(
-            row.titulo,
-            row.autor,
-            row.editora,
-            row.edicao,
-            row.isbn,
-            row.categoria_id,
-            row.id
-        );
-
     }
 
+    async getLivros(): Promise<Livro[] | null> {
+        try {
+            const rows = await executeQuery(
+                'SELECT * FROM livros',
+                []
+            );
+
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+
+            return rows;
+        } catch (err) {
+            console.error('Erro ao buscar livros:', err);
+            throw err;
+        }
+    }
+
+    async atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro | null> {
+        try {
+            const resultado = await executeQuery(
+                'UPDATE livros SET titulo = ?, autor = ?, editora = ?, edicao = ?, isbn = ?, categoria_id = ? WHERE isbn = ?',
+                [titulo, autor, editora, edicao, isbn, categoriaId, isbn]
+            );
+            if (resultado.affectedRows === 0) {
+                return null;
+            }
+            return await this.getLivroByIsbn(isbn);
+        } catch (err) {
+            console.error('Erro ao atualizar livro:', err);
+            throw err;
+        }
+    }
+
+    async deletarLivro(isbn: string): Promise<boolean> {
+        try {
+            const resultado = await executeQuery(
+                'DELETE FROM livros WHERE isbn = ?',
+                [isbn]
+            );
+            if (resultado.affectedRows === 0) {
+                return false;
+            }
+            return true;
+        } catch (err) {
+            console.error('Erro ao deletar livro:', err);
+            throw err;
+        }
+    }
 }
-
-/*
-    public getListaLivros(): Livro[] {
-        return this.listaLivros;
-    }
-
-    public getLivroById(id: number): Livro {
-
-        if (id < 0) {
-            throw new Error("ID inválido");
-        }
-        if (id >= this.listaLivros.length) {
-            throw new Error("Livro não encontrado");
-        }
-        if (this.listaLivros.length === 0) {
-            throw new Error("Nenhum livro cadastrado");
-        }
-        const livro = this.listaLivros.find(l => l.id === id);
-        if (!livro) {
-            throw new Error(`Livro com ID ${id} não encontrado`);
-        }
-        return livro;
-        
-    }
-    public atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Livro {
-        const livro = this.getLivroByIsbn(isbn);
-        if (!livro) {
-            throw new Error("Livro nao encontrado");
-        }
-
-        livro.titulo = titulo;
-        livro.autor = autor;
-        livro.editora = editora;
-        livro.edicao = edicao;
-        livro.categoriaId = categoriaId;
-
-        return livro;
-    }
-
-    public deletarLivro(isbn: string): boolean {
-        const index = this.listaLivros.findIndex(l => l.isbn === isbn);
-        if (index === -1) {
-            return false;
-        }
-        this.listaLivros.splice(index, 1);
-        return true;
-    }
-
-}*/

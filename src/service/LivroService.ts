@@ -12,6 +12,27 @@ export class LivroService {
         this.categoriaLivroService = new CategoriaLivroService();
     }
 
+    private async validarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro> {
+
+        // Instância para validação e formatação
+        const livro = new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
+
+        // Verifica se existe livro com mesmo isbn
+        const livroReptidoIsbn = await this.getLivroByIsbn(livro.isbn);
+        if(livroReptidoIsbn)throw new Error(`O livro ${livro.titulo} ja foi incluido.`);
+        
+        // Verifica se existe livro com mesma combinacao de autor, edicao e editora
+        const livroRepetidoAEE = await this.getLivroAEE(livro.autor, livro.editora, livro.edicao);
+        if(livroRepetidoAEE)throw new Error(`O livro ${livro.titulo} ja foi incluido.`);
+        
+        // Verifica se existe categoria de livro
+        const existeCategoria = await this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
+        if(!existeCategoria)throw new Error('Categoria de livro invalida');
+
+        return livro;
+
+    }
+
     async criarLivro(
         titulo: string,
         autor: string,
@@ -20,20 +41,8 @@ export class LivroService {
         isbn: string,
         categoriaId: number
     ): Promise<Livro> {
-        // Instância temporária só para validação e formatação
-        const livroTemp = new Livro(titulo, autor, editora, edicao, isbn, categoriaId);
-
-        // Verifica se existe livro com mesmo isbn
-        const livroReptidoIsbn = await this.getLivroByIsbn(livroTemp.isbn);
-        if(livroReptidoIsbn)throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
         
-        // Verifica se existe livro com mesma combinacao de autor, edicao e editora
-        const livroRepetidoAEE = await this.getLivroAEE(livroTemp.autor, livroTemp.editora, livroTemp.edicao);
-        if(livroRepetidoAEE)throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
-        
-        // Verifica se existe categoria de livro
-        const existeCategoria = await this.categoriaLivroService.getCategoriaLivroById(livroTemp.categoriaId);
-        if(!existeCategoria)throw new Error('Categoria de livro invalida');
+        const livroTemp = await this.validarLivro(titulo, autor, editora, edicao, isbn, categoriaId);
         
         // Persiste e obtém o ID gerado
         const id = await this.livroRepository.insertLivro(livroTemp);
@@ -64,83 +73,24 @@ export class LivroService {
 
     }
 
-    /*public ListarLivrosFiltro(filtroAutor: string, filtroEditora: string, filtroCategoria: number): Livro[] | null{
+    async getLivros(): Promise<Livro[] | null> {
 
-        try{
-            
-            let listaLivros: Livro[];
-            listaLivros = this.livroRepository.getListaLivros();
-
-            if(filtroAutor){
-                listaLivros.filter(livro => {livro.autor === filtroAutor});
-            }
-
-            if(filtroEditora){
-                listaLivros.filter(livro => {livro.editora === filtroEditora});
-            }
-
-            if(filtroCategoria){
-                listaLivros.filter(livro => {livro.categoriaId === filtroCategoria});
-            }
-
-            return listaLivros;
-
-        }catch(error){
-            throw new Error('Erro ao listar livros com filtro');
-        }
+        return await this.livroRepository.getLivros();
 
     }
 
-    public detalhesLivro(isbn: string): Livro | null{
-        try{
+    async atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Promise<Livro | null> {
 
-            if(!isbn){
-                throw new Error("Erro ao requisitar detalhes do livro: ISBN invalido: "+isbn);
-            }
-
-            const livro = this.livroRepository.getLivroByIsbn(isbn);
-            return livro;
-
-        }catch(error){
-            throw new Error("Erro ao requisitar detalhes do livro")
-        }
+        const livro = await this.validarLivro(titulo, autor, editora, edicao, isbn, categoriaId);
+        return await this.livroRepository.atualizarLivro(livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId);
 
     }
 
-    public atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Livro | null{
+    async deletarLivro(isbn: string): Promise<boolean>{
 
-        try{
-
-            const livroAtualizado = this.livroRepository.atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId);
-            return livroAtualizado;
-            
-        }catch(error){
-            throw new Error("Erro ao atualizar informacoes do livro")
-        }
-    }
-
-    public deletarLivro(isbn: string): void{
-
-        try{
-
-            const emprestimoService = new EmprestimoService();
-            const estoqueService = new EstoqueService();
-            const estoqueId = estoqueService.getEstoqueId(null, isbn);
-            let qtdeEmprestada = emprestimoService.qtdeEmprestada(estoqueId);
-
-            if(qtdeEmprestada === 0){
-
-            estoqueService.deletarEstoque(estoqueId);
-            this.livroRepository.deletarLivro(isbn);
-                
-            }else{
-                throw new Error("Erro ao deletar livro, possui empresimos em andamento");
-            }
-
-        }catch(error){
-            throw new Error("Erro ao deletar livro");
-        }
+        const livro = await this.getLivroByIsbn(isbn);
+        return await this.deletarLivro(livro.isbn);
 
     }
-*/
+
 }

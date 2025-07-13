@@ -18,22 +18,28 @@ class LivroService {
         this.livroRepository = LivroRepository_1.LivroRepository.getInstance();
         this.categoriaLivroService = new CategoriaLivroService_1.CategoriaLivroService();
     }
-    criarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
+    validarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Instância temporária só para validação e formatação
-            const livroTemp = new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
+            // Instância para validação e formatação
+            const livro = new Livro_1.Livro(titulo, autor, editora, edicao, isbn, categoriaId);
             // Verifica se existe livro com mesmo isbn
-            const livroReptidoIsbn = yield this.getLivroByIsbn(livroTemp.isbn);
+            const livroReptidoIsbn = yield this.getLivroByIsbn(livro.isbn);
             if (livroReptidoIsbn)
-                throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
+                throw new Error(`O livro ${livro.titulo} ja foi incluido.`);
             // Verifica se existe livro com mesma combinacao de autor, edicao e editora
-            const livroRepetidoAEE = yield this.getLivroAEE(livroTemp.autor, livroTemp.editora, livroTemp.edicao);
+            const livroRepetidoAEE = yield this.getLivroAEE(livro.autor, livro.editora, livro.edicao);
             if (livroRepetidoAEE)
-                throw new Error(`O livro ${livroTemp.titulo} ja foi incluido.`);
+                throw new Error(`O livro ${livro.titulo} ja foi incluido.`);
             // Verifica se existe categoria de livro
-            const existeCategoria = yield this.categoriaLivroService.getCategoriaLivroById(livroTemp.categoriaId);
+            const existeCategoria = yield this.categoriaLivroService.getCategoriaLivroById(livro.categoriaId);
             if (!existeCategoria)
                 throw new Error('Categoria de livro invalida');
+            return livro;
+        });
+    }
+    criarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const livroTemp = yield this.validarLivro(titulo, autor, editora, edicao, isbn, categoriaId);
             // Persiste e obtém o ID gerado
             const id = yield this.livroRepository.insertLivro(livroTemp);
             // Retorna nova instância com ID preenchido
@@ -60,6 +66,23 @@ class LivroService {
             if (!autor || !editora || !edicao)
                 throw new Error('Erro ao consultar repeticao de livro.');
             return yield this.livroRepository.getLivroAEE(autor, editora, edicao);
+        });
+    }
+    getLivros() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.livroRepository.getLivros();
+        });
+    }
+    atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const livro = yield this.validarLivro(titulo, autor, editora, edicao, isbn, categoriaId);
+            return yield this.livroRepository.atualizarLivro(livro.titulo, livro.autor, livro.editora, livro.edicao, livro.isbn, livro.categoriaId);
+        });
+    }
+    deletarLivro(isbn) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const livro = yield this.getLivroByIsbn(isbn);
+            return yield this.deletarLivro(livro.isbn);
         });
     }
 }

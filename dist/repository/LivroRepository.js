@@ -82,53 +82,50 @@ class LivroRepository {
             return new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id);
         });
     }
+    getLivros() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM livros', []);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                return rows;
+            }
+            catch (err) {
+                console.error('Erro ao buscar livros:', err);
+                throw err;
+            }
+        });
+    }
+    atualizarLivro(titulo, autor, editora, edicao, isbn, categoriaId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('UPDATE livros SET titulo = ?, autor = ?, editora = ?, edicao = ?, isbn = ?, categoria_id = ? WHERE isbn = ?', [titulo, autor, editora, edicao, isbn, categoriaId, isbn]);
+                if (resultado.affectedRows === 0) {
+                    return null;
+                }
+                return yield this.getLivroByIsbn(isbn);
+            }
+            catch (err) {
+                console.error('Erro ao atualizar livro:', err);
+                throw err;
+            }
+        });
+    }
+    deletarLivro(isbn) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('DELETE FROM livros WHERE isbn = ?', [isbn]);
+                if (resultado.affectedRows === 0) {
+                    return false;
+                }
+                return true;
+            }
+            catch (err) {
+                console.error('Erro ao deletar livro:', err);
+                throw err;
+            }
+        });
+    }
 }
 exports.LivroRepository = LivroRepository;
-/*
-    public getListaLivros(): Livro[] {
-        return this.listaLivros;
-    }
-
-    public getLivroById(id: number): Livro {
-
-        if (id < 0) {
-            throw new Error("ID inválido");
-        }
-        if (id >= this.listaLivros.length) {
-            throw new Error("Livro não encontrado");
-        }
-        if (this.listaLivros.length === 0) {
-            throw new Error("Nenhum livro cadastrado");
-        }
-        const livro = this.listaLivros.find(l => l.id === id);
-        if (!livro) {
-            throw new Error(`Livro com ID ${id} não encontrado`);
-        }
-        return livro;
-        
-    }
-    public atualizarLivro(titulo: string, autor: string, editora: string, edicao: string, isbn: string, categoriaId: number): Livro {
-        const livro = this.getLivroByIsbn(isbn);
-        if (!livro) {
-            throw new Error("Livro nao encontrado");
-        }
-
-        livro.titulo = titulo;
-        livro.autor = autor;
-        livro.editora = editora;
-        livro.edicao = edicao;
-        livro.categoriaId = categoriaId;
-
-        return livro;
-    }
-
-    public deletarLivro(isbn: string): boolean {
-        const index = this.listaLivros.findIndex(l => l.isbn === isbn);
-        if (index === -1) {
-            return false;
-        }
-        this.listaLivros.splice(index, 1);
-        return true;
-    }
-
-}*/ 

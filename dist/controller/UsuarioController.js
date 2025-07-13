@@ -78,8 +78,8 @@ let UsuarioController = class UsuarioController extends tsoa_1.Controller {
     deletarUsuario(cpf, fail, success) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const deletarUsuario = yield this.UsuarioService.deletarUsuario(cpf);
-                return success(200, new BasicResponseDto_1.BasicResponseDto('Usuario atualizado com sucesso', deletarUsuario));
+                yield this.UsuarioService.deletarUsuario(cpf);
+                return success(200, new BasicResponseDto_1.BasicResponseDto('Usuario deletado com sucesso com sucesso', undefined));
             }
             catch (error) {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));

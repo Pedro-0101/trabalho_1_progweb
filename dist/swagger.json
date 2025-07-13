@@ -56,6 +56,44 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"LivroDTO": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"titulo": {
+						"type": "string"
+					},
+					"autor": {
+						"type": "string"
+					},
+					"editora": {
+						"type": "string"
+					},
+					"edicao": {
+						"type": "string"
+					},
+					"isbn": {
+						"type": "string"
+					},
+					"categoriaId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"titulo",
+					"autor",
+					"editora",
+					"edicao",
+					"isbn",
+					"categoriaId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CursoDTO": {
 				"properties": {
 					"id": {
@@ -323,6 +361,222 @@
 					{
 						"in": "path",
 						"name": "cpf",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/livro": {
+			"get": {
+				"operationId": "ListarLivros",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Livro"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "AddLivro",
+				"responses": {
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Livro"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LivroDTO"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/livro/{isbn}": {
+			"get": {
+				"operationId": "GetLivroById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Livro"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "isbn",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "AtualizarLivro",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Livro"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "isbn",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LivroDTO"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeletarLivro",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Livro"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "isbn",
 						"required": true,
 						"schema": {
 							"type": "string"
