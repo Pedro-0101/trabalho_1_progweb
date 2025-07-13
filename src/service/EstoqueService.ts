@@ -1,3 +1,4 @@
+import e from "express";
 import { Estoque } from "../model/entity/Estoque";
 import { EstoqueRepository } from "../repository/EstoqueRepository";
 import { LivroService } from "./LivroService";
@@ -47,9 +48,9 @@ export class EstoqueService {
 
     }
 
-    async getEstoqueDisponivel(disponivel: boolean, livroId?: number): Promise<Estoque[] | null> {
+    async getListaEstoque(disponivel: boolean, livroId?: number): Promise<Estoque[] | null> {
 
-        return await this.estoqueRepository.getEstoqueDisponivel(disponivel, livroId);
+        return await this.estoqueRepository.getListaEstoque(disponivel, livroId);
 
     }
 
@@ -58,6 +59,14 @@ export class EstoqueService {
         if(!id)throw new Error('Id de estoque invalido.');
 
         return await this.estoqueRepository.getEstoqueById(id);
+
+    }
+
+    async atualizarDisponibilidade(id: number): Promise<Estoque | null> {
+
+        if(!id)throw new Error('Id do estoque invalido');
+        
+        return await this.estoqueRepository.atualizarDisponibilidade(id);
 
     }
 }

@@ -10,14 +10,14 @@ export class EstoqueController extends Controller {
 	estoqueService = new EstoqueService();
 
 	@Get()
-	async listarEstoqueDisponivel(
+	async listarEstoque(
 		@Res() fail: TsoaResponse<400, BasicResponseDto>,
 		@Res() success: TsoaResponse<200, BasicResponseDto>,
 		@Query() disponivel: boolean,
 		@Query() livroId?: number
 	): Promise<void> {
 		try {
-			const estoqueDisponivel = await this.estoqueService.getEstoqueDisponivel(disponivel, livroId);
+			const estoqueDisponivel = await this.estoqueService.getListaEstoque(disponivel, livroId);
 			return success(200, new BasicResponseDto('Lista de exemplares', estoqueDisponivel));
 		} catch (error: any) {
 			return fail(400, new BasicResponseDto(error.message, undefined));
@@ -45,8 +45,22 @@ export class EstoqueController extends Controller {
 		@Res() success: TsoaResponse<201, BasicResponseDto>
 	): Promise< | void> {
 		try {
-			const novoUsuario = await this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
-			return success(201, new BasicResponseDto('Usuario criado com sucesso', novoUsuario));
+			const novoEsxemplar = await this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
+			return success(201, new BasicResponseDto('Exemplar inserido com sucesso', novoEsxemplar));
+		} catch (error: any) {
+			return fail(400, new BasicResponseDto(error.message, undefined));
+		}
+	}
+
+	@Put()
+	async atualizaDisponibilidade(
+		@Path() id: number,
+		@Res() fail: TsoaResponse<400, BasicResponseDto>,
+		@Res() success: TsoaResponse<200, BasicResponseDto>
+	): Promise<void> {
+		try {
+			const exemplarAtualizado = await this.estoqueService.atualizarDisponibilidade(id);
+			return success(200, new BasicResponseDto('Disponibilidade do exemplar atualizada com sucesso', exemplarAtualizado));
 		} catch (error: any) {
 			return fail(400, new BasicResponseDto(error.message, undefined));
 		}
