@@ -14,25 +14,35 @@ export class UsuarioService {
         this.cursoService = new CursoService();
     }
 
-    async criarUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario> {
-        
+    private async validaDadosUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario>{
+
+        cpf = cpf.replace(/[^\d]/g, "");
+
         // Verificar se existe a categoria
         const categoriaUsuario = await this.categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
         if(!categoriaUsuario)throw new Error('Categoria de usuario invalida');
-
+    
         // Verifica se existe o curso
         const curso = await this.cursoService.getCursoById(cursoId);
         if(!curso)throw new Error('Curso invalido.');
-
+    
         // Cria instância temporária apenas para validar e padronizar dados
         const usuarioTemp = new Usuario(nome, cpf, ativo, categoriaId, cursoId);
 
+        return usuarioTemp;
+
+    }
+
+    async criarUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario> {
+        
+        const usuarioValidado = await this.validaDadosUsuario(nome, cpf, ativo, categoriaId, cursoId);
+
         // Verifica se existe o cpf
-        const usuarioRepetido = await this.getUsuarioByCpf(usuarioTemp.cpf);
+        const usuarioRepetido = await this.getUsuarioByCpf(usuarioValidado.cpf);
         if(usuarioRepetido)throw new Error('Cpf invalido, cpf ja cadastrado.');
 
         // Persiste e obtém o ID gerado
-        const id = await this.usuarioRepository.insertUsuario(usuarioTemp);
+        const id = await this.usuarioRepository.insertUsuario(usuarioValidado);
 
         // Retorna nova instância imutável com o ID preenchido
         return new Usuario(nome, cpf, ativo, categoriaId, cursoId, id);
@@ -51,99 +61,16 @@ export class UsuarioService {
 
     }
 
-    /*public listaUsuariosFiltro(categoriaId: number | null, cursoId: number | null): Usuario[]{
+    async atualizarUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario | null>{
 
-        const listaUsuarios = this.usuarioRepository.getListaUsuarios();
+        cpf = cpf.replace(/[^\d]/g, "");
 
-        if(categoriaId){
-            listaUsuarios.filter( u => u.categoriaId === categoriaId);
-        }
+        const usuario = await this.getUsuarioByCpf(cpf);
+        if(!usuario)throw new Error('CPF invalido.');
 
-        if(cursoId){
-            listaUsuarios.filter( u => u.cursoId === cursoId);
-        }
+        const usuarioAtualizado = await this.validaDadosUsuario(nome, cpf, ativo, categoriaId, cursoId);
 
-        return listaUsuarios;
+        return await this.usuarioRepository.atualizarUsuario(usuarioAtualizado.nome, usuarioAtualizado.cpf, usuarioAtualizado.ativo, usuarioAtualizado.categoriaId, usuarioAtualizado.cursoId);
 
     }
-
-    public getUsuarioByCpf(cpf: string): Usuario{
-
-        const usuario = this.usuarioRepository.getUsuarioByCpf(cpf);
-        if(usuario){
-            return usuario;
-        }else{
-            throw new Error("Usuario nao encontrado");
-        }
-
-    }
-
-    public atualizaUsuario(nome: string, cpf: string, categoriaId: number, cursoId: number): Usuario{
-
-        nome = textUtils.capitalizarTexto(nome);
-
-        // Valida o nome do usuário
-        if (!nome || nome.trim() === "" || nome.length < 3) {
-            throw new Error("O nome do usuário deve ter mais de 3 caracteres válidos.");
-        }
-
-        // Remove espaços em branco extras e capitaliza a primeira letra
-        nome = nome.trim();
-        nome = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
-
-        cpf = cpf.trim();
-        cpf = cpf.replace(/[^0-9]/g, ""); // Remove caracteres não numéricos
-
-        // valida o CPF
-        if(!this.validarCpf(cpf)) {
-            throw new Error("CPF inválido.");
-        }
-
-        // Verifica se a categoria existe
-        if (!this.categoriaUsuario.getListaCategoriasUsuarios().some(categoria => categoria.id === categoriaId)) {
-            throw new Error("Categoria inválida.");
-        }
-
-        // Verifica se o curso existe
-        if (!this.cursoRepository.getListaCursos().some(curso => curso.id === cursoId)) {
-            throw new Error("Curso inválido.");
-        }
-
-        const usuarioAtualizado = this.usuarioRepository.atualizaUsuario(nome, cpf, categoriaId, cursoId);
-        return usuarioAtualizado;
-
-    }
-
-    public removeUsuario(cpf: string){
-
-        const emprestimoService = new EmprestimoService();
-        const usuario = this.usuarioRepository.getUsuarioByCpf(cpf);
-
-        if(!usuario){
-            throw new Error("Erro ao remover usuario: Usuario nao encontrado");
-        }
-
-        const qtdeEmprestada = emprestimoService.emprestimosEmAbertoUsuario(usuario.id);
-
-        if(qtdeEmprestada){
-            throw new Error("Erro ao remover usuario: Existem emprestimos em andamento");
-        }
-
-        this.usuarioRepository.removeUsuario(cpf);
-
-    }
-
-    public alteraStatusUsuario(id: number, status: boolean): void{
-
-        const usuario = this.usuarioRepository.getUsuarioById(id);
-
-        if(!usuario){
-            throw new Error("Usuario nao encontrado")
-        }
-
-        usuario.ativo = status;
-
-    }*/
-
-
 }

@@ -49,5 +49,26 @@ export class UsuarioController extends Controller{
         } catch (error: any) {
             return fail(400, new BasicResponseDto(error.message, undefined));
         }
+    } // <-- Add this closing brace for addUsuario
+
+    @Put('{cpf}')
+    async atualizarUsuario(
+        @Path() cpf: string,
+        @Body() dto: UsuarioDTO,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<200, BasicResponseDto>
+    ): Promise<void> {
+        try {
+            const usuarioAtualizado = await this.UsuarioService.atualizarUsuario(
+                dto.nome,
+                cpf,
+                dto.ativo,
+                dto.categoriaId,
+                dto.cursoId
+            );
+            return success(200, new BasicResponseDto('Usuario atualizado com sucesso', usuarioAtualizado));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
+        }
     }
 }

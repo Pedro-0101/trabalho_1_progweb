@@ -39,41 +39,47 @@ class CursoRepository {
     }
     insertCurso(curso) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO cursos(nome) VALUES (?)', [curso.nome]);
-            console.log('Curso inserido com sucesso!', resultado);
-            return resultado.insertId;
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO cursos(nome) VALUES (?)', [curso.nome]);
+                console.log('Curso inserido com sucesso!', resultado);
+                return resultado.insertId;
+            }
+            catch (err) {
+                console.error('Erro ao inserir curso', err);
+                throw err;
+            }
         });
     }
     getCursoById(cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM cursos WHERE id = ?', [cursoId]);
-            if (!rows || rows.length === 0) {
-                return null;
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM cursos WHERE id = ?', [cursoId]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new Curso_1.Curso(row.nome, row.id);
             }
-            const row = rows[0];
-            return new Curso_1.Curso(row.nome, row.id);
+            catch (err) {
+                console.error('Erro ao buscar curso por ID', err);
+                throw err;
+            }
         });
     }
     getCursos() {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM cursos', []);
-            if (!rows || rows.length === 0) {
-                return null;
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM cursos', []);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                return rows;
             }
-            return rows;
+            catch (err) {
+                console.error('Erro ao buscar cursos', err);
+                throw err;
+            }
         });
     }
 }
 exports.CursoRepository = CursoRepository;
-/*
-public getListaCursos(): Curso[] {
-    return this.listaCursos;
-}
-
-public addCurso(curso: Curso): void {
-    this.listaCursos.push(curso);
-}
-
-public getCursoById(id: number): Curso | undefined {
-    return this.listaCursos.find(curso => curso.id === id);
-}*/ 

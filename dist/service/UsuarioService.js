@@ -20,8 +20,9 @@ class UsuarioService {
         this.categiriaUsuarioService = new CategoriaUsuarioService_1.CategoriaUsuarioService();
         this.cursoService = new CursoService_1.CursoService();
     }
-    criarUsuario(nome, cpf, ativo, categoriaId, cursoId) {
+    validaDadosUsuario(nome, cpf, ativo, categoriaId, cursoId) {
         return __awaiter(this, void 0, void 0, function* () {
+            cpf = cpf.replace(/[^\d]/g, "");
             // Verificar se existe a categoria
             const categoriaUsuario = yield this.categiriaUsuarioService.getCategoriaUsuarioById(categoriaId);
             if (!categoriaUsuario)
@@ -32,12 +33,18 @@ class UsuarioService {
                 throw new Error('Curso invalido.');
             // Cria instância temporária apenas para validar e padronizar dados
             const usuarioTemp = new Usuario_1.Usuario(nome, cpf, ativo, categoriaId, cursoId);
+            return usuarioTemp;
+        });
+    }
+    criarUsuario(nome, cpf, ativo, categoriaId, cursoId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const usuarioValidado = yield this.validaDadosUsuario(nome, cpf, ativo, categoriaId, cursoId);
             // Verifica se existe o cpf
-            const usuarioRepetido = yield this.getUsuarioByCpf(usuarioTemp.cpf);
+            const usuarioRepetido = yield this.getUsuarioByCpf(usuarioValidado.cpf);
             if (usuarioRepetido)
                 throw new Error('Cpf invalido, cpf ja cadastrado.');
             // Persiste e obtém o ID gerado
-            const id = yield this.usuarioRepository.insertUsuario(usuarioTemp);
+            const id = yield this.usuarioRepository.insertUsuario(usuarioValidado);
             // Retorna nova instância imutável com o ID preenchido
             return new Usuario_1.Usuario(nome, cpf, ativo, categoriaId, cursoId, id);
         });
@@ -53,6 +60,16 @@ class UsuarioService {
     getUsuarios() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.usuarioRepository.getUsuarios();
+        });
+    }
+    atualizarUsuario(nome, cpf, ativo, categoriaId, cursoId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            cpf = cpf.replace(/[^\d]/g, "");
+            const usuario = yield this.getUsuarioByCpf(cpf);
+            if (!usuario)
+                throw new Error('CPF invalido.');
+            const usuarioAtualizado = yield this.validaDadosUsuario(nome, cpf, ativo, categoriaId, cursoId);
+            return yield this.usuarioRepository.atualizarUsuario(usuarioAtualizado.nome, usuarioAtualizado.cpf, usuarioAtualizado.ativo, usuarioAtualizado.categoriaId, usuarioAtualizado.cursoId);
         });
     }
 }

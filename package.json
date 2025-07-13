@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/app.js",
-    "build": "npx tsoa spec-and-routes && npx tsc"
+    "build": "npx tsoa spec-and-routes && npx tsc",
+    "build-and-start": "npm run build && npm start"
   },
   "author": "pedro paulino pinto",
   "license": "ISC",
-  "dev-dependencies": {
-    "typescript": "^5.8.3"
-  },
   "devDependencies": {
+    "typescript": "^5.8.3",
     "@types/express": "^5.0.2",
     "express": "^5.1.0"
   },

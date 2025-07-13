@@ -63,6 +63,17 @@ let UsuarioController = class UsuarioController extends tsoa_1.Controller {
                 return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
             }
         });
+    } // <-- Add this closing brace for addUsuario
+    atualizarUsuario(cpf, dto, fail, success) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const usuarioAtualizado = yield this.UsuarioService.atualizarUsuario(dto.nome, cpf, dto.ativo, dto.categoriaId, dto.cursoId);
+                return success(200, new BasicResponseDto_1.BasicResponseDto('Usuario atualizado com sucesso', usuarioAtualizado));
+            }
+            catch (error) {
+                return fail(400, new BasicResponseDto_1.BasicResponseDto(error.message, undefined));
+            }
+        });
     }
 };
 exports.UsuarioController = UsuarioController;
@@ -92,6 +103,16 @@ __decorate([
     __metadata("design:paramtypes", [UsuarioDto_1.UsuarioDTO, Function, Function]),
     __metadata("design:returntype", Promise)
 ], UsuarioController.prototype, "addUsuario", null);
+__decorate([
+    (0, tsoa_1.Put)('{cpf}'),
+    __param(0, (0, tsoa_1.Path)()),
+    __param(1, (0, tsoa_1.Body)()),
+    __param(2, (0, tsoa_1.Res)()),
+    __param(3, (0, tsoa_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, UsuarioDto_1.UsuarioDTO, Function, Function]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "atualizarUsuario", null);
 exports.UsuarioController = UsuarioController = __decorate([
     (0, tsoa_1.Route)('usuario'),
     (0, tsoa_1.Tags)('Usuario')

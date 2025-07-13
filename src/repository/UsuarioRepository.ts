@@ -36,47 +36,77 @@ export class UsuarioRepository {
     }
 
     async insertUsuario(usuario: Usuario): Promise<number> {
-        const resultado = await executeQuery(
-            'INSERT INTO usuarios(nome, cpf, ativo, categoria_id, curso_id) VALUES (?, ?, ?, ?, ?)',
-            [usuario.nome, usuario.cpf, usuario.ativo, usuario.categoriaId, usuario.cursoId]
-        );
-
-        console.log('Usuário inserido com sucesso!', resultado);
-        return resultado.insertId;
+        try {
+            const resultado = await executeQuery(
+                'INSERT INTO usuarios(nome, cpf, ativo, categoria_id, curso_id) VALUES (?, ?, ?, ?, ?)',
+                [usuario.nome, usuario.cpf, usuario.ativo, usuario.categoriaId, usuario.cursoId]
+            );
+            console.log('Usuário inserido com sucesso!', resultado);
+            return resultado.insertId;
+        } catch (err) {
+            console.error('Erro ao inserir usuário:', err);
+            throw err;
+        }
     }
 
     async getUsuarioByCpf(cpf: string): Promise<Usuario | null> {
-        const rows = await executeQuery(
-            'SELECT * FROM usuarios WHERE cpf = ?',
-            [cpf]
-        );
+        try {
+            const rows = await executeQuery(
+                'SELECT * FROM usuarios WHERE cpf = ?',
+                [cpf]
+            );
 
-        if (!rows || rows.length === 0) {
-            return null;
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+
+            const row = rows[0];
+
+            return new Usuario(
+                row.nome,
+                row.cpf,
+                row.ativo,
+                row.categoria_id,
+                row.curso_id,
+                row.id
+            );
+        } catch (err) {
+            console.error('Erro ao buscar usuário por CPF:', err);
+            throw err;
         }
-
-        const row = rows[0];
-
-        return new Usuario(
-            row.nome,
-            row.cpf,
-            row.ativo,
-            row.categoria_id,
-            row.curso_id,
-            row.id
-        );
     }
 
-    async getUsuarios(): Promise< Usuario[] | null> {
-        const rows = await executeQuery(
-            'SELECT * FROM usuarios',
-            []
-        );
+    async getUsuarios(): Promise<Usuario[] | null> {
+        try {
+            const rows = await executeQuery(
+                'SELECT * FROM usuarios',
+                []
+            );
 
-        if (!rows || rows.length === 0) {
-            return null;
+            if (!rows || rows.length === 0) {
+                return null;
+            }
+
+            return rows;
+        } catch (err) {
+            console.error('Erro ao buscar usuários:', err);
+            throw err;
         }
+    }
 
-        return rows;
+    async atualizarUsuario(nome: string, cpf: string, ativo: string, categoriaId: number, cursoId: number): Promise<Usuario | null> {
+        try {
+            const resultado = await executeQuery(
+                'UPDATE usuarios SET nome = ?, cpf = ?, ativo = ?, categoria_id = ?, curso_id = ? WHERE cpf = ?',
+                [nome, cpf, ativo, categoriaId, cursoId, cpf]
+            );
+            if (resultado.affectedRows === 0) {
+                return null;
+            }
+            return await this.getUsuarioByCpf(cpf);
+        } catch (err) {
+            console.error('Erro ao atualizar usuário:', err);
+            throw err;
+        }
     }
 }

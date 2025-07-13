@@ -158,6 +158,34 @@ function RegisterRoutes(app) {
         });
     });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    const argsUsuarioController_atualizarUsuario = {
+        cpf: { "in": "path", "name": "cpf", "required": true, "dataType": "string" },
+        dto: { "in": "body", "name": "dto", "required": true, "ref": "UsuarioDTO" },
+        fail: { "in": "res", "name": "400", "required": true, "ref": "BasicResponseDto" },
+        success: { "in": "res", "name": "200", "required": true, "ref": "BasicResponseDto" },
+    };
+    app.put('/usuario/:cpf', ...((0, runtime_1.fetchMiddlewares)(UsuarioController_1.UsuarioController)), ...((0, runtime_1.fetchMiddlewares)(UsuarioController_1.UsuarioController.prototype.atualizarUsuario)), function UsuarioController_atualizarUsuario(request, response, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+            let validatedArgs = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUsuarioController_atualizarUsuario, request, response });
+                const controller = new UsuarioController_1.UsuarioController();
+                yield templateService.apiHandler({
+                    methodName: 'atualizarUsuario',
+                    controller,
+                    response,
+                    next,
+                    validatedArgs,
+                    successStatus: undefined,
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+    });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     const argsCursoController_listarCursos = {
         fail: { "in": "res", "name": "400", "required": true, "ref": "BasicResponseDto" },
         success: { "in": "res", "name": "200", "required": true, "ref": "BasicResponseDto" },

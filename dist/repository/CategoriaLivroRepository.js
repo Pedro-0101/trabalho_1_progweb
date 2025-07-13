@@ -25,9 +25,9 @@ class CategoriaLivroRepository {
     createTable() {
         return __awaiter(this, void 0, void 0, function* () {
             const query = `CREATE TABLE IF NOT EXISTS categorias_livro (
-				id INT AUTO_INCREMENT PRIMARY KEY,
-				nome VARCHAR(255) NOT NULL
-		)`;
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL
+        )`;
             try {
                 const resultado = yield (0, mysql_1.executeQuery)(query, []);
                 console.log('Tabela categorias_livro criada com sucesso: ', resultado);
@@ -39,28 +39,46 @@ class CategoriaLivroRepository {
     }
     insertCategoriaLivro(categoriaLivro) {
         return __awaiter(this, void 0, void 0, function* () {
-            const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO categorias_livro(nome) VALUES (?)', [categoriaLivro.nome]);
-            console.log('Categoria de livro inserida com sucesso!', resultado);
-            return resultado.insertId;
+            try {
+                const resultado = yield (0, mysql_1.executeQuery)('INSERT INTO categorias_livro(nome) VALUES (?)', [categoriaLivro.nome]);
+                console.log('Categoria de livro inserida com sucesso!', resultado);
+                return resultado.insertId;
+            }
+            catch (err) {
+                console.error('Erro ao inserir categoria de livro', err);
+                return -1;
+            }
         });
     }
     getCategoriaLivroById(categoriaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categoirias_livro WHERE id = ?', [categoriaId]);
-            if (!rows || rows.length === 0) {
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categorias_livro WHERE id = ?', [categoriaId]);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                const row = rows[0];
+                return new CategoriaLivro_1.CategoriaLivro(row.nome, row.id);
+            }
+            catch (err) {
+                console.error('Erro ao buscar categoria de livro por ID', err);
                 return null;
             }
-            const row = rows[0];
-            return new CategoriaLivro_1.CategoriaLivro(row.nome, row.id);
         });
     }
     getCategoriasLivro() {
         return __awaiter(this, void 0, void 0, function* () {
-            const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categorias_livro', []);
-            if (!rows || rows.length === 0) {
+            try {
+                const rows = yield (0, mysql_1.executeQuery)('SELECT * FROM categorias_livro', []);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                return rows;
+            }
+            catch (err) {
+                console.error('Erro ao buscar categorias de livro', err);
                 return null;
             }
-            return rows;
         });
     }
 }
