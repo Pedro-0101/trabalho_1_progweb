@@ -1,40 +1,41 @@
-/*import { EmprestimoService } from "../service/EmprestimoService";
-import { Emprestimo } from "../model/Emprestimo";
-import e, { Request, Response } from "express";
+import { Body, Controller, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse, Query } from "tsoa";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { EmprestimoService } from "../service/EmprestimoService";
+import { EmprestimoDTO } from "../model/dto/EmprestimoDto";
 
-export class EmprestimoController {
-    private emprestimoService: EmprestimoService;
+@Route('emprestimo')
+@Tags('Emprestimo')
+export class EmprestimoController extends Controller {
 
-    constructor() {
-        this.emprestimoService = new EmprestimoService();
-    }
+    estoqueService = new EmprestimoService();
 
-    public registrarEmprestimo(req: Request, res: Response): void {
+    @Get()
+	async listarEmprestimos(
+		@Res() fail: TsoaResponse<400, BasicResponseDto>,
+		@Res() success: TsoaResponse<200, BasicResponseDto>,
+		@Query() ativos: boolean,
+		@Query() estoqueId?: number
+	): Promise<void> {
+		try {
+			const listaEmprestimo = await this.estoqueService.getListaEmprestimos(ativos, estoqueId);
+			return success(200, new BasicResponseDto('Lista de emprestimos', listaEmprestimo));
+		} catch (error: any) {
+			return fail(400, new BasicResponseDto(error.message, undefined));
+		}
+	}
+
+    @Post()
+    async addEmprestimo(
+        @Body() dto: EmprestimoDTO,
+        @Res() fail: TsoaResponse<400, BasicResponseDto>,
+        @Res() success: TsoaResponse<201, BasicResponseDto>
+    ): Promise< | void> {
         try {
-            const novoEmprestimo = this.emprestimoService.registrarEmprestimo(req.body.cpf, req.body.codigoExemplar, new Date());
-            res.status(201).json(novoEmprestimo);
-        } catch (error) {
-            res.status(500).json({ message: "Erro ao registrar empréstimo", error });
+            const novoEmprestimo = await this.estoqueService.registrarEmprestimo(dto.cpf, dto.codigoExemplar);
+            return success(201, new BasicResponseDto('Exemplar inserido com sucesso', novoEmprestimo));
+        } catch (error: any) {
+            return fail(400, new BasicResponseDto(error.message, undefined));
         }
     }
 
-    public listarEmprestimos(req: Request, res: Response): Emprestimo[] | void {
-        try {
-            const emprestimos = this.emprestimoService.listarEmprestimos();
-            res.status(200).json(emprestimos);
-        } catch (error) {
-            res.status(500).json({ message: "Erro ao listar empréstimos", error });
-        }
-    }
-
-    public registrarDevolucao(req: Request, res: Response, id: string): Emprestimo | void {
-        try {
-            const emprestimo = this.emprestimoService.registrarDevolucao(parseInt(id));
-            res.status(200).json(emprestimo);
-        } catch (error) {
-            res.status(500).json({ message: "Erro ao registrar devolução", error });
-        }
-    }
-
-    
-}*/
+}

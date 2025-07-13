@@ -162,26 +162,8 @@ export class LivroRepository {
         if (!rows || rows.length === 0) {
             return null;
         }
-
-        interface LivroRow {
-            id: number;
-            titulo: string;
-            autor: string;
-            editora: string;
-            edicao: string;
-            isbn: string;
-            categoria_id: number;
-        }
-
-        return (rows as LivroRow[]).map((row: LivroRow) => new Livro(
-            row.titulo,
-            row.autor,
-            row.editora,
-            row.edicao,
-            row.isbn,
-            row.categoria_id,
-            row.id
-        ));
+        return rows;
+        
     } catch (err) {
         console.error('Erro ao buscar livros:', err);
         throw err;

@@ -17,7 +17,10 @@ export class EmprestimoService {
         this.livroService = new LivroService();
     }
 
-    public async registrarEmprestimo(cpf: string, codigoExemplar: number, dataEmprestimo: Date): Promise<Emprestimo> {
+    public async registrarEmprestimo(cpf: string, codigoExemplar: number): Promise<Emprestimo> {
+
+        const dataEmprestimo = new Date();
+
         // Busca usuário e valida
         const usuario = await this.usuarioService.getUsuarioByCpf(cpf);
         if (!usuario) throw new Error("Usuário não encontrado.");
@@ -84,4 +87,15 @@ export class EmprestimoService {
             id
         );
     }
+
+    async getListaEmprestimos(ativo: boolean, estoqueId?: number): Promise<Emprestimo[] | null> {
+
+        if(ativo){
+            return await this.emprestimoRepository.getListaEmprestimosEmAberto(estoqueId);
+        }else{
+            return await this.emprestimoRepository.getListaEmprestimosFechados(estoqueId);
+        }
+
+    }
+
 }

@@ -107,22 +107,8 @@ export class EstoqueRepository {
             if (!rows || rows.length === 0) {
                 return null;
             }
-
-            interface EstoqueRow {
-                id: number;
-                livro_id: number;
-                quantidade: number;
-                quantidade_emprestada: number;
-                disponivel: boolean;
-            }
-
-            return (rows as EstoqueRow[]).map((row: EstoqueRow) => new Estoque(
-                row.livro_id,
-                row.quantidade,
-                row.disponivel,
-                row.quantidade_emprestada,
-                row.id
-            ));
+            return rows;
+            
         } catch (err) {
             console.error('Erro ao buscar lista de estoques', err);
             return null;

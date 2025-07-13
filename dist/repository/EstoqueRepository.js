@@ -102,7 +102,7 @@ class EstoqueRepository {
                 if (!rows || rows.length === 0) {
                     return null;
                 }
-                return rows.map((row) => new Estoque_1.Estoque(row.livro_id, row.quantidade, row.disponivel, row.quantidade_emprestada, row.id));
+                return rows;
             }
             catch (err) {
                 console.error('Erro ao buscar lista de estoques', err);

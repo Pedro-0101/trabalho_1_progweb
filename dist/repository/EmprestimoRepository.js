@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmprestimoRepository = void 0;
+const Emprestimo_1 = require("../model/entity/Emprestimo");
 const mysql_1 = require("../database/mysql");
 class EmprestimoRepository {
     constructor() {
@@ -69,29 +70,49 @@ class EmprestimoRepository {
             return (_b = (_a = rows[0]) === null || _a === void 0 ? void 0 : _a.total) !== null && _b !== void 0 ? _b : 0;
         });
     }
+    getListaEmprestimosEmAberto(estoqueId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const conditions = ['data_entrega IS NULL'];
+                const params = [];
+                if (estoqueId) {
+                    conditions.push('estoque_id = ?');
+                    params.push(estoqueId);
+                }
+                let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
+                const rows = yield (0, mysql_1.executeQuery)(query, params);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                return rows.map(row => new Emprestimo_1.Emprestimo(row.usuario_id, row.estoque_id, new Date(row.data_emprestimo), new Date(row.data_devolucao), row.data_entrega ? new Date(row.data_entrega) : null, row.dias_atraso, row.suspensao_ate ? new Date(row.suspensao_ate) : null, row.id));
+            }
+            catch (err) {
+                console.error('Erro ao buscar empréstimos em aberto', err);
+                return null;
+            }
+        });
+    }
+    getListaEmprestimosFechados(estoqueId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const conditions = ['data_entrega IS NOT NULL'];
+                const params = [];
+                if (estoqueId) {
+                    conditions.push('estoque_id = ?');
+                    params.push(estoqueId);
+                }
+                let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
+                const rows = yield (0, mysql_1.executeQuery)(query, params);
+                if (!rows || rows.length === 0) {
+                    return null;
+                }
+                return rows;
+            }
+            catch (err) {
+                console.error('Erro ao buscar empréstimos fechados', err);
+                return null;
+            }
+        });
+    }
 }
 exports.EmprestimoRepository = EmprestimoRepository;
-/*
-    public getListaEmprestimos(): Emprestimo[] {
-        return this.listaEmprestimos;
-    }
-
-    public addEmprestimo(emprestimo: Emprestimo): void {
-        this.listaEmprestimos.push(emprestimo);
-    }
-
-    public getEmprestimoById(id: number): Emprestimo | undefined {
-        return this.listaEmprestimos.find(emprestimo => emprestimo.id === id);
-    }
-
-    public emprestimosEmAberto(usuarioId: number): number {
-        return this.listaEmprestimos.filter(emprestimo => emprestimo.usuarioId === usuarioId && !emprestimo.dataDevolucao).length;
-    }
-
-    public qtdeEmprestada(estoqueId: number): number{
-
-        return this.getListaEmprestimos().filter( e => !e.dataDevolucao && e.estoqueId === estoqueId).length;
-
-    }
-
-}*/ 

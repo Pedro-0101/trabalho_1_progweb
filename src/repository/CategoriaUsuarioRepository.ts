@@ -75,8 +75,8 @@ export class CategoriaUsuarioRepository {
             if (!rows || rows.length === 0) {
                 return null;
             }
-
             return rows;
+            
         } catch (err) {
             console.error('Erro ao buscar categorias de usuário', err);
             throw err;

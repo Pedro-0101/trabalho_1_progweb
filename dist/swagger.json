@@ -894,6 +894,59 @@
 				]
 			}
 		},
+		"/emprestimo": {
+			"get": {
+				"operationId": "ListarEmprestimos",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					},
+					"204": {
+						"description": "No content"
+					},
+					"400": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Emprestimo"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "ativos",
+						"required": true,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"in": "query",
+						"name": "estoqueId",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
 		"/curso": {
 			"get": {
 				"operationId": "ListarCursos",

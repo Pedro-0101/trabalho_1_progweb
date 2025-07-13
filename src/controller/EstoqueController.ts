@@ -45,8 +45,8 @@ export class EstoqueController extends Controller {
 		@Res() success: TsoaResponse<201, BasicResponseDto>
 	): Promise< | void> {
 		try {
-			const novoEsxemplar = await this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
-			return success(201, new BasicResponseDto('Exemplar inserido com sucesso', novoEsxemplar));
+			const novoExemplar = await this.estoqueService.registrarEstoque(dto.livroId, dto.quantidade);
+			return success(201, new BasicResponseDto('Exemplar inserido com sucesso', novoExemplar));
 		} catch (error: any) {
 			return fail(400, new BasicResponseDto(error.message, undefined));
 		}

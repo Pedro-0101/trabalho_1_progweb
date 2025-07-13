@@ -131,7 +131,7 @@ class LivroRepository {
                 if (!rows || rows.length === 0) {
                     return null;
                 }
-                return rows.map((row) => new Livro_1.Livro(row.titulo, row.autor, row.editora, row.edicao, row.isbn, row.categoria_id, row.id));
+                return rows;
             }
             catch (err) {
                 console.error('Erro ao buscar livros:', err);

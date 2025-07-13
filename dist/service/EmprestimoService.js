@@ -22,8 +22,9 @@ class EmprestimoService {
         this.usuarioService = new UsuarioService_1.UsuarioService();
         this.livroService = new LivroService_1.LivroService();
     }
-    registrarEmprestimo(cpf, codigoExemplar, dataEmprestimo) {
+    registrarEmprestimo(cpf, codigoExemplar) {
         return __awaiter(this, void 0, void 0, function* () {
+            const dataEmprestimo = new Date();
             // Busca usuário e valida
             const usuario = yield this.usuarioService.getUsuarioByCpf(cpf);
             if (!usuario)
@@ -71,6 +72,16 @@ class EmprestimoService {
             yield this.estoqueService.atualizarQuantidadeEmprestada(estoque.livroId, 1);
             // Retorna instância final com id preenchido
             return new Emprestimo_1.Emprestimo(usuario.id, estoque.id, dataEmprestimo, dataDevolucao, null, null, null, id);
+        });
+    }
+    getListaEmprestimos(ativo, estoqueId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (ativo) {
+                return yield this.emprestimoRepository.getListaEmprestimosEmAberto(estoqueId);
+            }
+            else {
+                return yield this.emprestimoRepository.getListaEmprestimosFechados(estoqueId);
+            }
         });
     }
 }

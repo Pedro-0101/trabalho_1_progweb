@@ -63,28 +63,65 @@ export class EmprestimoRepository {
         );
         return rows[0]?.total ?? 0;
     }
+
+    async getListaEmprestimosEmAberto(estoqueId?: number): Promise<Emprestimo[] | null> {
+    try {
+        const conditions: string[] = ['data_entrega IS NULL'];
+        const params: any[] = [];
+
+        if (estoqueId) {
+            conditions.push('estoque_id = ?');
+            params.push(estoqueId);
+        }
+
+        let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
+
+        const rows = await executeQuery(query, params);
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+
+        return (rows as any[]).map(row => new Emprestimo(
+            row.usuario_id,
+            row.estoque_id,
+            new Date(row.data_emprestimo),
+            new Date(row.data_devolucao),
+            row.data_entrega ? new Date(row.data_entrega) : null,
+            row.dias_atraso,
+            row.suspensao_ate ? new Date(row.suspensao_ate) : null,
+            row.id
+        ));
+    } catch (err) {
+        console.error('Erro ao buscar empréstimos em aberto', err);
+        return null;
+    }
 }
-/*
-    public getListaEmprestimos(): Emprestimo[] {
-        return this.listaEmprestimos;
+
+    async getListaEmprestimosFechados(estoqueId?: number): Promise<Emprestimo[] | null> {
+    try {
+        const conditions: string[] = ['data_entrega IS NOT NULL'];
+        const params: any[] = [];
+
+        if (estoqueId) {
+            conditions.push('estoque_id = ?');
+            params.push(estoqueId);
+        }
+
+        let query = 'SELECT * FROM emprestimos WHERE ' + conditions.join(' AND ');
+
+        const rows = await executeQuery(query, params);
+
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+        return rows;
+        
+    } catch (err) {
+        console.error('Erro ao buscar empréstimos fechados', err);
+        return null;
     }
+}
 
-    public addEmprestimo(emprestimo: Emprestimo): void {
-        this.listaEmprestimos.push(emprestimo);
-    }
 
-    public getEmprestimoById(id: number): Emprestimo | undefined {
-        return this.listaEmprestimos.find(emprestimo => emprestimo.id === id);
-    }
-
-    public emprestimosEmAberto(usuarioId: number): number {
-        return this.listaEmprestimos.filter(emprestimo => emprestimo.usuarioId === usuarioId && !emprestimo.dataDevolucao).length;
-    }
-
-    public qtdeEmprestada(estoqueId: number): number{
-
-        return this.getListaEmprestimos().filter( e => !e.dataDevolucao && e.estoqueId === estoqueId).length;
-
-    }
-
-}*/
+}
